@@ -1,0 +1,54 @@
+QUESTION:
+HTML:
+<p>I use Lucene.Net to index some documents. I want to show the user a couple of lines as to why that document is in the result set. just like when you use google to search and it shows the link and followed by the link there are a few lines with the keywords highlighted.&#xA;any ideas?</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>When you have a result you can get the indexed text pass it along with your query through a method similar to this:</p>&#xA;&#xA;<pre><code>public string GeneratePreviewText(Query q, string text)&#xA;{&#xA;    QueryScorer scorer = new QueryScorer(q);&#xA;    Formatter formatter = new SimpleHTMLFormatter(highlightStartTag, highlightEndTag);&#xA;    Highlighter highlighter = new Highlighter(formatter, scorer);&#xA;    highlighter.SetTextFragmenter(new SimpleFragmenter(fragmentLength));&#xA;    TokenStream stream = new StandardAnalyzer().TokenStream(new StringReader(text));&#xA;    return highlighter.GetBestFragments(stream, text, fragmentCount, fragmentSeparator);&#xA;}&#xA;</code></pre>&#xA;
+Comment:
+You are a gem mate. thanks.
+Sorted me out, but had to pass an arbitrary string value as a first parameter of TokenStream.
+
+ANS:
+HTML:
+<p>When you have a result you can get the indexed text pass it along with your query through a method similar to this:</p>&#xA;&#xA;<pre><code>public string GeneratePreviewText(Query q, string text)&#xA;{&#xA;    QueryScorer scorer = new QueryScorer(q);&#xA;    Formatter formatter = new SimpleHTMLFormatter(highlightStartTag, highlightEndTag);&#xA;    Highlighter highlighter = new Highlighter(formatter, scorer);&#xA;    highlighter.SetTextFragmenter(new SimpleFragmenter(fragmentLength));&#xA;    TokenStream stream = new StandardAnalyzer().TokenStream(new StringReader(text));&#xA;    return highlighter.GetBestFragments(stream, text, fragmentCount, fragmentSeparator);&#xA;}&#xA;</code></pre>&#xA;
+Comment:
+You are a gem mate. thanks.
+Sorted me out, but had to pass an arbitrary string value as a first parameter of TokenStream.
+
+Phrase:
+use Lucene.Net to index some documents 
+set 
+is in the result set 
+show the user a couple of lines as to why that document is in the result set 
+to show the user a couple of lines as to why that document is in the result set 
+want to show the user a couple of lines as to why that document is in the result set 
+search 
+to search 
+use google to search 
+shows the link 
+followed by the link 
+shows the link and followed by the link 
+highlighted 
+are a few lines with the keywords highlighted 
+have a result 
+get 
+can get 
+pass it along with your query through a method similar to this 
+are a gem mate 
+Sorted me out 
+pass an arbitrary string value as a first parameter of TokenStream 
+to pass an arbitrary string value as a first parameter of TokenStream 
+had to pass an arbitrary string value as a first parameter of TokenStream 
+Sorted me out , but had to pass an arbitrary string value as a first parameter of TokenStream 
+have a result 
+get 
+can get 
+pass it along with your query through a method similar to this 
+are a gem mate 
+Sorted me out 
+pass an arbitrary string value as a first parameter of TokenStream 
+to pass an arbitrary string value as a first parameter of TokenStream 
+had to pass an arbitrary string value as a first parameter of TokenStream 
+Sorted me out , but had to pass an arbitrary string value as a first parameter of TokenStream 

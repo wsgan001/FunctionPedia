@@ -1,0 +1,20 @@
+use pellet as a separate service on a computer
+freezing while loop on hasNext invocation
+generate a rdf dataset for top-k query
+create class union in Jena
+SPARQL query Filter JENA
+looking for solution in Jena api on android
+list all objects with a special property in a rdf file
+Can't get results due to typed literal (xsd:string) quering SPARQL 
+extract an owl file using
+sparql delete all children of node
+not able to read large RDF file
+execute SPARQL query for multiple RDF files
+adding a filter clause to jena to a SPARQL query
+Jena program freezing when creating OntModel
+send post request
+get non RDF.type assertions
+get object in different language
+create a large number individuals based on OWL ontology
+integrating Jena and Pellet Reasoner
+retrieve name from DBPedia article

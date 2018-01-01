@@ -1,0 +1,38 @@
+
+<p>I can't remember what it is called, as I am new to java,
+
+ but I want to know where to find this in the Eclipse formatter.
+
+  In my getBookData method, \n\r \n \r I want the stuff after the comma not start a new line. </p>
+
+<pre><code>package input;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.stream.Stream;
+
+public class ReadFile {
+
+    public static Object[] currentBookData;
+
+    public static void getBookData() throws IOException {
+        try (Stream&lt;String&gt; stream = Files.lines(Paths.get("C:/test.txt"), Charset.defaultCharset())) { // I want the stuff after the comma to be on the same line.
+            currentBookData = stream.toArray();
+        } 
+
+        catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+
+    }
+}
+</code></pre>
+
+<p>I have a code that uploads a file via HTTP Post to an IIS Server. My
+		 current code only supports http. I tried to follow the example from the apache website
+		 (<a href="http://hc.apache.org/httpclient-3.x/sslguide.html"
+		 rel="nofollow">http://hc.apache.org/httpclient-3.x/sslguide.html</a>) but I get an
+		 error:</p>&#xA;&#xA;<p>javax.net.ssl.SSLHandshakeException:
+		 java.security.cert.CertificateException: No X509TrustManager implementation
+		 available</p>

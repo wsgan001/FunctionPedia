@@ -1,0 +1,51 @@
+QUESTION:
+HTML:
+<p>If anyone has done this, please let me know. I don't know anything about lucene.net. I have never used it, but I heard about it. I was wondering how something like that would integrate with the Linq entity framework?</p>&#xA;
+Comment:
+so.. any update on this? I'm about to dive in head first, so if you have any remarks, please make them public :)
+Sorry, I never ended up using it for the project I was working on.
+
+ACCEPTED ANS:
+HTML:
+<p>Check out <a href="http://www.codeplex.com/linqtolucene" rel="nofollow">Linq to Lucene</a> project.</p>&#xA;
+Comment:
+
+ANS:
+HTML:
+<p>Check out <a href="http://www.codeplex.com/linqtolucene" rel="nofollow">Linq to Lucene</a> project.</p>&#xA;
+Comment:
+HTML:
+<p>Check this article in linq to lucene discussion</p>&#xA;&#xA;<p><a href="http://linqtolucene.codeplex.com/Thread/View.aspx?ThreadId=79132" rel="nofollow">Linq to Lucene for Entity Framework</a>   </p>&#xA;&#xA;<p>working with entity framework only one class add</p>&#xA;
+Comment:
+
+Phrase:
+done this 
+has done this 
+know 
+let me know 
+know anything about lucene.net 
+do n't know anything about lucene.net 
+used it 
+have never used it 
+heard about it 
+integrate with the Linq entity framework 
+would integrate with the Linq entity framework 
+wondering how something like that would integrate with the Linq entity framework 
+was wondering how something like that would integrate with the Linq entity framework 
+have any remarks 
+make them public : 
+have any remarks , please make them public : 
+'m about to dive in head first , so if you have any remarks , please make them public : 
+working on 
+was working on 
+using it for the project I was working on 
+ended up using it for the project I was working on 
+Check out Linq to Lucene project 
+Check out Linq to Lucene project 
+lucene discussion 
+to lucene discussion 
+Check this article in linq to lucene discussion 
+Lucene for Entity Framework 
+to Lucene for Entity Framework 
+add 
+working with entity framework only one class add 

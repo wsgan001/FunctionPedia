@@ -1,0 +1,85 @@
+QUESTION:
+HTML:
+<p>Basic question: How do I load an Excel template for use with POI and then save it to an XLS file?</p>&#xA;&#xA;<p><em>Edit:</em></p>&#xA;&#xA;<p>The answer is:</p>&#xA;&#xA;<pre><code>FileInputStream inputStream = new FileInputStream(new File(templateFile));&#xA;Workbook workbook = new HSSFWorkbook(inputStream);&#xA;</code></pre>&#xA;&#xA;<p>(Just load the template as a workbook and then write the workbook as an XLS file elsewhere.)</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>Have you tried loading it up as a standard .xls using POI, amending it and then saving it ?</p>&#xA;&#xA;<p>This is the approach I've used for inserting macros in a POI-generated .xls. I create the file with the macro (admittedly as an .xls) and then load it into my app, populate with data and save as a newly-created .xls. That all worked fine.</p>&#xA;
+Comment:
+
+ANS:
+HTML:
+<p>Have you tried loading it up as a standard .xls using POI, amending it and then saving it ?</p>&#xA;&#xA;<p>This is the approach I've used for inserting macros in a POI-generated .xls. I create the file with the macro (admittedly as an .xls) and then load it into my app, populate with data and save as a newly-created .xls. That all worked fine.</p>&#xA;
+Comment:
+HTML:
+<p>You can directly load an .xls that will act as the template, and modify it. </p>&#xA;&#xA;<pre><code>POIFSFileSystem fs = new POIFSFileSystem(&#xA;    	        new FileInputStream("template.xls"));&#xA;HSSFWorkbook wb = new  HSSFWorkbook(fs, true);&#xA;</code></pre>&#xA;&#xA;<p>Will load an xls, preserving its structure (macros included). You can then modify it, </p>&#xA;&#xA;<p>HSSFSheet sheet1 = wb.getSheet("Data");&#xA;   ...</p>&#xA;&#xA;<p>and then save it. </p>&#xA;&#xA;<pre><code>FileOutputStream fileOut = new FileOutputStream("new.xls"); &#xA;wb.write(fileOut);&#xA;fileOut.close();&#xA;</code></pre>&#xA;&#xA;<p>Hope this helps</p>&#xA;&#xA;<p>Guillaume</p>&#xA;
+Comment:
++1 for teh codez
+HTML:
+<p>You can also use internal template as a resource.</p>&#xA;&#xA;<pre><code>InputStream fis = ChartSample.class.getResourceAsStream("/templates.xls");&#xA;HSSFWorkbook wb = new HSSFWorkbook(fis);        &#xA;fis.close();&#xA;HSSFSheet sh = wb.getSheetAt(0); &#xA;//Here you go&#xA;</code></pre>&#xA;&#xA;<p>And save that:</p>&#xA;&#xA;<pre><code>out = new FileOutputStream("./new.xls");&#xA;wb.write(out);&#xA;out.close();&#xA;</code></pre>&#xA;
+Comment:
+
+Phrase:
+load an Excel template for use with POI 
+save it to an XLS file 
+load an Excel template for use with POI and then save it to an XLS file 
+Basic question : How do I load an Excel template for use with POI and then save it to an XLS file ? 
+is 
+Just load the template as a workbook 
+file elsewhere 
+then write the workbook as an XLS file elsewhere 
+Just load the template as a workbook and then write the workbook as an XLS file elsewhere 
+using POI 
+loading it up as a standard . xls using POI 
+amending it 
+then saving it 
+loading it up as a standard . xls using POI , amending it and then saving it 
+tried loading it up as a standard . xls using POI , amending it and then saving it 
+inserting macros in a POI-generated . xls 
+used for inserting macros in a POI-generated . xls 
+'ve used for inserting macros in a POI-generated . xls 
+is the approach I 've used for inserting macros in a POI-generated . xls 
+admittedly as an . xls 
+create the file with the macro ( admittedly as an . xls ) 
+load it into my app 
+populate with data 
+save as a newly-created 
+load it into my app , populate with data and save as a newly-created 
+create the file with the macro ( admittedly as an . xls ) and then load it into my app , populate with data and save as a newly-created . xls 
+worked fine 
+using POI 
+loading it up as a standard . xls using POI 
+amending it 
+then saving it 
+loading it up as a standard . xls using POI , amending it and then saving it 
+tried loading it up as a standard . xls using POI , amending it and then saving it 
+inserting macros in a POI-generated . xls 
+used for inserting macros in a POI-generated . xls 
+'ve used for inserting macros in a POI-generated . xls 
+is the approach I 've used for inserting macros in a POI-generated . xls 
+admittedly as an . xls 
+create the file with the macro ( admittedly as an . xls ) 
+load it into my app 
+populate with data 
+save as a newly-created 
+load it into my app , populate with data and save as a newly-created 
+create the file with the macro ( admittedly as an . xls ) and then load it into my app , populate with data and save as a newly-created . xls 
+worked fine 
+load an 
+can directly load an 
+act as the template 
+modify it 
+act as the template , and modify it 
+will act as the template , and modify it 
+preserving its structure 
+included 
+load an xls , preserving its structure ( macros included ) 
+modify it 
+can then modify it 
+= wb.getSheet ( `` Data '' ) 
+save it 
+helps 
+Hope this helps 
+use internal template as a resource 
+can also use internal template as a resource 

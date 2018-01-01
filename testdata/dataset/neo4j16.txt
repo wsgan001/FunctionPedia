@@ -1,0 +1,379 @@
+QUESTION:
+HTML:
+<p>Greetings,<br>&#xA;<strong>Is there any open source graph database available other than Neo4J??</strong>  </p>&#xA;&#xA;<p><strong>NOTE:</strong> <em>Why not Neo4J?</em><br>&#xA;Neo4J is opensource, but counts primitives (number of nodes,relationships &amp; properties). If you are using it for commercial use. And does not have any straight forward information of pricing on official website. so there can be potential vendor lock-in (Although I have just started my company, and don't have budget to spent money on software anyway.) so It is out of option.</p>&#xA;&#xA;<p>Regards,</p>&#xA;
+Comment:
+Just so it's clear, the premise of this question ("Why not Neo4j?") is no longer valid, as Neo4j community is now GPL, not AGPL, making it a good choice for startups/etc. $ becomes involved if you need support, monitoring, or high-availability.
+I'm not aware of any startups that would bet their entire business on using a database that didn't have high-availability or support.
+@Nuzzolilo, So stable business/companies should put their business on new kind of databases not startups? &#xA;I was experimenting, prototyping a product, Isn't that what startup does, initially? Have you used Neo4J in production? And how do you know that Neo4J don't have high availability?
+High availability has been around for quite a while in Neo4j by now: http://docs.neo4j.org/chunked/stable/ha.html
+Price for neo4J: http://www.neotechnology.com/price-list/&#xA;If you need professional things like High Availability or clustering, 24000€ per instance and year. Eah!!!
+
+ACCEPTED ANS:
+HTML:
+<p>As RobV said, if your graphs can be represented in just about any custom format such as <a href="http://www.w3.org/RDF/">RDF</a> or <a href="http://en.wikipedia.org/wiki/DOT%5Flanguage">DOT language</a>, you're in luck! Here's various options you have:</p>&#xA;&#xA;<ul>&#xA;<li>RDF: <a href="http://jena.sourceforge.net/">Jena</a> - Considered to be the de facto implementation of RDF for Java, however it has it's oddities such as heavy usage of Iterators.</li>&#xA;<li>RDF: <a href="http://protege.stanford.edu/">Protégé</a> - If you don't use Jena (and even if you would) but would like to use RDF, Protégé is the tool for you. It's basically a really well done ontology editor which makes handling the graph data a breeze. It also uses a plugin hierarchy similar to Eclipse and there's loads of plugins available so you can plugin stuff like <a href="http://www.w3.org/TR/owl-features/">OWL ontologies</a> easily.</li>&#xA;<li>DOT: <a href="http://www.graphviz.org/">GraphViz</a> - Another very popular tool, GraphViz can generate graphs from DOT language. Very powerful, a bit tricky to learn but also potentially all you need.</li>&#xA;</ul>&#xA;&#xA;<p>Of course if it fits your company's profile, you could develop your own and start selling it as a product.</p>&#xA;
+Comment:
+Thanks for info and suggestion of selling it as product,&#xA;By the way, Selling a software/technology to software guys is hard. :)&#xA;Better to start opensource project rather than selling .
++1 for DOT and GraphViz - wonderful stuff.
+I don't think RDF really counts as a custom format since it's a W3C standard!  Would you call HTML a custom format? ;-)
+@RobV: This answer is a year old, in current environment I'd venture to say that this answer is rather irrelevant since the NoSQL movement has sort of redefined the whole question. Of course the term "graph" is misleading in general here too since it can either be what most think as drawing or that mathematical theory that NoSQL is all about. :) Anyway, yes, I'd dare to say that HTML is a custom format. Not a very good one but still... :)
+
+ANS:
+HTML:
+<p>If your Graphs could be represented as RDF graphs then you could use Jena since that is entirely free and open source</p>&#xA;&#xA;<p><a href="http://jena.sourceforge.net" rel="nofollow">http://jena.sourceforge.net</a></p>&#xA;&#xA;<p>Whether that's in any way useful to you depends on why you need a Graph database and what type of Graphs you need to store in it.</p>&#xA;
+Comment:
+Actually, I am working on user relationship for social website (friends, friends of friends and recommendation like "you might know him" )
+Then you should take a look at both FOAF http://www.foaf-project.org/ and SIOC http://sioc-project.org if you aren't already aware of them - these are two popular RDF vocabularies, FOAF describes people and their relationships while SIOC is used to describe all kinds of online community content.  FOAF is already used on major websites like LiveJournal
+thanks for information buddy!
+HTML:
+<p>As RobV said, if your graphs can be represented in just about any custom format such as <a href="http://www.w3.org/RDF/">RDF</a> or <a href="http://en.wikipedia.org/wiki/DOT%5Flanguage">DOT language</a>, you're in luck! Here's various options you have:</p>&#xA;&#xA;<ul>&#xA;<li>RDF: <a href="http://jena.sourceforge.net/">Jena</a> - Considered to be the de facto implementation of RDF for Java, however it has it's oddities such as heavy usage of Iterators.</li>&#xA;<li>RDF: <a href="http://protege.stanford.edu/">Protégé</a> - If you don't use Jena (and even if you would) but would like to use RDF, Protégé is the tool for you. It's basically a really well done ontology editor which makes handling the graph data a breeze. It also uses a plugin hierarchy similar to Eclipse and there's loads of plugins available so you can plugin stuff like <a href="http://www.w3.org/TR/owl-features/">OWL ontologies</a> easily.</li>&#xA;<li>DOT: <a href="http://www.graphviz.org/">GraphViz</a> - Another very popular tool, GraphViz can generate graphs from DOT language. Very powerful, a bit tricky to learn but also potentially all you need.</li>&#xA;</ul>&#xA;&#xA;<p>Of course if it fits your company's profile, you could develop your own and start selling it as a product.</p>&#xA;
+Comment:
+Thanks for info and suggestion of selling it as product,&#xA;By the way, Selling a software/technology to software guys is hard. :)&#xA;Better to start opensource project rather than selling .
++1 for DOT and GraphViz - wonderful stuff.
+I don't think RDF really counts as a custom format since it's a W3C standard!  Would you call HTML a custom format? ;-)
+@RobV: This answer is a year old, in current environment I'd venture to say that this answer is rather irrelevant since the NoSQL movement has sort of redefined the whole question. Of course the term "graph" is misleading in general here too since it can either be what most think as drawing or that mathematical theory that NoSQL is all about. :) Anyway, yes, I'd dare to say that HTML is a custom format. Not a very good one but still... :)
+HTML:
+<p>Well,&#xA;Neo4j is Open Source under the GPLv3 for the Community Edition and AGPL for the Advanced and Enterprise editions.</p>&#xA;&#xA;<p>For more info, please look at <a href="http://neo4j.org/licensing-guide/" rel="nofollow">http://neo4j.org/licensing-guide/</a></p>&#xA;&#xA;<p>/peter neubauer, part of the Neo4j team.</p>&#xA;
+Comment:
+Hi Peter, Thanks for detailed response. &#xA;I have already created prototype apps with Neo4J. & I liked it, Thats why I am looking for alternative of Neo4J. :)&#xA;&#xA;The only hurdle I am facing is licensing. Because, It is possible that my service/product can get 1M nodes very fast (I am storing everything in Neo4J Db), and still my revenue may not be started. So, please send me pricelist for review. &#xA;&#xA;And I get scared when I have to contact Sales person, thats why I didnt tried, because Neo4J pricing contact says= "Sales person" :))
+By the way my email is nachiket[at]logicwind(dot)com
+so this dual license, say an open source builds on top of neo4j, and that project is under a more liberal(for commerce) license that allows companies to use it free of charge... how does neo4j's license affect those companies? even though they might not be aware of the fact that they're using neo4j indirectly
+Btw, the data restrictions don't apply anymore, the Neo commercial versions are now purely based on features, not on data, and the first instance is free even for commercial use. That should be even more startup - friendly, see http://neotechnology.com/price-list /peter neubauer
+@user83490 - Peter, I was just about to fix the answer regarding your comment, but realized that your are on the [Neo4j team](http://neo4j.org/community/team/) as well - couldn't you just motivate your colleague to fix his post? In this regard I'd also suggest updating your user name(s), which will make disclosing your affiliation with this great open source project much easier and trustworthy in fact (see [faq](http://stackoverflow.com/faq) section _May I promote products or websites I am affiliated with here_?); not to speak of improving communication UX both ways on the side ;)
+Sorry for being late - what post are you referring to? Would love to fix.
+HTML:
+<p>Wikipedia lists some other alternatives: <a href="http://en.wikipedia.org/wiki/Graph_database">http://en.wikipedia.org/wiki/Graph_database</a></p>&#xA;
+Comment:
+HTML:
+<p><a href="http://code.google.com/p/orient/">OrientDB</a> appears to support graph storage in much the same was as Neo4j</p>&#xA;
+Comment:
+OrientDB (http://www.orientechnologies.com) handles graphs natively, it's really fast and supports Blueprints (https://github.com/tinkerpop/blueprints/wiki) as Neo4J, that is something close to a standard for GraphDB, so you can run all the Tinkerpop (http://www.tinkerpop.com) stack: Gremlin language (https://github.com/tinkerpop/gremlin/wiki), Rexster (https://github.com/tinkerpop/rexster/wiki) to access via HTTP/RESTful calls, etc. But OrientDB is commercial friendly since it uses Apache 2 license: free for any usage.
+From what I read, if you want HA with OrientDB, you need to implement it with Hazelcast, which also has different licensing and support models.
+HTML:
+<p>I suggest you to use <a href="https://github.com/tinkerpop/blueprints/wiki/">Blueprints</a> from tinkerpop, they allow you to use a graphDB of your choice (also from Neo4j and OrientDB). And they also provide an extension to use the db as rdf repository (using Sesame Sail).</p>&#xA;
+Comment:
+
+Phrase:
+is opensource 
+counts primitives ( number of nodes , relationships & properties ) 
+is opensource , but counts primitives ( number of nodes , relationships & properties ) 
+using it for commercial use 
+are using it for commercial use 
+have any straight forward information of pricing on official website 
+does not have any straight forward information of pricing on official website 
+started my company 
+have just started my company 
+have budget to spent money on software anyway 
+do n't have budget to spent money on software anyway 
+have just started my company , and do n't have budget to spent money on software anyway 
+is out of option 
+be potential vendor lock-in ( Although I have just started my company , and do n't have budget to spent money on software anyway . ) so It is out of option 
+can be potential vendor lock-in ( Although I have just started my company , and do n't have budget to spent money on software anyway . ) so It is out of option 
+Why not Neo4j 
+is no longer valid 
+making it a good choice for startups/etc 
+is now GPL , not AGPL , making it a good choice for startups/etc 
+'s clear , the premise of this question ( `` Why not Neo4j ? '' ) is no longer valid , as Neo4j community is now GPL , not AGPL , making it a good choice for startups/etc 
+need support , monitoring , or high-availability 
+involved if you need support , monitoring , or high-availability 
+have high-availability or support 
+did n't have high-availability or support 
+using a database that did n't have high-availability or support 
+bet their entire business on using a database that did n't have high-availability or support 
+would bet their entire business on using a database that did n't have high-availability or support 
+'m not aware of any startups that would bet their entire business on using a database that did n't have high-availability or support 
+put their business on new kind of databases not startups 
+should put their business on new kind of databases not startups 
+experimenting 
+was experimenting 
+does 
+Is n't that what startup does , initially 
+used Neo4J in production 
+Have you used Neo4J in production 
+have high availability 
+do n't have high availability 
+know that Neo4J do n't have high availability 
+been around for quite a while in Neo4j by now : http://docs.neo4j.org/chunked/stable/ha.html 
+has been around for quite a while in Neo4j by now : http://docs.neo4j.org/chunked/stable/ha.html 
+need professional things 
+said 
+represented in just about any custom format such as RDF or DOT language 
+be represented in just about any custom format such as RDF or DOT language 
+can be represented in just about any custom format such as RDF or DOT language 
+'re in luck 
+'s 
+have 
+be the de facto implementation of RDF for Java 
+to be the de facto implementation of RDF for Java 
+Considered to be the de facto implementation of RDF for Java 
+has it 's oddities such as heavy usage of Iterators 
+would 
+use Jena ( and even if you would ) 
+do n't use Jena ( and even if you would ) 
+use RDF 
+to use RDF 
+like to use RDF 
+would like to use RDF 
+do n't use Jena ( and even if you would ) but would like to use RDF 
+is the tool for you 
+Prot&eacute;g&eacute; - If you do n't use Jena ( and even if you would ) but would like to use RDF , Prot&eacute;g&eacute; is the tool for you 
+handling the graph data a breeze 
+makes handling the graph data a breeze 
+'s basically a really well done ontology editor which makes handling the graph data a breeze 
+uses a plugin hierarchy similar to Eclipse 
+plugin stuff like OWL ontologies easily 
+can plugin stuff like OWL ontologies easily 
+'s loads of plugins available so you can plugin stuff like OWL ontologies easily 
+generate graphs from DOT language 
+can generate graphs from DOT language 
+learn 
+potentially all you 
+learn but also potentially all you 
+to learn but also potentially all you 
+need 
+fits your company 's profile 
+develop your own 
+selling it as a product 
+start selling it as a product 
+develop your own and start selling it as a product 
+could develop your own and start selling it as a product 
+selling it as product , & #xA 
+Selling a software/technology to software guys 
+is hard 
+start opensource project rather than selling 
+to start opensource project rather than selling 
+'s a W3C standard 
+counts as a custom format since it 's a W3C standard 
+think RDF really counts as a custom format since it 's a W3C standard 
+do n't think RDF really counts as a custom format since it 's a W3C standard 
+call HTML 
+Would you call HTML 
+redefined the whole question 
+has sort of redefined the whole question 
+is rather irrelevant since the NoSQL movement has sort of redefined the whole question 
+say that this answer is rather irrelevant since the NoSQL movement has sort of redefined the whole question 
+to say that this answer is rather irrelevant since the NoSQL movement has sort of redefined the whole question 
+venture to say that this answer is rather irrelevant since the NoSQL movement has sort of redefined the whole question 
+'d venture to say that this answer is rather irrelevant since the NoSQL movement has sort of redefined the whole question 
+is a year old , in current environment I 'd venture to say that this answer is rather irrelevant since the NoSQL movement has sort of redefined the whole question 
+is all about 
+think as drawing or that mathematical theory that NoSQL is all about 
+be what most think as drawing or that mathematical theory that NoSQL is all about 
+can either be what most think as drawing or that mathematical theory that NoSQL is all about 
+is misleading in general here too since it can either be what most think as drawing or that mathematical theory that NoSQL is all about 
+is a custom format 
+say that HTML is a custom format 
+to say that HTML is a custom format 
+dare to say that HTML is a custom format 
+'d dare to say that HTML is a custom format 
+:) Anyway , yes , I 'd dare to say that HTML is a custom format 
+represented as RDF graphs 
+be represented as RDF graphs 
+could be represented as RDF graphs 
+use Jena since that 
+could use Jena since that 
+is entirely free and open 
+'s in any way useful to you 
+need a Graph database 
+store in it 
+to store in it 
+need to store in it 
+depends on why you need a Graph database and what type of Graphs you need to store in it 
+know him 
+might know him 
+working on user relationship for social website ( friends , friends of friends and recommendation like `` you might know him '' ) 
+am working on user relationship for social website ( friends , friends of friends and recommendation like `` you might know him '' ) 
+are n't already aware of them 
+take a look at both FOAF http://www.foaf-project.org/ and SIOC http://sioc-project.org if you are n't already aware of them 
+should take a look at both FOAF http://www.foaf-project.org/ and SIOC http://sioc-project.org if you are n't already aware of them 
+are two popular RDF vocabularies 
+describe all kinds of online community content 
+to describe all kinds of online community content 
+used to describe all kinds of online community content 
+is used to describe all kinds of online community content 
+describes people and their relationships while SIOC is used to describe all kinds of online community content 
+used on major websites like LiveJournal 
+is already used on major websites like LiveJournal 
+said 
+represented in just about any custom format such as RDF or DOT language 
+be represented in just about any custom format such as RDF or DOT language 
+can be represented in just about any custom format such as RDF or DOT language 
+'re in luck 
+'s 
+have 
+be the de facto implementation of RDF for Java 
+to be the de facto implementation of RDF for Java 
+Considered to be the de facto implementation of RDF for Java 
+has it 's oddities such as heavy usage of Iterators 
+would 
+use Jena ( and even if you would ) 
+do n't use Jena ( and even if you would ) 
+use RDF 
+to use RDF 
+like to use RDF 
+would like to use RDF 
+do n't use Jena ( and even if you would ) but would like to use RDF 
+is the tool for you 
+Prot&eacute;g&eacute; - If you do n't use Jena ( and even if you would ) but would like to use RDF , Prot&eacute;g&eacute; is the tool for you 
+handling the graph data a breeze 
+makes handling the graph data a breeze 
+'s basically a really well done ontology editor which makes handling the graph data a breeze 
+uses a plugin hierarchy similar to Eclipse 
+plugin stuff like OWL ontologies easily 
+can plugin stuff like OWL ontologies easily 
+'s loads of plugins available so you can plugin stuff like OWL ontologies easily 
+generate graphs from DOT language 
+can generate graphs from DOT language 
+learn 
+potentially all you 
+learn but also potentially all you 
+to learn but also potentially all you 
+need 
+fits your company 's profile 
+develop your own 
+selling it as a product 
+start selling it as a product 
+develop your own and start selling it as a product 
+could develop your own and start selling it as a product 
+selling it as product , & #xA 
+Selling a software/technology to software guys 
+is hard 
+start opensource project rather than selling 
+to start opensource project rather than selling 
+'s a W3C standard 
+counts as a custom format since it 's a W3C standard 
+think RDF really counts as a custom format since it 's a W3C standard 
+do n't think RDF really counts as a custom format since it 's a W3C standard 
+call HTML 
+Would you call HTML 
+redefined the whole question 
+has sort of redefined the whole question 
+is rather irrelevant since the NoSQL movement has sort of redefined the whole question 
+say that this answer is rather irrelevant since the NoSQL movement has sort of redefined the whole question 
+to say that this answer is rather irrelevant since the NoSQL movement has sort of redefined the whole question 
+venture to say that this answer is rather irrelevant since the NoSQL movement has sort of redefined the whole question 
+'d venture to say that this answer is rather irrelevant since the NoSQL movement has sort of redefined the whole question 
+is a year old , in current environment I 'd venture to say that this answer is rather irrelevant since the NoSQL movement has sort of redefined the whole question 
+is all about 
+think as drawing or that mathematical theory that NoSQL is all about 
+be what most think as drawing or that mathematical theory that NoSQL is all about 
+can either be what most think as drawing or that mathematical theory that NoSQL is all about 
+is misleading in general here too since it can either be what most think as drawing or that mathematical theory that NoSQL is all about 
+is a custom format 
+say that HTML is a custom format 
+to say that HTML is a custom format 
+dare to say that HTML is a custom format 
+'d dare to say that HTML is a custom format 
+:) Anyway , yes , I 'd dare to say that HTML is a custom format 
+Open Source under the GPLv3 for the Community Edition and AGPL for the Advanced and Enterprise editions 
+is Open Source under the GPLv3 for the Community Edition and AGPL for the Advanced and Enterprise editions 
+please look at http://neo4j.org/licensing-guide/ 
+Hi Peter , Thanks for detailed response 
+#xA 
+created prototype apps with Neo4J 
+have already created prototype apps with Neo4J 
+liked it 
+looking for alternative of Neo4J 
+am looking for alternative of Neo4J 
+Thats why I am looking for alternative of Neo4J 
+facing 
+am facing 
+licensing 
+is licensing 
+storing everything in Neo4J Db 
+am storing everything in Neo4J Db 
+get 1M nodes very fast ( I am storing everything in Neo4J Db ) 
+can get 1M nodes very fast ( I am storing everything in Neo4J Db ) 
+started 
+be started 
+may not be started 
+is possible that my service/product can get 1M nodes very fast ( I am storing everything in Neo4J Db ) , and still my revenue may not be started 
+send me 
+please send me 
+#xA ; & #xA 
+= `` Sales person '' :) ) 
+says = `` Sales person '' :) ) 
+didnt tried , because Neo4J pricing contact says = `` Sales person '' :) ) 
+contact Sales person , thats why I didnt tried , because Neo4J pricing contact says = `` Sales person '' :) ) 
+to contact Sales person , thats why I didnt tried , because Neo4J pricing contact says = `` Sales person '' :) ) 
+have to contact Sales person , thats why I didnt tried , because Neo4J pricing contact says = `` Sales person '' :) ) 
+get scared when I have to contact Sales person , thats why I didnt tried , because Neo4J pricing contact says = `` Sales person '' :) ) 
+is nachiket -LSB- at -RSB- logicwind ( dot ) com 
+builds on top of neo4j 
+free of charge . 
+use it free of charge . 
+to use it free of charge . 
+allows companies to use it free of charge . 
+is under a more liberal ( for commerce ) license that allows companies to use it free of charge . 
+affect those companies 
+using neo4j indirectly 
+'re using neo4j indirectly 
+be aware of the fact that they 're using neo4j indirectly 
+might not be aware of the fact that they 're using neo4j indirectly 
+apply anymore 
+do n't apply anymore 
+are now purely based on features , not on data 
+is free even for commercial use 
+be even more startup - friendly 
+should be even more startup - friendly 
+see http://neotechnology.com/price-list 
+fix the answer regarding your comment 
+are on the -LSB- Neo4j team -RSB- ( http://neo4j.org/community/team/ ) as well 
+realized that your are on the -LSB- Neo4j team -RSB- ( http://neo4j.org/community/team/ ) as well 
+fix the answer regarding your comment , but realized that your are on the -LSB- Neo4j team -RSB- ( http://neo4j.org/community/team/ ) as well 
+to fix the answer regarding your comment , but realized that your are on the -LSB- Neo4j team -RSB- ( http://neo4j.org/community/team/ ) as well 
+about to fix the answer regarding your comment , but realized that your are on the -LSB- Neo4j team -RSB- ( http://neo4j.org/community/team/ ) as well 
+was just about to fix the answer regarding your comment , but realized that your are on the -LSB- Neo4j team -RSB- ( http://neo4j.org/community/team/ ) as well 
+fix his post 
+to fix his post 
+just motivate your colleague to fix his post 
+could n't you just motivate your colleague to fix his post 
+disclosing your affiliation with this great open source project much easier and trustworthy in fact 
+make disclosing your affiliation with this great open source project much easier and trustworthy in fact 
+will make disclosing your affiliation with this great open source project much easier and trustworthy in fact 
+affiliated with here _ 
+am affiliated with here _ 
+promote products or websites I am affiliated with here _ 
+see -LSB- faq -RSB- ( http://stackoverflow.com/faq ) section _ May I promote products or websites I am affiliated with here _ 
+updating your user name ( s ) , which will make disclosing your affiliation with this great open source project much easier and trustworthy in fact ( see -LSB- faq -RSB- ( http://stackoverflow.com/faq ) section _ May I promote products or websites I am affiliated with here _ ? ) 
+suggest updating your user name ( s ) , which will make disclosing your affiliation with this great open source project much easier and trustworthy in fact ( see -LSB- faq -RSB- ( http://stackoverflow.com/faq ) section _ May I promote products or websites I am affiliated with here _ ? ) 
+'d also suggest updating your user name ( s ) , which will make disclosing your affiliation with this great open source project much easier and trustworthy in fact ( see -LSB- faq -RSB- ( http://stackoverflow.com/faq ) section _ May I promote products or websites I am affiliated with here _ ? ) 
+improving communication UX both ways on the side ; ) 
+speak of improving communication UX both ways on the side ; ) 
+to speak of improving communication UX both ways on the side ; ) 
+being late 
+referring to 
+are you referring to 
+fix 
+to fix 
+love to fix 
+lists some other alternatives : http://en.wikipedia.org/wiki/Graph_database 
+was as Neo4j 
+support graph storage in much the same was as Neo4j 
+to support graph storage in much the same was as Neo4j 
+appears to support graph storage in much the same was as Neo4j 
+'s really fast 
+is something close to a standard for GraphDB 
+supports Blueprints ( https://github.com/tinkerpop/blueprints/wiki ) as Neo4J , that is something close to a standard for GraphDB 
+'s really fast and supports Blueprints ( https://github.com/tinkerpop/blueprints/wiki ) as Neo4J , that is something close to a standard for GraphDB 
+stack 
+run all the Tinkerpop ( http://www.tinkerpop.com ) stack 
+can run all the Tinkerpop ( http://www.tinkerpop.com ) stack 
+( http://www.orientechnologies.com ) handles graphs natively , it 's really fast and supports Blueprints ( https://github.com/tinkerpop/blueprints/wiki ) as Neo4J , that is something close to a standard for GraphDB , so you can run all the Tinkerpop ( http://www.tinkerpop.com ) stack : 
+uses Apache 2 license : free for any usage 
+is commercial friendly since it uses Apache 2 license : free for any usage 
+read 
+want HA with OrientDB 
+has different licensing and support models 
+implement it with Hazelcast , which also has different licensing and support models 
+to implement it with Hazelcast , which also has different licensing and support models 
+need to implement it with Hazelcast , which also has different licensing and support models 
+use a graphDB of your choice ( also from Neo4j and OrientDB ) 
+to use a graphDB of your choice ( also from Neo4j and OrientDB ) 
+allow you to use a graphDB of your choice ( also from Neo4j and OrientDB ) 
+use Blueprints from tinkerpop , they allow you to use a graphDB of your choice ( also from Neo4j and OrientDB ) 
+to use Blueprints from tinkerpop , they allow you to use a graphDB of your choice ( also from Neo4j and OrientDB ) 
+suggest you to use Blueprints from tinkerpop , they allow you to use a graphDB of your choice ( also from Neo4j and OrientDB ) 
+use the db as rdf repository 
+to use the db as rdf repository 
+using Sesame Sail 
+provide an extension to use the db as rdf repository ( using Sesame Sail ) 

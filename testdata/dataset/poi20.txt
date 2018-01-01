@@ -1,0 +1,183 @@
+QUESTION:
+HTML:
+<p>I'm currently using POI to attempt to extract text out of a batch of Word documents and I need to be able to determine what entries a document contains.  I've been able to get as far as pulling the document root and pulling the first entry but I want to be able to view all entries.  The <code>getEntries()</code> method seems to provide this functionality but I'm at a loss as to how to use <code>getViewableIterator()</code> to pull them out.  </p>&#xA;&#xA;<p>Below is what I have code-wise:</p>&#xA;&#xA;<pre><code>&lt;cfset myFile = createObject("java", "java.io.FileInputStream").init(fileInputPath)&gt;&#xA;&lt;cfset fileSystem = CreateObject( "java", "org.apache.poi.poifs.filesystem.POIFSFileSystem" ).Init(myFile)&gt;&#xA;&#xA;&lt;cfloop from="1" to="#fileSystem.getRoot().getEntryCount()#" index="i"&gt;&#xA;     &lt;cfset viewableIterator = fileSystem.getRoot().getEntries().next().getViewableIterator()&gt;&#xA;     &lt;cfset nextEntry = fileSystem.getRoot().getEntries().next()&gt;&#xA;     &lt;cfif viewableIterator.hasNext()&gt;&#xA;         &lt;cfdump var="#nextEntry.getShortDescription()#"&gt;&#xA;         &lt;cfset viewableIterator.remove()&gt;&#xA;     &lt;/cfif&gt;&#xA;&lt;/cfloop&gt;&#xA;</code></pre>&#xA;&#xA;<p>On the first loop, I'm able to get the first entry just fine.  However, I get an <code>java.lang.IllegalStateException</code> error as soon as <code>remove()</code> is executed.  Obviously I'm not using the <code>remove()</code> method correctly but I haven't been able to find any examples of how this should be properly used.  Any help would be greatly appreciated.</p>&#xA;&#xA;<p>Thanks,&#xA;--Anne</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>I don't really understand your XML tags (usually I use Java in its normal form, with curly braces and stuff), but generally a Java iterator works like the following:</p>&#xA;&#xA;<pre><code>while(iterator.hasNext()) {&#xA;  x = iterator.next(); // get element&#xA;  // do with x what you want&#xA;  if (/*you want to remove x from the underlying list*/)&#xA;      iterator.remove();&#xA;}&#xA;</code></pre>&#xA;&#xA;<p>In practice, remove is only used very rarely, in cases you want to go through a collection and remove everything you do not need any longer in it. remove can fail if the collecion is readonly or if you are trying to iterate over it twice with two different iterators at the same time. Just stick with hasNext and next.</p>&#xA;
+Comment:
+Ok, to make sure I understand this correctly, on each call of x within the loop, the iterator should automatically move to the next element in the hash?&#xA;&#xA;(By the way, the XML you're seeing is not actually XML, it's ColdFusion markup)
+Yes, the iterator will move to the next element whenever you call next();
+off topic question: Can I see who downvoted this answer although it was accepted so that I can ask him why?
+
+ANS:
+HTML:
+<p>I don't really understand your XML tags (usually I use Java in its normal form, with curly braces and stuff), but generally a Java iterator works like the following:</p>&#xA;&#xA;<pre><code>while(iterator.hasNext()) {&#xA;  x = iterator.next(); // get element&#xA;  // do with x what you want&#xA;  if (/*you want to remove x from the underlying list*/)&#xA;      iterator.remove();&#xA;}&#xA;</code></pre>&#xA;&#xA;<p>In practice, remove is only used very rarely, in cases you want to go through a collection and remove everything you do not need any longer in it. remove can fail if the collecion is readonly or if you are trying to iterate over it twice with two different iterators at the same time. Just stick with hasNext and next.</p>&#xA;
+Comment:
+Ok, to make sure I understand this correctly, on each call of x within the loop, the iterator should automatically move to the next element in the hash?&#xA;&#xA;(By the way, the XML you're seeing is not actually XML, it's ColdFusion markup)
+Yes, the iterator will move to the next element whenever you call next();
+off topic question: Can I see who downvoted this answer although it was accepted so that I can ask him why?
+HTML:
+<p>Ben Nadel of Kinky Solutions fame wrote a component that might handle your situation. Give a look see and report back if his project helped you.</p>&#xA;&#xA;<p><a href="http://www.bennadel.com/projects/poi-utility.htm" rel="nofollow">POI Utility ColdFusion Component</a></p>&#xA;
+Comment:
+I briefly looked at Ben Nadel's component but had largely written it off because it was written for Excel files whereas my issue was specific to Word.  Nevertheless, I was eventually able to figure out a workaround on my own.
+
+Phrase:
+extract text out of a batch of Word documents 
+to extract text out of a batch of Word documents 
+attempt to extract text out of a batch of Word documents 
+to attempt to extract text out of a batch of Word documents 
+using POI to attempt to extract text out of a batch of Word documents 
+'m currently using POI to attempt to extract text out of a batch of Word documents 
+contains 
+determine what entries a document contains 
+to determine what entries a document contains 
+be able to determine what entries a document contains 
+to be able to determine what entries a document contains 
+need to be able to determine what entries a document contains 
+pulling the document root 
+pulling the first entry 
+pulling the document root and pulling the first entry 
+get as far as pulling the document root and pulling the first entry 
+to get as far as pulling the document root and pulling the first entry 
+view all entries 
+to view all entries 
+be able to view all entries 
+to be able to view all entries 
+want to be able to view all entries 
+been able to get as far as pulling the document root and pulling the first entry but I want to be able to view all entries 
+'ve been able to get as far as pulling the document root and pulling the first entry but I want to be able to view all entries 
+pull them out 
+to pull them out 
+use CODE1 to pull them out 
+to use CODE1 to pull them out 
+'m at a loss as to how to use CODE1 to pull them out 
+provide this functionality but I 'm at a loss as to how to use CODE1 to pull them out 
+to provide this functionality but I 'm at a loss as to how to use CODE1 to pull them out 
+seems to provide this functionality but I 'm at a loss as to how to use CODE1 to pull them out 
+have code-wise 
+is what I have code-wise 
+get the first entry just fine 
+to get the first entry just fine 
+'m able to get the first entry just fine 
+executed 
+is executed 
+get an CODE0 error as soon as CODE1 is executed 
+using the CODE2 method correctly 
+'m not using the CODE2 method correctly 
+properly used 
+be properly used 
+should be properly used 
+find any examples of how this should be properly used 
+to find any examples of how this should be properly used 
+been able to find any examples of how this should be properly used 
+have n't been able to find any examples of how this should be properly used 
+Obviously I 'm not using the CODE2 method correctly but I have n't been able to find any examples of how this should be properly used 
+greatly appreciated 
+be greatly appreciated 
+would be greatly appreciated 
+use Java in its normal form , with curly braces and stuff 
+understand your XML tags ( usually I use Java in its normal form , with curly braces and stuff ) 
+do n't really understand your XML tags ( usually I use Java in its normal form , with curly braces and stuff ) 
+generally 
+do n't really understand your XML tags ( usually I use Java in its normal form , with curly braces and stuff ) , but generally 
+works like the following 
+go through a collection 
+need any longer in it 
+do not need any longer in it 
+remove everything you do not need any longer in it 
+go through a collection and remove everything you do not need any longer in it 
+to go through a collection and remove everything you do not need any longer in it 
+want to go through a collection and remove everything you do not need any longer in it 
+used very rarely , in cases you want to go through a collection and remove everything you do not need any longer in it 
+is only used very rarely , in cases you want to go through a collection and remove everything you do not need any longer in it 
+remove is only used very rarely , in cases you want to go through a collection and remove everything you do not need any longer in it 
+is readonly 
+fail if the collecion is readonly 
+can fail if the collecion is readonly 
+iterate over it twice with two different iterators at the same time 
+to iterate over it twice with two different iterators at the same time 
+trying to iterate over it twice with two different iterators at the same time 
+are trying to iterate over it twice with two different iterators at the same time 
+remove can fail if the collecion is readonly or if you are trying to iterate over it twice with two different iterators at the same time 
+stick with hasNext and next 
+understand this correctly 
+make sure I understand this correctly 
+to make sure I understand this correctly 
+move to the next element in the hash 
+should automatically move to the next element in the hash 
+is not actually XML , it 's ColdFusion markup 
+seeing is not actually XML , it 's ColdFusion markup 
+'re seeing is not actually XML , it 's ColdFusion markup 
+Ok , to make sure I understand this correctly , on each call of x within the loop , the iterator should automatically move to the next element in the hash ? & #xA ; & #xA ; ( By the way , the XML you 're seeing is not actually XML , it 's ColdFusion markup ) 
+call next ( 
+move to the next element whenever you call next ( ) 
+will move to the next element whenever you call next ( ) 
+ask him why ? 
+can ask him why ? 
+accepted so that I can ask him why ? 
+was accepted so that I can ask him why ? 
+downvoted this answer although it was accepted so that I can ask him why ? 
+see who downvoted this answer although it was accepted so that I can ask him why ? 
+use Java in its normal form , with curly braces and stuff 
+understand your XML tags ( usually I use Java in its normal form , with curly braces and stuff ) 
+do n't really understand your XML tags ( usually I use Java in its normal form , with curly braces and stuff ) 
+generally 
+do n't really understand your XML tags ( usually I use Java in its normal form , with curly braces and stuff ) , but generally 
+works like the following 
+go through a collection 
+need any longer in it 
+do not need any longer in it 
+remove everything you do not need any longer in it 
+go through a collection and remove everything you do not need any longer in it 
+to go through a collection and remove everything you do not need any longer in it 
+want to go through a collection and remove everything you do not need any longer in it 
+used very rarely , in cases you want to go through a collection and remove everything you do not need any longer in it 
+is only used very rarely , in cases you want to go through a collection and remove everything you do not need any longer in it 
+remove is only used very rarely , in cases you want to go through a collection and remove everything you do not need any longer in it 
+is readonly 
+fail if the collecion is readonly 
+can fail if the collecion is readonly 
+iterate over it twice with two different iterators at the same time 
+to iterate over it twice with two different iterators at the same time 
+trying to iterate over it twice with two different iterators at the same time 
+are trying to iterate over it twice with two different iterators at the same time 
+remove can fail if the collecion is readonly or if you are trying to iterate over it twice with two different iterators at the same time 
+stick with hasNext and next 
+understand this correctly 
+make sure I understand this correctly 
+to make sure I understand this correctly 
+move to the next element in the hash 
+should automatically move to the next element in the hash 
+is not actually XML , it 's ColdFusion markup 
+seeing is not actually XML , it 's ColdFusion markup 
+'re seeing is not actually XML , it 's ColdFusion markup 
+Ok , to make sure I understand this correctly , on each call of x within the loop , the iterator should automatically move to the next element in the hash ? & #xA ; & #xA ; ( By the way , the XML you 're seeing is not actually XML , it 's ColdFusion markup ) 
+call next ( 
+move to the next element whenever you call next ( ) 
+will move to the next element whenever you call next ( ) 
+ask him why ? 
+can ask him why ? 
+accepted so that I can ask him why ? 
+was accepted so that I can ask him why ? 
+downvoted this answer although it was accepted so that I can ask him why ? 
+see who downvoted this answer although it was accepted so that I can ask him why ? 
+handle your situation 
+might handle your situation 
+wrote a component that might handle your situation 
+see 
+helped you 
+report back if his project helped you 
+see and report back if his project helped you 
+Give a look see and report back if his project helped you 
+briefly looked at Ben Nadel 's component 
+was specific to Word 
+written for Excel files whereas my issue was specific to Word 
+was written for Excel files whereas my issue was specific to Word 
+written it off because it was written for Excel files whereas my issue was specific to Word 
+had largely written it off because it was written for Excel files whereas my issue was specific to Word 
+briefly looked at Ben Nadel 's component but had largely written it off because it was written for Excel files whereas my issue was specific to Word 
+figure out a workaround on my own 
+to figure out a workaround on my own 
+was eventually able to figure out a workaround on my own 

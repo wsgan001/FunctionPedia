@@ -1,0 +1,114 @@
+QUESTION:
+HTML:
+<p>Is there a way to Display a HSSFWorkbook Object in a JSP page without having an output file in the server side?&#xA;In the code below I am providing the template file and the beans required for <strong>net.sf.jxls.transformer.XLSTransformer.transformXLS(InputStream is, Map beanParams)</strong> to return me a HSSFWorkbook object. I now need a way to use this object in a JSP without having to store the output file in the server side using OutputStream.</p>&#xA;&#xA;<pre><code>InputStream is = new BufferedInputStream(new FileInputStream(templateFileName));&#xA;HSSFWorkbook hm = transformer.transformXLS(is, beans);&#xA;req.getSession().setAttribute("excelWorkBook",hm);&#xA;</code></pre>&#xA;
+Comment:
+display it how - output an Excel file, or display it as HTML within the page?
+Yes Matt, i must show it as an Excel file but I must not store the Excel file any where in the server side,I must directly deliver it to the client.
+
+ACCEPTED ANS:
+HTML:
+<p>Looks simple, write the HSSFWorkbook using the write method on your instance;</p>&#xA;&#xA;<pre><code>HSSFWorkbook#write(OutputStream)&#xA;</code></pre>&#xA;&#xA;<p>where the output stream is the;</p>&#xA;&#xA;<pre><code>response.getOutputStream()&#xA;</code></pre>&#xA;&#xA;<p>Youll probably want to do things like set the ContentType of the reponse as well as maybe some content dispostion attributes.</p>&#xA;
+Comment:
+Hi Simon622, I used this step before but it threw me errors. My point is that I am exporting my HSSFWorkbook Object to the JSP page and I need to show the output of that object as an Excel spreadsheet without storing the resultant Excel file after HSSFWorkbook#write(OutputStream)&#xA;it at the server side.
+Youll need to paste the error you are receiving when attempting to write the spreadsheet to the response, if we're to be able to help you further.
+
+ANS:
+HTML:
+<p>Looks simple, write the HSSFWorkbook using the write method on your instance;</p>&#xA;&#xA;<pre><code>HSSFWorkbook#write(OutputStream)&#xA;</code></pre>&#xA;&#xA;<p>where the output stream is the;</p>&#xA;&#xA;<pre><code>response.getOutputStream()&#xA;</code></pre>&#xA;&#xA;<p>Youll probably want to do things like set the ContentType of the reponse as well as maybe some content dispostion attributes.</p>&#xA;
+Comment:
+Hi Simon622, I used this step before but it threw me errors. My point is that I am exporting my HSSFWorkbook Object to the JSP page and I need to show the output of that object as an Excel spreadsheet without storing the resultant Excel file after HSSFWorkbook#write(OutputStream)&#xA;it at the server side.
+Youll need to paste the error you are receiving when attempting to write the spreadsheet to the response, if we're to be able to help you further.
+
+Phrase:
+Is there 
+file in the server side 
+having an output file in the server side 
+Display a HSSFWorkbook Object in a JSP page without having an output file in the server side 
+to Display a HSSFWorkbook Object in a JSP page without having an output file in the server side 
+required for net.sf.jxls.transformer.XLSTransformer.transformXLS 
+beanParams 
+is , Map beanParams 
+return me 
+to return me 
+providing the template file and the beans required for net.sf.jxls.transformer.XLSTransformer.transformXLS ( InputStream is , Map beanParams ) to return me 
+am providing the template file and the beans required for net.sf.jxls.transformer.XLSTransformer.transformXLS ( InputStream is , Map beanParams ) to return me 
+using OutputStream 
+store the output file in the server side using OutputStream 
+to store the output file in the server side using OutputStream 
+having to store the output file in the server side using OutputStream 
+use this object in a JSP without having to store the output file in the server side using OutputStream 
+to use this object in a JSP without having to store the output file in the server side using OutputStream 
+need a way to use this object in a JSP without having to store the output file in the server side using OutputStream 
+display it how 
+file 
+display it as HTML within the page 
+file , or display it as HTML within the page 
+show it as an Excel file 
+must show it as an Excel file 
+deliver it to the client 
+must directly deliver it to the client 
+file any where in the server side , I must directly deliver it to the client 
+store the Excel file any where in the server side , I must directly deliver it to the client 
+must not store the Excel file any where in the server side , I must directly deliver it to the client 
+using the write method on your instance 
+write the HSSFWorkbook using the write method on your instance 
+is the 
+attributes 
+set the ContentType of the reponse as well as maybe some content dispostion attributes 
+do things like set the ContentType of the reponse as well as maybe some content dispostion attributes 
+to do things like set the ContentType of the reponse as well as maybe some content dispostion attributes 
+want to do things like set the ContentType of the reponse as well as maybe some content dispostion attributes 
+Hi Simon622 
+threw me errors 
+used this step before but it threw me errors 
+exporting my HSSFWorkbook Object to the JSP page 
+am exporting my HSSFWorkbook Object to the JSP page 
+is that I am exporting my HSSFWorkbook Object to the JSP page 
+storing the resultant Excel file after HSSFWorkbook #write ( OutputStream ) & #xA ; it at the server side 
+show the output of that object as an Excel spreadsheet without storing the resultant Excel file after HSSFWorkbook #write ( OutputStream ) & #xA ; it at the server side 
+to show the output of that object as an Excel spreadsheet without storing the resultant Excel file after HSSFWorkbook #write ( OutputStream ) & #xA ; it at the server side 
+need to show the output of that object as an Excel spreadsheet without storing the resultant Excel file after HSSFWorkbook #write ( OutputStream ) & #xA ; it at the server side 
+help you further 
+to help you further 
+be able to help you further 
+to be able to help you further 
+'re to be able to help you further 
+write the spreadsheet to the response , if we 're to be able to help you further 
+to write the spreadsheet to the response , if we 're to be able to help you further 
+attempting to write the spreadsheet to the response , if we 're to be able to help you further 
+receiving when attempting to write the spreadsheet to the response , if we 're to be able to help you further 
+are receiving when attempting to write the spreadsheet to the response , if we 're to be able to help you further 
+paste the error you are receiving when attempting to write the spreadsheet to the response , if we 're to be able to help you further 
+to paste the error you are receiving when attempting to write the spreadsheet to the response , if we 're to be able to help you further 
+need to paste the error you are receiving when attempting to write the spreadsheet to the response , if we 're to be able to help you further 
+using the write method on your instance 
+write the HSSFWorkbook using the write method on your instance 
+is the 
+attributes 
+set the ContentType of the reponse as well as maybe some content dispostion attributes 
+do things like set the ContentType of the reponse as well as maybe some content dispostion attributes 
+to do things like set the ContentType of the reponse as well as maybe some content dispostion attributes 
+want to do things like set the ContentType of the reponse as well as maybe some content dispostion attributes 
+Hi Simon622 
+threw me errors 
+used this step before but it threw me errors 
+exporting my HSSFWorkbook Object to the JSP page 
+am exporting my HSSFWorkbook Object to the JSP page 
+is that I am exporting my HSSFWorkbook Object to the JSP page 
+storing the resultant Excel file after HSSFWorkbook #write ( OutputStream ) & #xA ; it at the server side 
+show the output of that object as an Excel spreadsheet without storing the resultant Excel file after HSSFWorkbook #write ( OutputStream ) & #xA ; it at the server side 
+to show the output of that object as an Excel spreadsheet without storing the resultant Excel file after HSSFWorkbook #write ( OutputStream ) & #xA ; it at the server side 
+need to show the output of that object as an Excel spreadsheet without storing the resultant Excel file after HSSFWorkbook #write ( OutputStream ) & #xA ; it at the server side 
+help you further 
+to help you further 
+be able to help you further 
+to be able to help you further 
+'re to be able to help you further 
+write the spreadsheet to the response , if we 're to be able to help you further 
+to write the spreadsheet to the response , if we 're to be able to help you further 
+attempting to write the spreadsheet to the response , if we 're to be able to help you further 
+receiving when attempting to write the spreadsheet to the response , if we 're to be able to help you further 
+are receiving when attempting to write the spreadsheet to the response , if we 're to be able to help you further 
+paste the error you are receiving when attempting to write the spreadsheet to the response , if we 're to be able to help you further 
+to paste the error you are receiving when attempting to write the spreadsheet to the response , if we 're to be able to help you further 
+need to paste the error you are receiving when attempting to write the spreadsheet to the response , if we 're to be able to help you further 

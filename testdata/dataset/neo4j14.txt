@@ -1,0 +1,50 @@
+QUESTION:
+HTML:
+<p>How is neo4j persistence of nodes and relations implemented? How are indexes handled?</p>&#xA;
+Comment:
+there is some hints about how persistence is implemented in this blog post http://nosql.mypopescu.com/post/1396301953/neo4j-internals?utm_source=twitterfeed&utm_medium=twitter
+
+ACCEPTED ANS:
+
+ANS:
+HTML:
+<p>Michael,&#xA;if you don't get an answer here, you might ask in the Neo4j community list, <a href="https://lists.neo4j.org/mailman/listinfo/user" rel="nofollow">https://lists.neo4j.org/mailman/listinfo/user</a> for better luck ...</p>&#xA;
+Comment:
+HTML:
+<p><strong>On indexes:</strong> &#xA;<code>Neo4j</code> does not have indexes on it's own. It only has an interface called <code>IndexerService</code>, that is implemented by <code>Lucene</code> (for example), which is quite fast and handles exact and full-text searches quickly, but does not support any-search.</p>&#xA;&#xA;<p>It's easy to index nodes in <code>neo4j</code>, you just call the function index(node, key, value); and it's indexed.</p>&#xA;&#xA;<p>Not sure about <em>how</em> persistence is implemented.</p>&#xA;
+Comment:
+HTML:
+<p>It looks like they use their own storage implementation. Look around org.neo4j.kernel.impl.nioneo.store package.</p>&#xA;
+Comment:
+
+Phrase:
+implemented 
+handled 
+implemented in this blog post http://nosql.mypopescu.com/post/1396301953/neo4j-internals?utm_source=twitterfeed&utm_medium=twitter 
+is implemented in this blog post http://nosql.mypopescu.com/post/1396301953/neo4j-internals?utm_source=twitterfeed&utm_medium=twitter 
+is some hints about how persistence is implemented in this blog post http://nosql.mypopescu.com/post/1396301953/neo4j-internals?utm_source=twitterfeed&utm_medium=twitter 
+get an answer here 
+do n't get an answer here 
+ask in the Neo4j community list , https://lists.neo4j.org/mailman/listinfo/user for better luck 
+might ask in the Neo4j community list , https://lists.neo4j.org/mailman/listinfo/user for better luck 
+have indexes on it 's own 
+does not have indexes on it 's own 
+is quite fast 
+implemented by CODE2 ( for example ) , which is quite fast 
+is implemented by CODE2 ( for example ) , which is quite fast 
+handles exact and full-text searches quickly 
+is implemented by CODE2 ( for example ) , which is quite fast and handles exact and full-text searches quickly 
+called CODE1 , that is implemented by CODE2 ( for example ) , which is quite fast and handles exact and full-text searches quickly 
+only has an interface called CODE1 , that is implemented by CODE2 ( for example ) , which is quite fast and handles exact and full-text searches quickly 
+support any-search 
+does not support any-search 
+only has an interface called CODE1 , that is implemented by CODE2 ( for example ) , which is quite fast and handles exact and full-text searches quickly , but does not support any-search 
+'s easy to index nodes in CODE0 
+call the function index ( node , key , value ) 
+indexed 
+'s indexed 
+implemented 
+is implemented 
+use their own storage implementation 
+looks like they use their own storage implementation 
+Look around org.neo4j.kernel.impl.nioneo.store package 

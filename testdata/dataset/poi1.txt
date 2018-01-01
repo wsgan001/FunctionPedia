@@ -1,0 +1,76 @@
+QUESTION:
+HTML:
+<p>Can anyone tell me how to create doc files using java?&#xA;I know, there's a POI library, but it seems like it can save only simple documents. You can read anything you wish, but you can't save it all back again. Or may be i missed something? How can i save whole document with pictures, tables and styles?</p>&#xA;
+Comment:
+Duplicate: http://stackoverflow.com/questions/203174/whats-a-good-java-api-for-creating-word-documents
+
+ACCEPTED ANS:
+
+ANS:
+HTML:
+<p>It ain't cheap, but you could try <a href="http://www.aspose.com/categories/file-format-components/aspose.words-for-.net-and-java/default.aspx" rel="nofollow">Aspose.Words</a>. It'll do everything you state above and more.</p>&#xA;
+Comment:
+HTML:
+<p><a href="http://www.artofsolving.com/opensource/jodconverter" rel="nofollow">JODConverter</a> will allow you to convert lots of different document formats</p>&#xA;
+Comment:
+HTML:
+<p><a href="http://www.docmosis.com" rel="nofollow">Docmosis</a> lets you do heaps of styling easily via the template.  Uses OpenOffice and Java to do the job.  Its free and free to distribute.</p>&#xA;
+Comment:
+HTML:
+<p>OpenOffice.org's Universal Network Objects (UNO),  allow you to generate <em>.doc,</em>.PDF,  as well as OpenOffice documents. It supports several programming languages like: Java, C++, Visual Basic, etcc..</p>&#xA;&#xA;<p>Some good things is that: its free, open source and plataform-independent</p>&#xA;&#xA;<p>You can build documents, spreadsheets, presentations, etc. Start from scratch or using a template and fill the gaps..</p>&#xA;&#xA;<p>In order to use it you will need to include some libraries that comes with the OpenOffice suite.</p>&#xA;&#xA;<p>Useful links:</p>&#xA;&#xA;<ul>&#xA;<li><a href="http://www.openoffice.org" rel="nofollow">Open Office home</a></li>&#xA;<li><a href="http://wiki.services.openoffice.org/wiki/Documentation/DevGuide/OpenOffice.org_Developers_Guide" rel="nofollow">Open Office UNO Developer's Guide</a></li>&#xA;</ul>&#xA;
+Comment:
+
+Phrase:
+using java 
+create doc files using java 
+to create doc files using java 
+tell me how to create doc files using java 
+'s a POI library 
+save only simple documents 
+can save only simple documents 
+seems like it can save only simple documents 
+know , there 's a POI library , but it seems like it can save only simple documents 
+wish 
+save it all back again 
+ca n't save it all back again 
+read anything you wish , but you ca n't save it all back again 
+can read anything you wish , but you ca n't save it all back again 
+i missed something 
+be i missed something 
+may be i missed something 
+save whole document with pictures , tables and styles 
+ai n't cheap 
+try Aspose.Words 
+could try Aspose.Words 
+state above and more 
+do everything you state above and more 
+'ll do everything you state above and more 
+convert lots of different document formats 
+to convert lots of different document formats 
+allow you to convert lots of different document formats 
+will allow you to convert lots of different document formats 
+do heaps of styling easily via the template 
+lets you do heaps of styling easily via the template 
+do the job 
+to do the job 
+distribute 
+to distribute 
+free and free to distribute 
+OpenOffice.org 
+'s 
+allow you 
+supports several programming languages like : Java , C++ , Visual Basic , etcc . 
+is that : its free , open source and plataform-independent 
+build documents , spreadsheets , presentations , etc 
+can build documents , spreadsheets , presentations , etc 
+scratch or using a template 
+fill the gaps 
+scratch or using a template and fill the gaps 
+use it 
+to use it 
+comes with the OpenOffice suite 
+include some libraries that comes with the OpenOffice suite 
+to include some libraries that comes with the OpenOffice suite 
+need to include some libraries that comes with the OpenOffice suite 
+will need to include some libraries that comes with the OpenOffice suite 
+Open Office home 

@@ -1,0 +1,217 @@
+QUESTION:
+HTML:
+<p>I'm building a Route Planner Webapp using Spring/Hibernate/Tomcat and a mysql database, &#xA;I have a database containing read only data, such as Bus Stop Coordinates, Bus times which is never updated. I'm trying to make the app run faster, each time the application is run it will preform approx 1000 reads to the database to calculate a route. </p>&#xA;&#xA;<p>I have setup a Ehcache which greatly improves the read from database times.&#xA;I'm now setting terracotta + Ehcache distributed caching to share the cache with multiple Tomcat JVMs. This seems a bit complicated. I've tried memcached but it was not performing as fast as ehcache.</p>&#xA;&#xA;<p>I'm wondering if a MongoDb or Redis would be better suited. I have no experience with nosql but I would appreciate if anyone has any ideas. What i need is quick access to the read only database.</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>if you want to try routing, you even might look at Neo4j, see <a href="http://blogs.neotechnology.com/peter/2010/04/cool-spatial-algos-with-neo4j-part1-routing-with-a.html">the blog on using an A* algo for </a></p>&#xA;
+Comment:
+Here's Java code (by me) for that blog entry: http://github.com/neo4j-examples/java-astar-routing
+thanks i'm thinking this is more suited to my app, i'm going to try it out
+
+ANS:
+HTML:
+<blockquote>&#xA;  <p>I have setup a Ehcache which greatly improves the read from database times. I'm now setting terracotta + Ehcache distributed caching to share the cache with multiple Tomcat JVMs. This seems a bit complicated.</p>&#xA;</blockquote>&#xA;&#xA;<p>Since your data are read-only, I'm tempted to say that you could live without <a href="http://ehcache.org/documentation/distributed_caching.html">distributed and replicated caching</a>, unless the overhead of the initial load of caches is <strong>that critical</strong> (and in that case, it is not that hard to configure Ehcache, you just need to know where you go). So, if you think you really need this, maybe ask for more specific guidance.</p>&#xA;&#xA;<blockquote>&#xA;  <p>I'm wondering if a MongoDb or Redis would be better suited. I have no experience with nosql but I would appreciate if anyone has any ideas. What i need is quick access to the read only database.</p>&#xA;</blockquote>&#xA;&#xA;<p>First of all, if you go the NoSQL way, forget Hibernate (might not be an issue though). Secondly, I really wonder what is more complicated: (not) configuring Ehcache to be distributed (I'm still not convinced you need it) or changing your approach for something radically different (that the VAST majority of enterprise business don't need). Thirdly, <strong>nothing will be faster than reading data from memory</strong> in the same JVM. </p>&#xA;&#xA;<p>To summarize: I would 1. consider not using distributed caching (and say goodbye to the configuration problem) or 2. configure Ehcache for distributed caching (I think this is less complicated than changing your whole approach).</p>&#xA;
+Comment:
+Thanks a lot Pascal! Ideally i would like when servlet requests are submitted to find a shortest route, &#xA;the route can be calculated quickly using a data already stored in memory from a Ehcache.  What do you think would be the best way to achieve this?
+@paddydub This sounds just fine and doable with your current approach (hibernate + ehcache). Did I miss something?
+HTML:
+<p>if you want to try routing, you even might look at Neo4j, see <a href="http://blogs.neotechnology.com/peter/2010/04/cool-spatial-algos-with-neo4j-part1-routing-with-a.html">the blog on using an A* algo for </a></p>&#xA;
+Comment:
+Here's Java code (by me) for that blog entry: http://github.com/neo4j-examples/java-astar-routing
+thanks i'm thinking this is more suited to my app, i'm going to try it out
+HTML:
+<p>First of all mongodb is not a cache per se. its a persistent data store just like mysql is a persistent data store.</p>&#xA;&#xA;<p>so now your question boils down to "should i use ehcache or redis". having used ehcache i can tell you that is a pretty good solution for a distributed cache that does replication/clustering, cache invalidation, monitoring and instrumentation capability.</p>&#xA;&#xA;<p>since your data is read only, a simple distributed map like hazelcast would work as well. its pretty simple to use.</p>&#xA;
+Comment:
+
+Phrase:
+using Spring/Hibernate/Tomcat and a mysql database 
+read only data 
+containing read only data 
+have a database containing read only data 
+is never updated 
+building a Route Planner Webapp using Spring/Hibernate/Tomcat and a mysql database , I have a database containing read only data , such as Bus Stop Coordinates , Bus times which is never updated 
+'m building a Route Planner Webapp using Spring/Hibernate/Tomcat and a mysql database , I have a database containing read only data , such as Bus Stop Coordinates , Bus times which is never updated 
+calculate a route 
+to calculate a route 
+reads to the database to calculate a route 
+preform approx 1000 reads to the database to calculate a route 
+will preform approx 1000 reads to the database to calculate a route 
+run it will preform approx 1000 reads to the database to calculate a route 
+is run it will preform approx 1000 reads to the database to calculate a route 
+run faster , each time the application is run it will preform approx 1000 reads to the database to calculate a route 
+make the app run faster , each time the application is run it will preform approx 1000 reads to the database to calculate a route 
+to make the app run faster , each time the application is run it will preform approx 1000 reads to the database to calculate a route 
+trying to make the app run faster , each time the application is run it will preform approx 1000 reads to the database to calculate a route 
+'m trying to make the app run faster , each time the application is run it will preform approx 1000 reads to the database to calculate a route 
+improves the read from database times 
+setup a Ehcache which greatly improves the read from database times 
+have setup a Ehcache which greatly improves the read from database times 
+share the cache with multiple Tomcat JVMs 
+to share the cache with multiple Tomcat JVMs 
+caching to share the cache with multiple Tomcat JVMs 
+distributed caching to share the cache with multiple Tomcat JVMs 
+setting terracotta + Ehcache distributed caching to share the cache with multiple Tomcat JVMs 
+'m now setting terracotta + Ehcache distributed caching to share the cache with multiple Tomcat JVMs 
+seems a bit complicated 
+tried memcached 
+'ve tried memcached 
+performing as fast as ehcache 
+was not performing as fast as ehcache 
+better suited 
+be better suited 
+would be better suited 
+wondering if a MongoDb or Redis would be better suited 
+'m wondering if a MongoDb or Redis would be better suited 
+has any ideas 
+appreciate if anyone has any ideas 
+would appreciate if anyone has any ideas 
+have no experience with nosql but I would appreciate if anyone has any ideas 
+need 
+is quick access to the read only database 
+routing 
+try routing 
+to try routing 
+want to try routing 
+look at Neo4j 
+using an A * 
+see the blog on using an A * algo for 
+might look at Neo4j , see the blog on using an A * algo for 
+'s 
+suited to my app 
+is more suited to my app 
+thinking this is more suited to my app 
+'m thinking this is more suited to my app 
+try it out 
+to try it out 
+going to try it out 
+'m going to try it out 
+improves the read from database times 
+setup a Ehcache which greatly improves the read from database times 
+have setup a Ehcache which greatly improves the read from database times 
+share the cache with multiple Tomcat JVMs 
+to share the cache with multiple Tomcat JVMs 
+caching to share the cache with multiple Tomcat JVMs 
+distributed caching to share the cache with multiple Tomcat JVMs 
+setting terracotta + Ehcache distributed caching to share the cache with multiple Tomcat JVMs 
+'m now setting terracotta + Ehcache distributed caching to share the cache with multiple Tomcat JVMs 
+seems a bit complicated 
+are read-only 
+live without distributed 
+could live without distributed 
+say that you could live without distributed 
+to say that you could live without distributed 
+tempted to say that you could live without distributed 
+is that critical 
+caching , unless the overhead of the initial load of caches is that critical 
+configure Ehcache 
+to configure Ehcache 
+go 
+know where you go 
+to know where you go 
+need to know where you go 
+is not that hard to configure Ehcache , you just need to know where you go 
+caching , unless the overhead of the initial load of caches is that critical ( and in that case , it is not that hard to configure Ehcache , you just need to know where you go ) 
+replicated caching , unless the overhead of the initial load of caches is that critical ( and in that case , it is not that hard to configure Ehcache , you just need to know where you go ) 
+tempted to say that you could live without distributed and replicated caching , unless the overhead of the initial load of caches is that critical ( and in that case , it is not that hard to configure Ehcache , you just need to know where you go ) 
+'m tempted to say that you could live without distributed and replicated caching , unless the overhead of the initial load of caches is that critical ( and in that case , it is not that hard to configure Ehcache , you just need to know where you go ) 
+need this 
+think you really need this 
+ask for more specific guidance 
+better suited 
+be better suited 
+would be better suited 
+wondering if a MongoDb or Redis would be better suited 
+'m wondering if a MongoDb or Redis would be better suited 
+has any ideas 
+appreciate if anyone has any ideas 
+would appreciate if anyone has any ideas 
+have no experience with nosql but I would appreciate if anyone has any ideas 
+need 
+is quick access to the read only database 
+go the NoSQL way 
+be an issue though 
+might not be an issue though 
+forget Hibernate ( might not be an issue though ) 
+go the NoSQL way , forget Hibernate ( might not be an issue though ) 
+is more complicated 
+need it 
+convinced you need it 
+'m still not convinced you need it 
+distributed ( I 'm still not convinced you need it ) 
+be distributed ( I 'm still not convinced you need it ) 
+to be distributed ( I 'm still not convinced you need it ) 
+configuring Ehcache to be distributed ( I 'm still not convinced you need it ) 
+need 
+do n't need 
+changing your approach for something radically different ( that the VAST majority of enterprise business do n't need ) 
+wonder what is more complicated : ( not ) configuring Ehcache to be distributed ( I 'm still not convinced you need it ) or changing your approach for something radically different ( that the VAST majority of enterprise business do n't need ) 
+reading data from memory in the same JVM 
+be faster than reading data from memory in the same JVM 
+will be faster than reading data from memory in the same JVM 
+1 
+would 1 
+summarize : I would 1 
+To summarize : I would 1 
+using distributed caching ( and say goodbye to the configuration problem ) or 2 
+consider not using distributed caching ( and say goodbye to the configuration problem ) or 2 
+changing your whole approach 
+is less complicated than changing your whole approach 
+think this is less complicated than changing your whole approach 
+configure Ehcache for distributed caching ( I think this is less complicated than changing your whole approach ) 
+find a shortest route , & #xA 
+to find a shortest route , & #xA 
+submitted to find a shortest route , & #xA 
+are submitted to find a shortest route , & #xA 
+like when servlet requests are submitted to find a shortest route , & #xA 
+would like when servlet requests are submitted to find a shortest route , & #xA 
+already stored in memory from a Ehcache 
+using a data already stored in memory from a Ehcache 
+calculated quickly using a data already stored in memory from a Ehcache 
+be calculated quickly using a data already stored in memory from a Ehcache 
+can be calculated quickly using a data already stored in memory from a Ehcache 
+achieve this 
+to achieve this 
+be the best way to achieve this 
+would be the best way to achieve this 
+think would be the best way to achieve this 
+sounds just fine and doable with your current approach ( hibernate + ehcache ) 
+@paddydub This sounds just fine and doable with your current approach ( hibernate + ehcache ) 
+miss something 
+routing 
+try routing 
+to try routing 
+want to try routing 
+look at Neo4j 
+using an A * 
+see the blog on using an A * algo for 
+might look at Neo4j , see the blog on using an A * algo for 
+'s 
+suited to my app 
+is more suited to my app 
+thinking this is more suited to my app 
+'m thinking this is more suited to my app 
+try it out 
+to try it out 
+going to try it out 
+'m going to try it out 
+is not a cache per se 
+is a persistent data store 
+store just like mysql is a persistent data store 
+boils down to 
+use ehcache or redis 
+should i use ehcache or redis 
+used 
+having used 
+does replication/clustering , cache invalidation , monitoring and instrumentation capability 
+is a pretty good solution for a distributed cache that does replication/clustering , cache invalidation , monitoring and instrumentation capability 
+tell you that is a pretty good solution for a distributed cache that does replication/clustering , cache invalidation , monitoring and instrumentation capability 
+can tell you that is a pretty good solution for a distributed cache that does replication/clustering , cache invalidation , monitoring and instrumentation capability 
+ehcache i can tell you that is a pretty good solution for a distributed cache that does replication/clustering , cache invalidation , monitoring and instrumentation capability 
+read only 
+is read only 
+work as well 
+would work as well 
+use 
+to use 

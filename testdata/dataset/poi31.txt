@@ -1,0 +1,89 @@
+QUESTION:
+HTML:
+<p>I'm thinking about including the Apache POI into my application. Main goal is to output RTF document, but DOC would be nice, too. But the documentation is not very detailed about writing a HWPFDocument and everything I found on the web isn't helpful at all.</p>&#xA;&#xA;<p>I can read DOC files, that's working without any problem. But I really can't see how I write a document. Maybe someone can give me a short code example?</p>&#xA;&#xA;<p>Thanks a lot!</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>If you want to do RTF, These are text files and they are support in all versions of Word.</p>&#xA;&#xA;<p>you can use itext for simple stuff&#xA;<a href="http://itextdocs.lowagie.com/tutorial/rtf/index.php" rel="nofollow">http://itextdocs.lowagie.com/tutorial/rtf/index.php</a></p>&#xA;&#xA;<p>ro </p>&#xA;&#xA;<p>you can export them the hard way</p>&#xA;&#xA;<p>//-- save as example.doc -------------</p>&#xA;&#xA;<pre>&#xA;{&#xA;\rtf1&#xA;\ansi&#xA;\ansicpg1252&#xA;\deff0&#xA;\deflang1033&#xA;  {\fonttbl&#xA;    {\f0&#xA;     \fswiss&#xA;     \fcharset0 Arial;&#xA;    }&#xA;  }&#xA;  {&#xA;  \*&#xA;  \generator Msftedit 5.41.21.2500;&#xA;  }&#xA;  \viewkind4&#xA;  \uc1&#xA;  \pard&#xA;  \f0&#xA;  \fs20 &#xA;&#xA;  Hello World&#xA;&#xA;  \par&#xA;}&#xA;</pre>&#xA;
+Comment:
+
+ANS:
+HTML:
+<p>Well,</p>&#xA;&#xA;<p>It has been a long time since the last time I used POI.  I read that the HWPFDocument is now orphaned (read on apache POI website).  I would recommend using the WordML specification released by Microsoft instead. </p>&#xA;&#xA;<p><a href="http://en.wikipedia.org/wiki/Microsoft_Office_XML_formats" rel="nofollow">http://en.wikipedia.org/wiki/Microsoft_Office_XML_formats</a></p>&#xA;&#xA;<p>I have used this method before.  The easiest way is to create a WordML template and just replace the values using XPATH</p>&#xA;
+Comment:
+WordML is for new OOXML formats? I'd like to have the older DOC formats too... I think with OOo and now OOXML there's not much need for a working library on DOC files. ;-)
+I have used WordML since MS Office 2003.
+HTML:
+<p>If you want to do RTF, These are text files and they are support in all versions of Word.</p>&#xA;&#xA;<p>you can use itext for simple stuff&#xA;<a href="http://itextdocs.lowagie.com/tutorial/rtf/index.php" rel="nofollow">http://itextdocs.lowagie.com/tutorial/rtf/index.php</a></p>&#xA;&#xA;<p>ro </p>&#xA;&#xA;<p>you can export them the hard way</p>&#xA;&#xA;<p>//-- save as example.doc -------------</p>&#xA;&#xA;<pre>&#xA;{&#xA;\rtf1&#xA;\ansi&#xA;\ansicpg1252&#xA;\deff0&#xA;\deflang1033&#xA;  {\fonttbl&#xA;    {\f0&#xA;     \fswiss&#xA;     \fcharset0 Arial;&#xA;    }&#xA;  }&#xA;  {&#xA;  \*&#xA;  \generator Msftedit 5.41.21.2500;&#xA;  }&#xA;  \viewkind4&#xA;  \uc1&#xA;  \pard&#xA;  \f0&#xA;  \fs20 &#xA;&#xA;  Hello World&#xA;&#xA;  \par&#xA;}&#xA;</pre>&#xA;
+Comment:
+
+Phrase:
+including the Apache POI into my application 
+thinking about including the Apache POI into my application 
+'m thinking about including the Apache POI into my application 
+is to output RTF document 
+be nice , too 
+would be nice , too 
+is n't helpful at all 
+found on the web is n't helpful at all 
+writing a HWPFDocument and everything I found on the web is n't helpful at all 
+is not very detailed about writing a HWPFDocument and everything I found on the web is n't helpful at all 
+working without any problem 
+'s working without any problem 
+read DOC files , that 's working without any problem 
+can read DOC files , that 's working without any problem 
+write a document 
+see how I write a document 
+ca n't see how I write a document 
+give me a short code example 
+can give me a short code example 
+do RTF 
+to do RTF 
+want to do RTF 
+are text files 
+are support in all versions of Word 
+use itext for simple stuff http://itextdocs.lowagie.com/tutorial/rtf/index.php 
+can use itext for simple stuff http://itextdocs.lowagie.com/tutorial/rtf/index.php 
+export them the hard way 
+can export them the hard way 
+save as example.doc ------------- 
+used POI 
+been a long time since the last time I used POI 
+has been a long time since the last time I used POI 
+read on apache POI website 
+is now orphaned ( read on apache POI website ) 
+read that the HWPFDocument is now orphaned ( read on apache POI website ) 
+released by Microsoft instead 
+using the WordML specification released by Microsoft instead 
+recommend using the WordML specification released by Microsoft instead 
+would recommend using the WordML specification released by Microsoft instead 
+used this method before 
+have used this method before 
+create a WordML template 
+using XPATH 
+just replace the values using XPATH 
+create a WordML template and just replace the values using XPATH 
+to create a WordML template and just replace the values using XPATH 
+is to create a WordML template and just replace the values using XPATH 
+is for new OOXML formats 
+have the older DOC formats too . 
+to have the older DOC formats too . 
+like to have the older DOC formats too . 
+'d like to have the older DOC formats too . 
+think with OOo 
+'s not much need for a working library on DOC files 
+OOXML there 's not much need for a working library on DOC files 
+think with OOo and now OOXML there 's not much need for a working library on DOC files 
+used WordML since MS Office 2003 
+have used WordML since MS Office 2003 
+do RTF 
+to do RTF 
+want to do RTF 
+are text files 
+are support in all versions of Word 
+use itext for simple stuff http://itextdocs.lowagie.com/tutorial/rtf/index.php 
+can use itext for simple stuff http://itextdocs.lowagie.com/tutorial/rtf/index.php 
+export them the hard way 
+can export them the hard way 
+save as example.doc ------------- 

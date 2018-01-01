@@ -1,0 +1,20 @@
+plot duplicate timestamps withhour and minute on X axis with set of Y values
+save current chart in ChartPanel as PNG programmatically
+handle duplicates and ovelapping X-axis labels
+different color for item label in pie chart jasper
+change color of percent bar in gantt chart in dynamic report
+set number of angular grid lines to a fixed value for a PolarPlot
+create a Sonar Plugin to exhibit simple images
+draw three lines on dynamic JFreechart
+hide connection line in TimeSeries plot
+create radar chart like on photo
+change the Chart point color according to value
+get the first and last time in milliseconds with Java 8 Time API
+add line chart for every bar
+plot.setFixedLegendItems does not appear to be rendered
+JFreeChart stacked Areachart with TimeLine axis
+custom axis
+show gaps in line Jfreechart
+load an image in Jira Plugin Page from the image path in server
+write Cyrillic characters with iText
+display image in JSP

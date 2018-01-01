@@ -1,0 +1,20 @@
+get Error loading Excel file with images
+use Offline Offset elements for doc file
+insert values into existing work book
+set specific cell width
+Index .docx type documents
+cant find close method on Apache WorkbookFactory
+Exit from reading file with apache poi xssf
+Apache POI supports only ScatterCharts and LineCharts
+convert multiple files into PDF
+delete the specific rows without removing the contents and without using shiftRows funtion 
+NullPointerException on toCTFont method
+multiple alignment to one style POI
+colspan a table in word
+convert ppt to png
+get the row with the actual index while iterator skips rows that are null
+vanishing CellStyles
+set background color for word document (.doc or .docx) in Java
+iterate all the rows in a spreadsheet (including null)
+insert frame in word document
+get excel column (.getCell value) by searching for a string

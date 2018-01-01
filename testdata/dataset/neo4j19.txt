@@ -1,0 +1,712 @@
+QUESTION:
+HTML:
+<p>I have used Relational DB's a lot and decided to venture out on other types available.</p>&#xA;&#xA;<p>This particular product looks good and promising: <a href="http://neo4j.org/">http://neo4j.org/</a></p>&#xA;&#xA;<p>Has anyone used graph-based databases? What are the pros and cons from a usability prespective?</p>&#xA;&#xA;<p>Have you used these in a production environment? What was the requirement that prompted you to use them?</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>I used a graph database in a previous job. We weren't using neo4j, it was an in-house thing built on top of Berkeley DB, but it was similar. It was used in production (it still is).</p>&#xA;&#xA;<p>The reason we used a graph database was that the data being stored by the system and the operations the system was doing with the data were exactly the weak spot of relational databases and were exactly the strong spot of graph databases. The system needed to store collections of objects that lack a fixed schema and are linked together by relationships. To reason about the data, the system needed to do a lot of operations that would be a couple of traversals in a graph database, but that would be quite complex queries in SQL.</p>&#xA;&#xA;<p>The main advantages of the graph model were rapid development time and flexibility. We could quickly add new functionality without impacting existing deployments. If a potential customer wanted to import some of their own data and graft it on top of our model, it could usually be done on site by the sales rep. Flexibility also helped when we were designing a new feature, saving us from trying to squeeze new data into a rigid data model.</p>&#xA;&#xA;<p>Having a weird database let us build a lot of our other weird technologies, giving us lots of secret-sauce to distinguish our product from those of our competitors. </p>&#xA;&#xA;<p>The main disadvantage was that we weren't using the standard relational database technology, which can be a problem when your customers are enterprisey. Our customers would ask why we couldn't just host our data on their giant Oracle clusters (our customers usually had large datacenters). One of the team actually rewrote the database layer to use Oracle (or PostgreSQL, or MySQL), but it was slightly slower than the original. At least one large enterprise even had an Oracle-only policy, but luckily Oracle bought Berkeley DB. We also had to write a lot of extra tools - we couldn't just use Crystal Reports for example.</p>&#xA;&#xA;<p>The other disadvantage of our graph database was that we built it ourselves, which meant when we hit a problem (usually with scalability) we had to solve it ourselves. If we'd used a relational database, the vendor would have already solved the problem ten years ago.</p>&#xA;&#xA;<p>If you're building a product for enterprisey customers and your data fits into the relational model, use a relational database if you can. If your application doesn't fit the relational model but it does fit the graph model, use a graph database. If it only fits something else, use that.</p>&#xA;&#xA;<p>If your application doesn't need to fit into the current blub architecture, use a graph database, or CouchDB, or BigTable, or whatever fits your app and you think is cool. It might give you an advantage, and its fun to try new things.</p>&#xA;&#xA;<p>Whatever you chose, try not to build the database engine yourself unless you really like building database engines.</p>&#xA;
+Comment:
+Thanks for such indept reply.
+Great answer, and +1 for "try not to build the database engine yourself unless you really like building database engines", rotfl
+excellent answer, very helpful!
+
+ANS:
+HTML:
+<p>I used a graph database in a previous job. We weren't using neo4j, it was an in-house thing built on top of Berkeley DB, but it was similar. It was used in production (it still is).</p>&#xA;&#xA;<p>The reason we used a graph database was that the data being stored by the system and the operations the system was doing with the data were exactly the weak spot of relational databases and were exactly the strong spot of graph databases. The system needed to store collections of objects that lack a fixed schema and are linked together by relationships. To reason about the data, the system needed to do a lot of operations that would be a couple of traversals in a graph database, but that would be quite complex queries in SQL.</p>&#xA;&#xA;<p>The main advantages of the graph model were rapid development time and flexibility. We could quickly add new functionality without impacting existing deployments. If a potential customer wanted to import some of their own data and graft it on top of our model, it could usually be done on site by the sales rep. Flexibility also helped when we were designing a new feature, saving us from trying to squeeze new data into a rigid data model.</p>&#xA;&#xA;<p>Having a weird database let us build a lot of our other weird technologies, giving us lots of secret-sauce to distinguish our product from those of our competitors. </p>&#xA;&#xA;<p>The main disadvantage was that we weren't using the standard relational database technology, which can be a problem when your customers are enterprisey. Our customers would ask why we couldn't just host our data on their giant Oracle clusters (our customers usually had large datacenters). One of the team actually rewrote the database layer to use Oracle (or PostgreSQL, or MySQL), but it was slightly slower than the original. At least one large enterprise even had an Oracle-only policy, but luckily Oracle bought Berkeley DB. We also had to write a lot of extra tools - we couldn't just use Crystal Reports for example.</p>&#xA;&#xA;<p>The other disadvantage of our graph database was that we built it ourselves, which meant when we hit a problem (usually with scalability) we had to solve it ourselves. If we'd used a relational database, the vendor would have already solved the problem ten years ago.</p>&#xA;&#xA;<p>If you're building a product for enterprisey customers and your data fits into the relational model, use a relational database if you can. If your application doesn't fit the relational model but it does fit the graph model, use a graph database. If it only fits something else, use that.</p>&#xA;&#xA;<p>If your application doesn't need to fit into the current blub architecture, use a graph database, or CouchDB, or BigTable, or whatever fits your app and you think is cool. It might give you an advantage, and its fun to try new things.</p>&#xA;&#xA;<p>Whatever you chose, try not to build the database engine yourself unless you really like building database engines.</p>&#xA;
+Comment:
+Thanks for such indept reply.
+Great answer, and +1 for "try not to build the database engine yourself unless you really like building database engines", rotfl
+excellent answer, very helpful!
+HTML:
+<p>I've been using MySQL for years to manage engineering data, and it worked well, but one of the problems we had (but didn't realise we had) was that we always had to plan the schema up-front. Another problem we knew we had was mapping the data up to domain objects and back. </p>&#xA;&#xA;<p>Now we've just started trying out neo4j and it looks like it is solving both problems for us. The ability to add different properties to each node (and relation) has allowed us to re-think our entire approach to data. It is like dynamic versus static languages (Ruby versus Java), but for databases. Building the data model in the database can be done in a much more agile and dynamic way, and that is dramatically simplifying our code.</p>&#xA;&#xA;<p>And since the object model in code is generally a graph structure, mapping from the database is also simpler, with less code and consequently fewer bugs.</p>&#xA;&#xA;<p>And as a additional bonus, our initial prototype code for loading our data into neo4j is actually performing faster than the previous MySQL version. I have no solid numbers on this (yet), but that was a nice additional feature.</p>&#xA;&#xA;<p>But at the end of the day, the choice probably should be based mostly on the nature of your domain model. Does it map better to tables or graphs? Decide by doing some prototypes, load the data and play with it. Use neoclipse to look at different views of the data. Once you've done that, hopefully you know if you're on to a good thing or not.</p>&#xA;
+Comment:
+As of now i don't have any business requirement to use Graphic Db.This may be because i don't think any thing other than RDBMS .&#xA;It might be possible that most of the time i may be trying Square peg in circular hole.&#xA;Graph based Db is totally a new prespective for me.I have used Scenegraph based persistence framework (Java3D,Xith3D) but that was to store Graphics based Application.&#xA;This whole conversation is giving a new prespective to me.&#xA;Any application refrence which is using graph based Db that i can see things in action !
+HTML:
+<p>We've been working with the Neo team for over a year now and have been very happy. We model scholarly artifacts and their relationships, which is spot on for a graph db, and run recommendation algorithms over the network.</p>&#xA;&#xA;<p>If you are already working in Java, I think that modeling using Neo4j is very straight forward and it has the flattest / fastest performance for R/W of any other solutions we tried.</p>&#xA;&#xA;<p>To be honest, I have a hard time <em>not</em> thinking in terms of a Graph/Network because it's so much easier than designing convoluted table structures to hold object properties and relationships.</p>&#xA;&#xA;<p>That being said, we do store some information in MySQL simply because it's easier for the Business side to run quick SQL queries against. To perform the same functions with Neo we would need to write code that we simply don't have the bandwidth for right now. As soon as we do though, I'm moving all that data to Neo!</p>&#xA;&#xA;<p>Good luck.</p>&#xA;
+Comment:
+could you tell me what kind of information you store in MySQL?&#xA;&#xA;I'm going to create a new community, can I store all the "regular" information like username, password, first&lastname and so on in neo4j or is it not really suitable for that? :o
+You can absolutely store all of that information in Neo. I've built a couple of systems where all of the account information is in the graph. The kind of information I typically store outside of the graph is large volumes of time series data that needs to be queried for reporting.
+HTML:
+<p>Two points:</p>&#xA;&#xA;<p>First, on the data I've been working with the past 5 years in SQL Server, I've recently hit the scalability wall with SQL for the type of queries we need to run (nested relationhsips...you know...graphs).  I've been playing around with neo4j, and my lookup times are several orders of magnitude faster when I need this kind of lookup.</p>&#xA;&#xA;<p>Second, to the point that graph databases are outdated.  Um...no.  Early on, as people were trying to figure out how to store and lookup data efficiently, they created and played with graph and network style database models.  These were designed so the physical model reflected the logical model, so their efficiency wasnt that great.  This type of data structure was good for semi-structured data, but not as good for structured dense data.  So, this IBM dude named Codd was researching efficient ways to arrange and store structured data and came up with the idea for the relational database model.  And it was good, and people were happy.</p>&#xA;&#xA;<p>What do we have here?  Two tools for two different purposes.  Graph database models are very good for representing semi-structured data and the relationships between entities (that may or may not exist).  Relational databases are good for structured data that has a very static schema, and where join depths do not go very deep.  One is good for one kind of data, the other is good for other kinds of data.</p>&#xA;&#xA;<p>To coin the phrase, there is no Silver Bullet.  Its very short sighted to say that graph database models are out of date and to use one gives up 40 years of progress.  That's like saying using C is giving up all the technological progress we've gone through to get things like Java and C#. That's not true though.  C is a tool that is needed for certain tasks.  And Java is a tool for other tasks.</p>&#xA;
+Comment:
+HTML:
+<p>Here is a good article that talks about the needs that non relational databases fill: <a href="http://www.readwriteweb.com/enterprise/2009/02/is-the-relational-database-doomed.php" rel="nofollow">http://www.readwriteweb.com/enterprise/2009/02/is-the-relational-database-doomed.php</a></p>&#xA;&#xA;<p>It does a good job at pointing out (aside from the name) that relational databases arent flawed or wrong, its just that these days people are starting to process more and more data in mainstream software and web sites, and that relational databases just wont scare for these needs.</p>&#xA;
+Comment:
+HTML:
+<p>might be a bit late, but there is a growing number of projects using Neo4j, the better known ones listed at <a href="http://wiki.neo4j.org/content/Neo4j_In_The_Wild" rel="nofollow">Neo4j</a> . Also NeoTechnology, the company behind Neo4j, has some references at <a href="http://neotechnology.com/customers" rel="nofollow">their customers page</a></p>&#xA;&#xA;<p><sub>Note: I am part of the Neo4j team</sub></p>&#xA;
+Comment:
+HTML:
+<p>I am building an intranet at my company. </p>&#xA;&#xA;<p>I am interested in understanding how to load data that was stored in tables (Oracle, MySQL, SQL Server, Excel, Access, various random lists) and loading it into Neo4J, or some other graph database.  Specifcally, what happens when common data overlaps existing data already in the system.  </p>&#xA;&#xA;<p>Yes, I know some data is best modeled in RDBMS, but I have this idea itching me, that when you need to superimpose several distinct tables, the graph model is better than the table structure.  </p>&#xA;&#xA;<p>For instance, I work in a manufacturing environment.  There is a major project we are working on and because of the complexity, each department has created a seperate Excel spreadsheet that has a <a href="http://en.wikipedia.org/wiki/Bill_of_materials" rel="nofollow">BOM (Bill Of Materials)</a> hierarchy in a column on the left and then several columns of notes and checks made by individuals who made these sheets.  </p>&#xA;&#xA;<p>So one of the problems is merging all these notes together into one "view" so that someone can see all the issues that need to be addressed in any particular part.  </p>&#xA;&#xA;<p>The second problem is that an Excel spreadsheet sucks at representing a hierarchial BOM when a common component is used in more than one subassembly.  Meaning that, if someone writes a note about the P34 relay in the ignition subassembly, the same comment should be associated with the P34 relays used in the motor driver subassembly.  This won't occur in the excel spreadsheet.  </p>&#xA;&#xA;<p>For the company intranet, I want to be able to search for anything easily.  Such as data related to a part number, a BOM structure, a phone number, an email address, a company policy, or procedure.  I want to even extend this to manage computer hardware assets, and installed software.  </p>&#xA;&#xA;<p>I envision that once the information network starts to get populated you can start doing cool traversals such as "I want to write an email to everyone working on the XYZ project".  People will have been associated with the project because they will be tagged as creating and modifying the data within the XYZ project.  So by using the XYZ project as a search key, a huge set with everything related to the XYZ project will be created.  Including links to people who built the XYZ project.  The people links will connect to their email addresses.  So by their involvement in the XYZ project, they will be included in my email.  This is in stark contrast to some secretary trying to maintain a list of people work on the project.  We generate a lot of lists.  We spend a lot of time maintaining lists and making sure they are up to date.  And most of it doesn't add any value to our products. </p>&#xA;&#xA;<p>Another cool traversal could report all the computers that have a certain piece of software installed, by version.  That report could be used to generate tasks to remove extra copies of old software and to update people who need to have the latest copy.  It would also be useful for license tracking.     </p>&#xA;
+Comment:
+@Paul Bock: I think it would be a really good fit to solve this kind of problem using neo4j. If you join the mailing list I'm sure you can get a lot of input from the community: http://neo4j.org/community/list/
+I don't see how this couldn't be done in a Relational database.  Am I missing something?
+I don't think any discussion about 'NoSQL' focusses on what can't be done with relational databases unless it involves scaling. I think it is often (at least for me it is) about how natural a solution is, how efficient it is in solving your problems, etc.
+
+Phrase:
+'s a lot 
+venture out on other types 
+to venture out on other types 
+decided to venture out on other types 
+'s a lot and decided to venture out on other types available 
+used Relational DB 's a lot and decided to venture out on other types available 
+have used Relational DB 's a lot and decided to venture out on other types available 
+used graph-based databases 
+used these in a production environment 
+Have you used these in a production environment 
+use them 
+to use them 
+prompted you to use them 
+used a graph database in a previous job 
+built on top of Berkeley DB 
+was an in-house thing built on top of Berkeley DB 
+was similar 
+using neo4j , it was an in-house thing built on top of Berkeley DB , but it was similar 
+were n't using neo4j , it was an in-house thing built on top of Berkeley DB , but it was similar 
+is 
+used in production ( it still is ) 
+was used in production ( it still is ) 
+doing with the data 
+was doing with the data 
+stored by the system and the operations the system was doing with the data 
+being stored by the system and the operations the system was doing with the data 
+were exactly the weak spot of relational databases 
+was that the data being stored by the system and the operations the system was doing with the data were exactly the weak spot of relational databases 
+used a graph database was that the data being stored by the system and the operations the system was doing with the data were exactly the weak spot of relational databases 
+were exactly the strong spot of graph databases 
+used a graph database was that the data being stored by the system and the operations the system was doing with the data were exactly the weak spot of relational databases and were exactly the strong spot of graph databases 
+lack a fixed schema 
+linked together by relationships 
+are linked together by relationships 
+lack a fixed schema and are linked together by relationships 
+store collections of objects that lack a fixed schema and are linked together by relationships 
+to store collections of objects that lack a fixed schema and are linked together by relationships 
+needed to store collections of objects that lack a fixed schema and are linked together by relationships 
+reason about the data 
+To reason about the data 
+be a couple of traversals in a graph database 
+would be a couple of traversals in a graph database 
+do a lot of operations that would be a couple of traversals in a graph database 
+to do a lot of operations that would be a couple of traversals in a graph database 
+needed to do a lot of operations that would be a couple of traversals in a graph database 
+be quite complex queries in SQL 
+would be quite complex queries in SQL 
+were rapid development time and flexibility 
+impacting existing deployments 
+add new functionality without impacting existing deployments 
+could quickly add new functionality without impacting existing deployments 
+import some of their own data 
+graft it on top of our model 
+import some of their own data and graft it on top of our model 
+to import some of their own data and graft it on top of our model 
+wanted to import some of their own data and graft it on top of our model 
+done on site by the sales rep 
+be done on site by the sales rep 
+could usually be done on site by the sales rep 
+designing a new feature 
+were designing a new feature 
+squeeze new data into a rigid data model 
+to squeeze new data into a rigid data model 
+trying to squeeze new data into a rigid data model 
+saving us from trying to squeeze new data into a rigid data model 
+helped when we were designing a new feature , saving us from trying to squeeze new data into a rigid data model 
+distinguish our product from those of our competitors 
+to distinguish our product from those of our competitors 
+giving us lots of secret-sauce to distinguish our product from those of our competitors 
+build a lot of our other weird technologies , giving us lots of secret-sauce to distinguish our product from those of our competitors 
+let us build a lot of our other weird technologies , giving us lots of secret-sauce to distinguish our product from those of our competitors 
+Having a weird database let us build a lot of our other weird technologies , giving us lots of secret-sauce to distinguish our product from those of our competitors 
+are enterprisey 
+be a problem when your customers are enterprisey 
+can be a problem when your customers are enterprisey 
+using the standard relational database technology , which can be a problem when your customers are enterprisey 
+were n't using the standard relational database technology , which can be a problem when your customers are enterprisey 
+was that we were n't using the standard relational database technology , which can be a problem when your customers are enterprisey 
+had large datacenters 
+host our data on their giant Oracle clusters ( our customers usually had large datacenters ) 
+could n't just host our data on their giant Oracle clusters ( our customers usually had large datacenters ) 
+ask why we could n't just host our data on their giant Oracle clusters ( our customers usually had large datacenters ) 
+would ask why we could n't just host our data on their giant Oracle clusters ( our customers usually had large datacenters ) 
+actually rewrote the database layer to use Oracle ( or PostgreSQL , or MySQL ) 
+was slightly slower than the original 
+had an Oracle-only policy , but luckily Oracle 
+bought 
+write a lot of extra tools 
+to write a lot of extra tools 
+had to write a lot of extra tools 
+use Crystal Reports for example 
+could n't just use Crystal Reports for example 
+solve it ourselves 
+to solve it ourselves 
+had to solve it ourselves 
+hit a problem ( usually with scalability ) we had to solve it ourselves 
+meant when we hit a problem ( usually with scalability ) we had to solve it ourselves 
+built it ourselves , which meant when we hit a problem ( usually with scalability ) we had to solve it ourselves 
+was that we built it ourselves , which meant when we hit a problem ( usually with scalability ) we had to solve it ourselves 
+used a relational database 
+'d used a relational database 
+solved the problem ten years ago 
+have already solved the problem ten years ago 
+would have already solved the problem ten years ago 
+building a product for enterprisey customers 
+'re building a product for enterprisey customers 
+fits into the relational model 
+can 
+use a relational database if you can 
+fit the relational model 
+does n't fit the relational model 
+fit the graph model 
+does fit the graph model 
+use a graph database 
+fits something else 
+use that 
+fit into the current blub architecture 
+use a graph database , or CouchDB , 
+BigTable 
+fit into the current blub architecture , use a graph database , or CouchDB , or BigTable 
+to fit into the current blub architecture , use a graph database , or CouchDB , or BigTable 
+fits your app 
+need to fit into the current blub architecture , use a graph database , or CouchDB , or BigTable , or whatever fits your app 
+does n't need to fit into the current blub architecture , use a graph database , or CouchDB , or BigTable , or whatever fits your app 
+is cool 
+think is cool 
+try new things 
+to try new things 
+give you an advantage , and its fun to try new things 
+might give you an advantage , and its fun to try new things 
+chose 
+build the database engine yourself 
+not to build the database engine yourself 
+building database engines 
+like building database engines 
+try not to build the database engine yourself unless you really like building database engines 
+build the database engine yourself 
+not to build the database engine yourself 
+building database engines 
+like building database engines 
+try not to build the database engine yourself unless you really like building database engines 
+rotfl 
+used a graph database in a previous job 
+built on top of Berkeley DB 
+was an in-house thing built on top of Berkeley DB 
+was similar 
+using neo4j , it was an in-house thing built on top of Berkeley DB , but it was similar 
+were n't using neo4j , it was an in-house thing built on top of Berkeley DB , but it was similar 
+is 
+used in production ( it still is ) 
+was used in production ( it still is ) 
+doing with the data 
+was doing with the data 
+stored by the system and the operations the system was doing with the data 
+being stored by the system and the operations the system was doing with the data 
+were exactly the weak spot of relational databases 
+was that the data being stored by the system and the operations the system was doing with the data were exactly the weak spot of relational databases 
+used a graph database was that the data being stored by the system and the operations the system was doing with the data were exactly the weak spot of relational databases 
+were exactly the strong spot of graph databases 
+used a graph database was that the data being stored by the system and the operations the system was doing with the data were exactly the weak spot of relational databases and were exactly the strong spot of graph databases 
+lack a fixed schema 
+linked together by relationships 
+are linked together by relationships 
+lack a fixed schema and are linked together by relationships 
+store collections of objects that lack a fixed schema and are linked together by relationships 
+to store collections of objects that lack a fixed schema and are linked together by relationships 
+needed to store collections of objects that lack a fixed schema and are linked together by relationships 
+reason about the data 
+To reason about the data 
+be a couple of traversals in a graph database 
+would be a couple of traversals in a graph database 
+do a lot of operations that would be a couple of traversals in a graph database 
+to do a lot of operations that would be a couple of traversals in a graph database 
+needed to do a lot of operations that would be a couple of traversals in a graph database 
+be quite complex queries in SQL 
+would be quite complex queries in SQL 
+were rapid development time and flexibility 
+impacting existing deployments 
+add new functionality without impacting existing deployments 
+could quickly add new functionality without impacting existing deployments 
+import some of their own data 
+graft it on top of our model 
+import some of their own data and graft it on top of our model 
+to import some of their own data and graft it on top of our model 
+wanted to import some of their own data and graft it on top of our model 
+done on site by the sales rep 
+be done on site by the sales rep 
+could usually be done on site by the sales rep 
+designing a new feature 
+were designing a new feature 
+squeeze new data into a rigid data model 
+to squeeze new data into a rigid data model 
+trying to squeeze new data into a rigid data model 
+saving us from trying to squeeze new data into a rigid data model 
+helped when we were designing a new feature , saving us from trying to squeeze new data into a rigid data model 
+distinguish our product from those of our competitors 
+to distinguish our product from those of our competitors 
+giving us lots of secret-sauce to distinguish our product from those of our competitors 
+build a lot of our other weird technologies , giving us lots of secret-sauce to distinguish our product from those of our competitors 
+let us build a lot of our other weird technologies , giving us lots of secret-sauce to distinguish our product from those of our competitors 
+Having a weird database let us build a lot of our other weird technologies , giving us lots of secret-sauce to distinguish our product from those of our competitors 
+are enterprisey 
+be a problem when your customers are enterprisey 
+can be a problem when your customers are enterprisey 
+using the standard relational database technology , which can be a problem when your customers are enterprisey 
+were n't using the standard relational database technology , which can be a problem when your customers are enterprisey 
+was that we were n't using the standard relational database technology , which can be a problem when your customers are enterprisey 
+had large datacenters 
+host our data on their giant Oracle clusters ( our customers usually had large datacenters ) 
+could n't just host our data on their giant Oracle clusters ( our customers usually had large datacenters ) 
+ask why we could n't just host our data on their giant Oracle clusters ( our customers usually had large datacenters ) 
+would ask why we could n't just host our data on their giant Oracle clusters ( our customers usually had large datacenters ) 
+actually rewrote the database layer to use Oracle ( or PostgreSQL , or MySQL ) 
+was slightly slower than the original 
+had an Oracle-only policy , but luckily Oracle 
+bought 
+write a lot of extra tools 
+to write a lot of extra tools 
+had to write a lot of extra tools 
+use Crystal Reports for example 
+could n't just use Crystal Reports for example 
+solve it ourselves 
+to solve it ourselves 
+had to solve it ourselves 
+hit a problem ( usually with scalability ) we had to solve it ourselves 
+meant when we hit a problem ( usually with scalability ) we had to solve it ourselves 
+built it ourselves , which meant when we hit a problem ( usually with scalability ) we had to solve it ourselves 
+was that we built it ourselves , which meant when we hit a problem ( usually with scalability ) we had to solve it ourselves 
+used a relational database 
+'d used a relational database 
+solved the problem ten years ago 
+have already solved the problem ten years ago 
+would have already solved the problem ten years ago 
+building a product for enterprisey customers 
+'re building a product for enterprisey customers 
+fits into the relational model 
+can 
+use a relational database if you can 
+fit the relational model 
+does n't fit the relational model 
+fit the graph model 
+does fit the graph model 
+use a graph database 
+fits something else 
+use that 
+fit into the current blub architecture 
+use a graph database , or CouchDB , 
+BigTable 
+fit into the current blub architecture , use a graph database , or CouchDB , or BigTable 
+to fit into the current blub architecture , use a graph database , or CouchDB , or BigTable 
+fits your app 
+need to fit into the current blub architecture , use a graph database , or CouchDB , or BigTable , or whatever fits your app 
+does n't need to fit into the current blub architecture , use a graph database , or CouchDB , or BigTable , or whatever fits your app 
+is cool 
+think is cool 
+try new things 
+to try new things 
+give you an advantage , and its fun to try new things 
+might give you an advantage , and its fun to try new things 
+chose 
+build the database engine yourself 
+not to build the database engine yourself 
+building database engines 
+like building database engines 
+try not to build the database engine yourself unless you really like building database engines 
+build the database engine yourself 
+not to build the database engine yourself 
+building database engines 
+like building database engines 
+try not to build the database engine yourself unless you really like building database engines 
+rotfl 
+manage engineering data 
+to manage engineering data 
+using MySQL for years to manage engineering data 
+been using MySQL for years to manage engineering data 
+'ve been using MySQL for years to manage engineering data 
+worked well 
+had 
+had 
+realise we had 
+did n't realise we had 
+plan the schema up-front 
+to plan the schema up-front 
+had to plan the schema up-front 
+was that we always had to plan the schema up-front 
+had 
+knew we had 
+mapping the data up to domain objects 
+was mapping the data up to domain objects and back 
+trying out neo4j 
+started trying out neo4j 
+'ve just started trying out neo4j 
+solving both problems for us 
+is solving both problems for us 
+looks like it is solving both problems for us 
+add different properties to each node ( and relation ) 
+to add different properties to each node ( and relation ) 
+re-think our entire approach to data 
+to re-think our entire approach to data 
+allowed us to re-think our entire approach to data 
+has allowed us to re-think our entire approach to data 
+is like dynamic versus static languages ( Ruby versus Java ) , but for databases 
+Building the data model in the database 
+done in a much more agile and dynamic way 
+be done in a much more agile and dynamic way 
+can be done in a much more agile and dynamic way 
+simplifying our code 
+is dramatically simplifying our code 
+is generally a graph structure 
+is also simpler , with less code and consequently fewer bugs 
+loading our data into neo4j 
+performing faster than the previous MySQL version 
+is actually performing faster than the previous MySQL version 
+have no solid numbers on this ( yet ) 
+was a nice additional feature 
+based mostly on the nature of your domain model 
+be based mostly on the nature of your domain model 
+should be based mostly on the nature of your domain model 
+map better to tables or graphs 
+Does it map better to tables or graphs 
+doing some prototypes 
+Decide by doing some prototypes 
+load the data 
+play with it 
+Decide by doing some prototypes , load the data and play with it 
+look at different views of the data 
+to look at different views of the data 
+Use neoclipse to look at different views of the data 
+done that 
+'ve done that 
+'re on to a good thing or not 
+know if you 're on to a good thing or not 
+think any thing other than RDBMS . & #xA 
+do n't think any thing other than RDBMS . & #xA 
+be because i do n't think any thing other than RDBMS . & #xA 
+may be because i do n't think any thing other than RDBMS . & #xA 
+use Graphic Db.This may be because i do n't think any thing other than RDBMS . & #xA 
+to use Graphic Db.This may be because i do n't think any thing other than RDBMS . & #xA 
+have any business requirement to use Graphic Db.This may be because i do n't think any thing other than RDBMS . & #xA 
+do n't have any business requirement to use Graphic Db.This may be because i do n't think any thing other than RDBMS . & #xA 
+based persistence framework ( Java3D , Xith3D ) 
+used Scenegraph based persistence framework ( Java3D , Xith3D ) 
+have used Scenegraph based persistence framework ( Java3D , Xith3D ) 
+giving a new prespective to me 
+is giving a new prespective to me 
+based Application . & #xA ; This whole conversation is giving a new prespective to me 
+store Graphics based Application . & #xA ; This whole conversation is giving a new prespective to me 
+to store Graphics based Application . & #xA ; This whole conversation is giving a new prespective to me 
+was to store Graphics based Application . & #xA ; This whole conversation is giving a new prespective to me 
+is totally a new prespective for me.I have used Scenegraph based persistence framework ( Java3D , Xith3D ) but that was to store Graphics based Application . & #xA ; This whole conversation is giving a new prespective to me . 
+based Db is totally a new prespective for me.I have used Scenegraph based persistence framework ( Java3D , Xith3D ) but that was to store Graphics based Application . & #xA ; This whole conversation is giving a new prespective to me . 
+see things in action 
+can see things in action 
+using graph based Db that i can see things in action 
+is using graph based Db that i can see things in action 
+trying Square peg in circular hole . & #xA ; Graph based Db is totally a new prespective for me.I have used Scenegraph based persistence framework ( Java3D , Xith3D ) but that was to store Graphics based Application . & #xA ; This whole conversation is giving a new prespective to me . & #xA ; Any application refrence which is using graph based Db that i can see things in action 
+be trying Square peg in circular hole . & #xA ; Graph based Db is totally a new prespective for me.I have used Scenegraph based persistence framework ( Java3D , Xith3D ) but that was to store Graphics based Application . & #xA ; This whole conversation is giving a new prespective to me . & #xA ; Any application refrence which is using graph based Db that i can see things in action 
+may be trying Square peg in circular hole . & #xA ; Graph based Db is totally a new prespective for me.I have used Scenegraph based persistence framework ( Java3D , Xith3D ) but that was to store Graphics based Application . & #xA ; This whole conversation is giving a new prespective to me . & #xA ; Any application refrence which is using graph based Db that i can see things in action 
+be possible that most of the time i may be trying Square peg in circular hole . & #xA ; Graph based Db is totally a new prespective for me.I have used Scenegraph based persistence framework ( Java3D , Xith3D ) but that was to store Graphics based Application . & #xA ; This whole conversation is giving a new prespective to me . & #xA ; Any application refrence which is using graph based Db that i can see things in action 
+might be possible that most of the time i may be trying Square peg in circular hole . & #xA ; Graph based Db is totally a new prespective for me.I have used Scenegraph based persistence framework ( Java3D , Xith3D ) but that was to store Graphics based Application . & #xA ; This whole conversation is giving a new prespective to me . & #xA ; Any application refrence which is using graph based Db that i can see things in action 
+working with the Neo team for over a year now 
+been working with the Neo team for over a year now 
+'ve been working with the Neo team for over a year now 
+been very happy 
+have been very happy 
+'ve been working with the Neo team for over a year now and have been very happy 
+is spot on for a graph db 
+model scholarly artifacts and their relationships , which is spot on for a graph db , 
+run recommendation algorithms over the network 
+model scholarly artifacts and their relationships , which is spot on for a graph db , and run recommendation algorithms over the network 
+working in Java 
+are already working in Java 
+using Neo4j 
+is very straight forward 
+tried 
+has the flattest / fastest performance for R/W of any other solutions we tried 
+think that modeling using Neo4j is very straight forward and it has the flattest / fastest performance for R/W of any other solutions we tried 
+be honest 
+To be honest 
+not thinking in terms of a Graph/Network 
+hold object properties and relationships 
+to hold object properties and relationships 
+designing convoluted table structures to hold object properties and relationships 
+'s so much easier than designing convoluted table structures to hold object properties and relationships 
+have a hard time not thinking in terms of a Graph/Network because it 's so much easier than designing convoluted table structures to hold object properties and relationships 
+said 
+being said 
+run quick SQL queries against 
+to run quick SQL queries against 
+'s easier for the Business side to run quick SQL queries against 
+do store some information in MySQL simply because it 's easier for the Business side to run quick SQL queries against 
+write code 
+to write code 
+need to write code 
+would need to write code 
+have the bandwidth for right now 
+do n't have the bandwidth for right now 
+perform the same functions with Neo we would need to write code that we simply do n't have the bandwidth for right now 
+To perform the same functions with Neo we would need to write code that we simply do n't have the bandwidth for right now 
+do though 
+moving all that data to Neo 
+'m moving all that data to Neo 
+create a new community 
+to create a new community 
+going to create a new community 
+'m going to create a new community 
+store all the `` regular '' information like username , password , first & lastname and so on in neo4j 
+store in MySQL ? & #xA ; & #xA ; I 'm going to create a new community , can I store all the `` regular '' information like username , password , first & lastname and so on in neo4j 
+is it not really suitable for that 
+store in MySQL ? & #xA ; & #xA ; I 'm going to create a new community , can I store all the `` regular '' information like username , password , first & lastname and so on in neo4j or is it not really suitable for that 
+tell me what kind of information you store in MySQL ? & #xA ; & #xA ; I 'm going to create a new community , can I store all the `` regular '' information like username , password , first & lastname and so on in neo4j or is it not really suitable for that 
+o 
+store all of that information in Neo 
+can absolutely store all of that information in Neo 
+is in the graph 
+built a couple of systems where all of the account information is in the graph 
+'ve built a couple of systems where all of the account information is in the graph 
+store outside 
+queried for reporting 
+be queried for reporting 
+to be queried for reporting 
+needs to be queried for reporting 
+is large volumes of time series data that needs to be queried for reporting 
+working with the past 5 years in SQL Server 
+been working with the past 5 years in SQL Server 
+'ve been working with the past 5 years in SQL Server 
+run 
+to run 
+need to run 
+know ... graphs 
+nested relationhsips ... you know ... graphs 
+hit the scalability wall with SQL for the type of queries we need to run ( nested relationhsips ... you know ... graphs ) 
+'ve recently hit the scalability wall with SQL for the type of queries we need to run ( nested relationhsips ... you know ... graphs ) 
+playing around with neo4j 
+been playing around with neo4j 
+'ve been playing around with neo4j 
+need this kind of lookup 
+are several orders of magnitude faster when I need this kind of lookup 
+are outdated 
+store and lookup data efficiently 
+to store and lookup data efficiently 
+figure out how to store and lookup data efficiently 
+to figure out how to store and lookup data efficiently 
+trying to figure out how to store and lookup data efficiently 
+were trying to figure out how to store and lookup data efficiently 
+created and played with graph and network style database models 
+wasnt that great 
+reflected the logical model , so their efficiency wasnt that great 
+designed so the physical model reflected the logical model , so their efficiency wasnt that great 
+were designed so the physical model reflected the logical model , so their efficiency wasnt that great 
+was good for semi-structured data , but not as good for structured dense data 
+arrange and store structured data 
+to arrange and store structured data 
+researching efficient ways to arrange and store structured data 
+was researching efficient ways to arrange and store structured data 
+named Codd was researching efficient ways to arrange and store structured data 
+came up with the idea for the relational database model 
+named Codd was researching efficient ways to arrange and store structured data and came up with the idea for the relational database model 
+was good 
+were happy 
+have here 
+exist 
+may or may not exist 
+representing semi-structured data and the relationships between entities ( that may or may not exist ) 
+are very good for representing semi-structured data and the relationships between entities ( that may or may not exist ) 
+has a very static schema 
+go very deep 
+do not go very deep 
+are good for structured data that has a very static schema , and where join depths do not go very deep 
+is good for one kind of data 
+is good for other kinds of data 
+coin the phrase 
+To coin the phrase 
+is no Silver Bullet 
+are out of date 
+say that graph database models are out of date 
+to say that graph database models are out of date 
+use 
+to use 
+to say that graph database models are out of date and to use 
+gives up 40 years of progress 
+get things like Java 
+to get things like Java 
+gone through to get things like Java and C # 
+'ve gone through to get things like Java and C # 
+giving up all the technological progress we 've gone through to get things like Java and C # 
+is giving up all the technological progress we 've gone through to get things like Java and C # 
+using C is giving up all the technological progress we 've gone through to get things like Java and C # 
+saying using C is giving up all the technological progress we 've gone through to get things like Java and C # 
+'s like saying using C is giving up all the technological progress we 've gone through to get things like Java and C # 
+'s not true though 
+needed for certain tasks 
+is needed for certain tasks 
+is a tool that is needed for certain tasks 
+is a tool for other tasks 
+is 
+fill 
+talks about the needs that non relational databases fill 
+pointing out 
+pointing out ( aside from the name ) 
+process more and more data in mainstream software and web sites 
+to process more and more data in mainstream software and web sites 
+starting to process more and more data in mainstream software and web sites 
+are starting to process more and more data in mainstream software and web sites 
+arent flawed or wrong , its just that these days people are starting to process more and more data in mainstream software and web sites 
+scare for these needs 
+does a good job at pointing out ( aside from the name ) that relational databases arent flawed or wrong , its just that these days people are starting to process more and more data in mainstream software and web sites , and that relational databases just wont scare for these needs 
+using 
+is a growing number of projects using 
+be a bit late , but there is a growing number of projects using 
+might be a bit late , but there is a growing number of projects using 
+listed at Neo4j 
+has some references at their customers page 
+am part of the Neo4j team 
+building an intranet at my company 
+am building an intranet at my company 
+stored in tables ( Oracle , MySQL , SQL Server , Excel , Access , various random lists ) 
+was stored in tables ( Oracle , MySQL , SQL Server , Excel , Access , various random lists ) 
+load data that was stored in tables ( Oracle , MySQL , SQL Server , Excel , Access , various random lists ) 
+to load data that was stored in tables ( Oracle , MySQL , SQL Server , Excel , Access , various random lists ) 
+understanding how to load data that was stored in tables ( Oracle , MySQL , SQL Server , Excel , Access , various random lists ) 
+loading it into Neo4J , or some other graph database 
+understanding how to load data that was stored in tables ( Oracle , MySQL , SQL Server , Excel , Access , various random lists ) and loading it into Neo4J , or some other graph database 
+am interested in understanding how to load data that was stored in tables ( Oracle , MySQL , SQL Server , Excel , Access , various random lists ) and loading it into Neo4J , or some other graph database 
+overlaps existing data already in the system 
+happens when common data overlaps existing data already in the system 
+best modeled in RDBMS 
+is best modeled in RDBMS 
+itching me 
+superimpose several distinct tables 
+to superimpose several distinct tables 
+need to superimpose several distinct tables 
+is better than the table structure 
+have this idea itching me , that when you need to superimpose several distinct tables , the graph model is better than the table structure 
+know some data is best modeled in RDBMS , but I have this idea itching me , that when you need to superimpose several distinct tables , the graph model is better than the table structure 
+work in a manufacturing environment 
+working on and because of the complexity 
+are working on and because of the complexity 
+has a BOM ( Bill Of Materials ) hierarchy in a column on the left 
+created a seperate Excel spreadsheet that has a BOM ( Bill Of Materials ) hierarchy in a column on the left 
+has created a seperate Excel spreadsheet that has a BOM ( Bill Of Materials ) hierarchy in a column on the left 
+made these sheets 
+made by individuals who made these sheets 
+is a major project we are working on and because of the complexity , each department has created a seperate Excel spreadsheet that has a BOM ( Bill Of Materials ) hierarchy in a column on the left and then several columns of notes and checks made by individuals who made these sheets 
+merging all these notes together into one `` view '' 
+is merging all these notes together into one `` view '' 
+addressed in any particular part 
+be addressed in any particular part 
+to be addressed in any particular part 
+need to be addressed in any particular part 
+see all the issues that need to be addressed in any particular part 
+can see all the issues that need to be addressed in any particular part 
+used in more than one subassembly 
+is used in more than one subassembly 
+representing a hierarchial BOM when a common component is used in more than one subassembly 
+sucks at representing a hierarchial BOM when a common component is used in more than one subassembly 
+is that an Excel spreadsheet sucks at representing a hierarchial BOM when a common component is used in more than one subassembly 
+writes a note about the P34 relay in the ignition subassembly 
+used in the motor driver subassembly 
+associated with the P34 relays used in the motor driver subassembly 
+be associated with the P34 relays used in the motor driver subassembly 
+should be associated with the P34 relays used in the motor driver subassembly 
+Meaning that , if someone writes a note about the P34 relay in the ignition subassembly , the same comment should be associated with the P34 relays used in the motor driver subassembly 
+occur in the excel spreadsheet 
+wo n't occur in the excel spreadsheet 
+search for anything easily 
+to search for anything easily 
+be able to search for anything easily 
+to be able to search for anything easily 
+want to be able to search for anything easily 
+manage computer hardware assets 
+to manage computer hardware assets 
+even extend this to manage computer hardware assets 
+to even extend this to manage computer hardware assets 
+want to even extend this to manage computer hardware assets 
+installed software 
+want to even extend this to manage computer hardware assets , and installed software 
+get populated 
+to get populated 
+starts to get populated 
+doing cool traversals such 
+working on the XYZ project 
+write an email to everyone working on the XYZ project 
+to write an email to everyone working on the XYZ project 
+want to write an email to everyone working on the XYZ project 
+start doing cool traversals such as `` I want to write an email to everyone working on the XYZ project '' 
+can start doing cool traversals such as `` I want to write an email to everyone working on the XYZ project '' 
+envision that once the information network starts to get populated you can start doing cool traversals such as `` I want to write an email to everyone working on the XYZ project '' 
+creating and modifying the data within the XYZ project 
+tagged as creating and modifying the data within the XYZ project 
+be tagged as creating and modifying the data within the XYZ project 
+will be tagged as creating and modifying the data within the XYZ project 
+associated with the project because they will be tagged as creating and modifying the data within the XYZ project 
+been associated with the project because they will be tagged as creating and modifying the data within the XYZ project 
+have been associated with the project because they will be tagged as creating and modifying the data within the XYZ project 
+will have been associated with the project because they will be tagged as creating and modifying the data within the XYZ project 
+related to the XYZ project 
+created 
+be created 
+will be created 
+using the XYZ project as a search key , a huge set with everything related to the XYZ project will be created 
+built the XYZ project 
+connect to their email addresses 
+will connect to their email addresses 
+included in my email 
+be included in my email 
+will be included in my email 
+maintain a list of people work on the project 
+to maintain a list of people work on the project 
+trying to maintain a list of people work on the project 
+is in stark contrast to some secretary trying to maintain a list of people work on the project 
+generate a lot of lists 
+maintaining lists 
+are up to date 
+making sure they are up to date 
+maintaining lists and making sure they are up to date 
+spend a lot of time maintaining lists and making sure they are up to date 
+add any value to our products 
+does n't add any value to our products 
+installed , by version 
+have a certain piece of software installed , by version 
+report all the computers that have a certain piece of software installed , by version 
+could report all the computers that have a certain piece of software installed , by version 
+remove extra copies of old software 
+to remove extra copies of old software 
+have the latest copy 
+to have the latest copy 
+need to have the latest copy 
+update people who need to have the latest copy 
+to update people who need to have the latest copy 
+to remove extra copies of old software and to update people who need to have the latest copy 
+generate tasks to remove extra copies of old software and to update people who need to have the latest copy 
+to generate tasks to remove extra copies of old software and to update people who need to have the latest copy 
+used to generate tasks to remove extra copies of old software and to update people who need to have the latest copy 
+be used to generate tasks to remove extra copies of old software and to update people who need to have the latest copy 
+could be used to generate tasks to remove extra copies of old software and to update people who need to have the latest copy 
+be useful for license tracking 
+would also be useful for license tracking 
+using neo4j 
+solve this kind of problem using neo4j 
+to solve this kind of problem using neo4j 
+be a really good fit to solve this kind of problem using neo4j 
+would be a really good fit to solve this kind of problem using neo4j 
+think it would be a really good fit to solve this kind of problem using neo4j 
+get a lot of input from the community : http://neo4j.org/community/list/ 
+can get a lot of input from the community : http://neo4j.org/community/list/ 
+'m sure you can get a lot of input from the community : http://neo4j.org/community/list/ 
+join the mailing list I 'm sure you can get a lot of input from the community : http://neo4j.org/community/list/ 
+done in a Relational database 
+be done in a Relational database 
+could n't be done in a Relational database 
+see how this could n't be done in a Relational database 
+do n't see how this could n't be done in a Relational database 
+missing something 
+involves scaling 
+done with relational databases unless it involves scaling 
+be done with relational databases unless it involves scaling 
+ca n't be done with relational databases unless it involves scaling 
+think any discussion about ` NoSQL ' focusses on what ca n't be done with relational databases unless it involves scaling 
+do n't think any discussion about ` NoSQL ' focusses on what ca n't be done with relational databases unless it involves scaling 
+is 
+is often ( at least for me it is ) 
+solving your problems 
+is in solving your problems 
+is , how efficient it is in solving your problems , etc. 
+think it is often ( at least for me it is ) about how natural a solution is , how efficient it is in solving your problems , etc. 

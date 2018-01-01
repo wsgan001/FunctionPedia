@@ -1,0 +1,384 @@
+QUESTION:
+HTML:
+<p>I will make an application with a lot of similar items (millions), and I would like to store them in a MySQL database, because I would like to do a lot of statistics and search on specific values for specific columns.</p>&#xA;&#xA;<p>But at the same time, I will store relations between all the items, that are related in many connected binary-tree-like structures (transitive closure), and relation databases are not good at that kind of structures, so I would like to store all relations in Neo4j which have good performance for this kind of data.</p>&#xA;&#xA;<p>My plan is to have all data except the relations in the MySQL database and all relations with <code>item_id</code> stored in the Neo4j database. When I want to lookup a tree, I first search the Neo4j for all the <code>item_id</code>:s in the tree, then I search the MySQL-database for all the specified items in a query that would look like:</p>&#xA;&#xA;<p><code>SELECT * FROM items WHERE item_id = 45 OR item_id = 345435 OR item_id = 343 OR item_id = 78 OR item_id = 4522 OR item_id = 676 OR item_id = 443 OR item_id = 4255 OR item_id = 4345</code></p>&#xA;&#xA;<p><b>Is this a good idea, or am I very wrong?</b> I haven't used graph-databases before. Are there any better approaches to my problem? How would the MySQL-query perform in this case?</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>Few thoughts on this:</p>&#xA;&#xA;<p>I would try modelling your Neo4j domain model to include the attributes of each node in the graph. By separating your data into two different data stores you might limit some operations that you might want to do.</p>&#xA;&#xA;<p>I guess it comes down to what you will be doing with your graph? If for example want to find all the nodes connected to a specific node, whose attributes (ie name, age.. whatever) are certain values, would you first have to find the correct node ID in your MySQL database and then go into Neo4j. This just seems slow and overly complicated when you could do all this in Neo4j. So the question is will you need the attributes of a node when you traversing the graph? </p>&#xA;&#xA;<p>Will your data change or is it static? By having two separate data stores it will complicate matters.</p>&#xA;&#xA;<p>Whilst generating statistics using a MySQL database might be easier than doing everything in Neo4j, the code required to traverse a graph to find all the nodes that meet a defined criteria isn't overly difficult. What these stats are should drive your solution.</p>&#xA;&#xA;<p>I can't comment on the performance of the MySQL query to select node ids. I guess that comes down to how many nodes you will need to select and your indexing strategy. I agree about the performance side of things when it comes to traversing a graph though.</p>&#xA;&#xA;<p>This is a good article on just this: <a href="http://markorodriguez.com/2011/02/18/mysql-vs-neo4j-on-a-large-scale-graph-traversal/">MySQL vs. Neo4j on a Large-Scale Graph Traversal</a> and in this case, when they say large, they only mean a million vertices/nodes and four million edges. So it wasn't even a particularly dense graph.</p>&#xA;
+Comment:
+The danger with including more attributes is that you'll end up shoehorning all your data in the graph database. I think the ability to easily combine multiple types of datastores and also easily report against that is a necessary one.
+Why "this just seems slow"? If I retrieve the id's from a neo4j query and then make `WHERE IN (ids)` on the relational, why it supposed to be slow? Is much faster then traverse a lot of tables making joins, isn't? Thanks!
+
+ANS:
+HTML:
+<p>You can improve the query by using IN:</p>&#xA;&#xA;<pre><code>SELECT *&#xA;FROM items&#xA;WHERE item_id IN (45, 345435, 343, 78, 4522, 676, 443, 4255, 4345)&#xA;</code></pre>&#xA;&#xA;<p>It is also not entirely true that relational databases are bad at storing tree structures. Certainly MySQL is missing some functionality which would make it easier, but most other databases support it well. Oracle has <code>CONNECT BY</code>. Most of the mainstream RDBMS have some form of recursive queries - MySQL being a notable exception. Perhaps you could take a look at PostgreSQL and see if that meets your needs?</p>&#xA;
+Comment:
+Or use nested sets, which are good for doing read operations on paths/ sub trees. However, whatever approach you follow, it still feels very much like fighting the tool to me, whereas working with graph databases for appropriate data feels natural, and has the added benefit (theoretical at least) of specific optimization and visualization etc.
+HTML:
+<p>Few thoughts on this:</p>&#xA;&#xA;<p>I would try modelling your Neo4j domain model to include the attributes of each node in the graph. By separating your data into two different data stores you might limit some operations that you might want to do.</p>&#xA;&#xA;<p>I guess it comes down to what you will be doing with your graph? If for example want to find all the nodes connected to a specific node, whose attributes (ie name, age.. whatever) are certain values, would you first have to find the correct node ID in your MySQL database and then go into Neo4j. This just seems slow and overly complicated when you could do all this in Neo4j. So the question is will you need the attributes of a node when you traversing the graph? </p>&#xA;&#xA;<p>Will your data change or is it static? By having two separate data stores it will complicate matters.</p>&#xA;&#xA;<p>Whilst generating statistics using a MySQL database might be easier than doing everything in Neo4j, the code required to traverse a graph to find all the nodes that meet a defined criteria isn't overly difficult. What these stats are should drive your solution.</p>&#xA;&#xA;<p>I can't comment on the performance of the MySQL query to select node ids. I guess that comes down to how many nodes you will need to select and your indexing strategy. I agree about the performance side of things when it comes to traversing a graph though.</p>&#xA;&#xA;<p>This is a good article on just this: <a href="http://markorodriguez.com/2011/02/18/mysql-vs-neo4j-on-a-large-scale-graph-traversal/">MySQL vs. Neo4j on a Large-Scale Graph Traversal</a> and in this case, when they say large, they only mean a million vertices/nodes and four million edges. So it wasn't even a particularly dense graph.</p>&#xA;
+Comment:
+The danger with including more attributes is that you'll end up shoehorning all your data in the graph database. I think the ability to easily combine multiple types of datastores and also easily report against that is a necessary one.
+Why "this just seems slow"? If I retrieve the id's from a neo4j query and then make `WHERE IN (ids)` on the relational, why it supposed to be slow? Is much faster then traverse a lot of tables making joins, isn't? Thanks!
+HTML:
+<p>I'm mostly with Binary Nerd on this, but would like to add a variation. You could store the live data in Neo4j and then extract the data you need for statistics/reporting and put into MySQL. For searches I'd go with the <a href="http://wiki.neo4j.org/content/Indexing_with_IndexService" rel="nofollow">Neo4j-Lucene integration</a> if that fits your needs.</p>&#xA;
+Comment:
+HTML:
+<p>Relational databases can handle graph structures. Some of them can even handle them moderately elegantly (as elegantly as a relational database gets!).</p>&#xA;&#xA;<p>The key to general graph handling in relational databases is the <a href="http://www.postgresql.org/docs/9.1/static/queries-with.html" rel="nofollow">recursive common table expression</a> (RCTE), which basically lets you iteratively (not recursively, despite the name) expand a query over a set of rows, by combining a query which selects a root set of rows and a query which defines the neighbours of rows selected so far. The syntax is a bit clunky, but it's general and powerful.</p>&#xA;&#xA;<p>RCTEs are supported in PostgreSQL, Firebird, SQL Server, and apparently in DB2. Oracle has a different but equivalent construct; i have read that recent versions support proper RCTEs. MySQL does not support RCTEs. If you aren't wedded to MySQL, i would urge you to consider using PostgreSQL, which is basically a much better database all round.</p>&#xA;&#xA;<p>However, it sounds like you don't need to support general graphs, just trees. In that case, there are more specific options open to you.</p>&#xA;&#xA;<p>One is the classic but rather mindbending <a href="http://mikehillyer.com/articles/managing-hierarchical-data-in-mysql/" rel="nofollow">nested sets</a>.</p>&#xA;&#xA;<p>A simpler one is to store a path with each row: this is a string which represents the row's position in the tree, and has the property that the path for a node is a prefix of the path for any subnode, which lets you very efficiently do various queries about ancestry ("is node A a child of node B?", "what is node A and node B's lowest common ancestor?", etc). For example, you could construct a path for a row by walking the tree from the root, and joining the IDs of the rows encountered on the way with slashes. This is simple to construct, but does take care to maintain if you rearrange the tree. With a path column, you can restrict a query to a given tree simply by adding <code>and path like '23/%'</code>, where <code>23</code> is the root's ID.</p>&#xA;&#xA;<p>So, although a graph database is probably the best way to store and query graph data, it is not the only option, and i would suggest you weigh the advantages of using one against the advantages of having all your data in a single database.</p>&#xA;
+Comment:
+
+Phrase:
+make an application with a lot of similar items ( millions ) 
+will make an application with a lot of similar items ( millions ) 
+do a lot of statistics and search on specific values for specific columns 
+to do a lot of statistics and search on specific values for specific columns 
+like to do a lot of statistics and search on specific values for specific columns 
+would like to do a lot of statistics and search on specific values for specific columns 
+store them in a MySQL database , because I would like to do a lot of statistics and search on specific values for specific columns 
+to store them in a MySQL database , because I would like to do a lot of statistics and search on specific values for specific columns 
+like to store them in a MySQL database , because I would like to do a lot of statistics and search on specific values for specific columns 
+would like to store them in a MySQL database , because I would like to do a lot of statistics and search on specific values for specific columns 
+are related in many connected binary-tree-like structures ( transitive closure ) 
+store relations between all the items , that are related in many connected binary-tree-like structures ( transitive closure ) 
+will store relations between all the items , that are related in many connected binary-tree-like structures ( transitive closure ) 
+have good performance for this kind of data 
+store all relations in Neo4j which have good performance for this kind of data 
+to store all relations in Neo4j which have good performance for this kind of data 
+like to store all relations in Neo4j which have good performance for this kind of data 
+would like to store all relations in Neo4j which have good performance for this kind of data 
+are not good at that kind of structures , so I would like to store all relations in Neo4j which have good performance for this kind of data 
+stored in the Neo4j database 
+have all data except the relations in the MySQL database and all relations with CODE0 stored in the Neo4j database 
+to have all data except the relations in the MySQL database and all relations with CODE0 stored in the Neo4j database 
+is to have all data except the relations in the MySQL database and all relations with CODE0 stored in the Neo4j database 
+search the Neo4j for all the CODE1 
+s in the tree 
+search the Neo4j for all the CODE1 : s in the tree 
+lookup a tree , I first search the Neo4j for all the CODE1 : s in the tree 
+to lookup a tree , I first search the Neo4j for all the CODE1 : s in the tree 
+want to lookup a tree , I first search the Neo4j for all the CODE1 : s in the tree 
+look like 
+would look like 
+search the MySQL-database for all the specified items in a query that would look like 
+Is this a good idea 
+used graph-databases before 
+have n't used graph-databases before 
+Are there any better 
+perform in this case 
+include the attributes of each node in the graph 
+to include the attributes of each node in the graph 
+modelling your Neo4j domain model to include the attributes of each node in the graph 
+try modelling your Neo4j domain model to include the attributes of each node in the graph 
+would try modelling your Neo4j domain model to include the attributes of each node in the graph 
+separating your data into two different data stores 
+do 
+to do 
+want to do 
+might want to do 
+limit some operations that you might want to do 
+might limit some operations that you might want to do 
+doing with your graph 
+be doing with your graph 
+will be doing with your graph 
+comes down to what you will be doing with your graph 
+guess it comes down to what you will be doing with your graph 
+age 
+connected to a specific node , whose attributes ( ie name , age 
+find all the nodes connected to a specific node , whose attributes ( ie name , age 
+to find all the nodes connected to a specific node , whose attributes ( ie name , age 
+want to find all the nodes connected to a specific node , whose attributes ( ie name , age 
+are certain 
+find the correct node ID in your MySQL database 
+to find the correct node ID in your MySQL database 
+have to find the correct node ID in your MySQL database 
+go into Neo4j 
+whatever ) are certain values , would you first have to find the correct node ID in your MySQL database and then go into Neo4j 
+do all this 
+could do all this 
+just seems slow and overly complicated when you could do all this in Neo4j 
+traversing the graph 
+need the attributes of a node when you traversing the graph 
+is will you need the attributes of a node when you traversing the graph 
+Will your data change 
+is it static 
+Will your data change or is it static 
+having two separate data stores 
+complicate matters 
+will complicate matters 
+using a MySQL database 
+is n't overly difficult 
+meet a defined criteria is n't overly difficult 
+find all the nodes that meet a defined criteria is n't overly difficult 
+to find all the nodes that meet a defined criteria is n't overly difficult 
+traverse a graph to find all the nodes that meet a defined criteria is n't overly difficult 
+to traverse a graph to find all the nodes that meet a defined criteria is n't overly difficult 
+required to traverse a graph to find all the nodes that meet a defined criteria is n't overly difficult 
+doing everything in Neo4j , the code required to traverse a graph to find all the nodes that meet a defined criteria is n't overly difficult 
+be easier than doing everything in Neo4j , the code required to traverse a graph to find all the nodes that meet a defined criteria is n't overly difficult 
+might be easier than doing everything in Neo4j , the code required to traverse a graph to find all the nodes that meet a defined criteria is n't overly difficult 
+are 
+drive your solution 
+should drive your solution 
+select node ids 
+to select node ids 
+comment on the performance of the MySQL query to select node ids 
+ca n't comment on the performance of the MySQL query to select node ids 
+select 
+to select 
+need to select 
+will need to select 
+nodes you will need to select 
+comes down to how many nodes you will need to select and your indexing strategy 
+guess that comes down to how many nodes you will need to select and your indexing strategy 
+traversing a graph though 
+to traversing a graph though 
+comes to traversing a graph though 
+agree about the performance side of things when it comes to traversing a graph though 
+is a good article on just this : MySQL vs 
+only mean a million vertices/nodes and four million edges 
+say large , they only mean a million vertices/nodes and four million edges 
+was n't even a particularly dense graph 
+including more attributes 
+shoehorning all your data in the graph database 
+end up shoehorning all your data in the graph database 
+'ll end up shoehorning all your data in the graph database 
+is that you 'll end up shoehorning all your data in the graph database 
+easily combine multiple types of datastores 
+is a necessary one 
+easily report against that is a necessary one 
+easily combine multiple types of datastores and also easily report against that is a necessary one 
+to easily combine multiple types of datastores and also easily report against that is a necessary one 
+think the ability to easily combine multiple types of datastores and also easily report against that is a necessary one 
+just seems slow 
+'s from a neo4j query 
+be slow 
+to be slow 
+supposed to be slow 
+make ` WHERE IN ( ids ) ` on the relational , why it supposed to be slow 
+'s from a neo4j query and then make ` WHERE IN ( ids ) ` on the relational , why it supposed to be slow 
+retrieve the id 's from a neo4j query and then make ` WHERE IN ( ids ) ` on the relational , why it supposed to be slow 
+Is much faster then traverse 
+joins 
+is n't 
+joins , is n't 
+making joins , is n't 
+using IN 
+improve the query by using IN 
+can improve the query by using IN 
+storing tree structures 
+are bad at storing tree structures 
+is also not entirely true that relational databases are bad at storing tree structures 
+make it easier 
+would make it easier 
+missing some functionality which would make it easier 
+is missing some functionality which would make it easier 
+support it well 
+CODE0 
+has CODE0 
+have some form of recursive queries 
+being a notable exception 
+take a look at PostgreSQL 
+meets your needs 
+see if that meets your needs 
+take a look at PostgreSQL and see if that meets your needs 
+could take a look at PostgreSQL and see if that meets your needs 
+doing read operations on paths / sub trees 
+are good for doing read operations on paths / sub trees 
+use nested sets , which are good for doing read operations on paths / sub trees 
+follow 
+fighting the tool to me 
+working with graph databases for appropriate data 
+feels natural 
+has the added benefit ( theoretical at least ) of specific optimization and visualization etc. 
+feels natural , and has the added benefit ( theoretical at least ) of specific optimization and visualization etc. 
+feels very much like fighting the tool to me , whereas working with graph databases for appropriate data feels natural , and has the added benefit ( theoretical at least ) of specific optimization and visualization etc. 
+include the attributes of each node in the graph 
+to include the attributes of each node in the graph 
+modelling your Neo4j domain model to include the attributes of each node in the graph 
+try modelling your Neo4j domain model to include the attributes of each node in the graph 
+would try modelling your Neo4j domain model to include the attributes of each node in the graph 
+separating your data into two different data stores 
+do 
+to do 
+want to do 
+might want to do 
+limit some operations that you might want to do 
+might limit some operations that you might want to do 
+doing with your graph 
+be doing with your graph 
+will be doing with your graph 
+comes down to what you will be doing with your graph 
+guess it comes down to what you will be doing with your graph 
+age 
+connected to a specific node , whose attributes ( ie name , age 
+find all the nodes connected to a specific node , whose attributes ( ie name , age 
+to find all the nodes connected to a specific node , whose attributes ( ie name , age 
+want to find all the nodes connected to a specific node , whose attributes ( ie name , age 
+are certain 
+find the correct node ID in your MySQL database 
+to find the correct node ID in your MySQL database 
+have to find the correct node ID in your MySQL database 
+go into Neo4j 
+whatever ) are certain values , would you first have to find the correct node ID in your MySQL database and then go into Neo4j 
+do all this 
+could do all this 
+just seems slow and overly complicated when you could do all this in Neo4j 
+traversing the graph 
+need the attributes of a node when you traversing the graph 
+is will you need the attributes of a node when you traversing the graph 
+Will your data change 
+is it static 
+Will your data change or is it static 
+having two separate data stores 
+complicate matters 
+will complicate matters 
+using a MySQL database 
+is n't overly difficult 
+meet a defined criteria is n't overly difficult 
+find all the nodes that meet a defined criteria is n't overly difficult 
+to find all the nodes that meet a defined criteria is n't overly difficult 
+traverse a graph to find all the nodes that meet a defined criteria is n't overly difficult 
+to traverse a graph to find all the nodes that meet a defined criteria is n't overly difficult 
+required to traverse a graph to find all the nodes that meet a defined criteria is n't overly difficult 
+doing everything in Neo4j , the code required to traverse a graph to find all the nodes that meet a defined criteria is n't overly difficult 
+be easier than doing everything in Neo4j , the code required to traverse a graph to find all the nodes that meet a defined criteria is n't overly difficult 
+might be easier than doing everything in Neo4j , the code required to traverse a graph to find all the nodes that meet a defined criteria is n't overly difficult 
+are 
+drive your solution 
+should drive your solution 
+select node ids 
+to select node ids 
+comment on the performance of the MySQL query to select node ids 
+ca n't comment on the performance of the MySQL query to select node ids 
+select 
+to select 
+need to select 
+will need to select 
+nodes you will need to select 
+comes down to how many nodes you will need to select and your indexing strategy 
+guess that comes down to how many nodes you will need to select and your indexing strategy 
+traversing a graph though 
+to traversing a graph though 
+comes to traversing a graph though 
+agree about the performance side of things when it comes to traversing a graph though 
+is a good article on just this : MySQL vs 
+only mean a million vertices/nodes and four million edges 
+say large , they only mean a million vertices/nodes and four million edges 
+was n't even a particularly dense graph 
+including more attributes 
+shoehorning all your data in the graph database 
+end up shoehorning all your data in the graph database 
+'ll end up shoehorning all your data in the graph database 
+is that you 'll end up shoehorning all your data in the graph database 
+easily combine multiple types of datastores 
+is a necessary one 
+easily report against that is a necessary one 
+easily combine multiple types of datastores and also easily report against that is a necessary one 
+to easily combine multiple types of datastores and also easily report against that is a necessary one 
+think the ability to easily combine multiple types of datastores and also easily report against that is a necessary one 
+just seems slow 
+'s from a neo4j query 
+be slow 
+to be slow 
+supposed to be slow 
+make ` WHERE IN ( ids ) ` on the relational , why it supposed to be slow 
+'s from a neo4j query and then make ` WHERE IN ( ids ) ` on the relational , why it supposed to be slow 
+retrieve the id 's from a neo4j query and then make ` WHERE IN ( ids ) ` on the relational , why it supposed to be slow 
+Is much faster then traverse 
+joins 
+is n't 
+joins , is n't 
+making joins , is n't 
+'m mostly with Binary Nerd on this 
+add a variation 
+to add a variation 
+like to add a variation 
+would like to add a variation 
+'m mostly with Binary Nerd on this , but would like to add a variation 
+store the live data in Neo4j 
+statistics/reporting 
+need for statistics/reporting 
+then extract the data you need for statistics/reporting 
+put into MySQL 
+then extract the data you need for statistics/reporting and put into MySQL 
+store the live data in Neo4j and then extract the data you need for statistics/reporting and put into MySQL 
+could store the live data in Neo4j and then extract the data you need for statistics/reporting and put into MySQL 
+fits your needs 
+go with the Neo4j-Lucene integration if that fits your needs 
+'d go with the Neo4j-Lucene integration if that fits your needs 
+handle graph structures 
+can handle graph structures 
+gets 
+handle them moderately elegantly ( as elegantly as a relational database gets ! ) 
+can even handle them moderately elegantly ( as elegantly as a relational database gets ! ) 
+basically lets you iteratively 
+recursively , despite the name 
+not recursively , despite the name 
+selected so far 
+defines the neighbours of rows selected so far 
+selects a root set of rows and a query which defines the neighbours of rows selected so far 
+combining a query which selects a root set of rows and a query which defines the neighbours of rows selected so far 
+expand a query over a set of rows , by combining a query which selects a root set of rows and a query which defines the neighbours of rows selected so far 
+basically lets you iteratively ( not recursively , despite the name ) expand a query over a set of rows , by combining a query which selects a root set of rows and a query which defines the neighbours of rows selected so far 
+is the recursive common table expression ( RCTE ) , which basically lets you iteratively ( not recursively , despite the name ) expand a query over a set of rows , by combining a query which selects a root set of rows and a query which defines the neighbours of rows selected so far 
+is a bit clunky 
+'s general and powerful 
+supported in PostgreSQL , Firebird , SQL Server , and apparently in DB2 
+are supported in PostgreSQL , Firebird , SQL Server , and apparently in DB2 
+has a different but equivalent construct 
+support proper RCTEs 
+read that recent versions support proper RCTEs 
+have read that recent versions support proper RCTEs 
+support RCTEs 
+does not support RCTEs 
+wedded to MySQL 
+are n't wedded to MySQL 
+is basically a much better database all round 
+using PostgreSQL , which is basically a much better database all round 
+consider using PostgreSQL , which is basically a much better database all round 
+to consider using PostgreSQL , which is basically a much better database all round 
+urge you to consider using PostgreSQL , which is basically a much better database all round 
+would urge you to consider using PostgreSQL , which is basically a much better database all round 
+support general graphs , just trees 
+to support general graphs , just trees 
+need to support general graphs , just trees 
+do n't need to support general graphs , just trees 
+sounds like you do n't need to support general graphs , just trees 
+are more specific options open to you 
+is the classic but rather mindbending nested sets 
+store a path with each row 
+to store a path with each row 
+is to store a path with each row 
+represents the row 's position in the tree 
+node A a child of node B ? '' , `` what is node A and node B 's lowest common ancestor ? '' , etc 
+`` is node A a child of node B ? '' , `` what is node A and node B 's lowest common ancestor ? '' , etc 
+very efficiently do various queries about ancestry ( `` is node A a child of node B ? '' , `` what is node A and node B 's lowest common ancestor ? '' , etc ) 
+lets you very efficiently do various queries about ancestry ( `` is node A a child of node B ? '' , `` what is node A and node B 's lowest common ancestor ? '' , etc ) 
+is a prefix of the path for any subnode , which lets you very efficiently do various queries about ancestry ( `` is node A a child of node B ? '' , `` what is node A and node B 's lowest common ancestor ? '' , etc ) 
+has the property that the path for a node is a prefix of the path for any subnode , which lets you very efficiently do various queries about ancestry ( `` is node A a child of node B ? '' , `` what is node A and node B 's lowest common ancestor ? '' , etc ) 
+represents the row 's position in the tree , and has the property that the path for a node is a prefix of the path for any subnode , which lets you very efficiently do various queries about ancestry ( `` is node A a child of node B ? '' , `` what is node A and node B 's lowest common ancestor ? '' , etc ) 
+is a string which represents the row 's position in the tree , and has the property that the path for a node is a prefix of the path for any subnode , which lets you very efficiently do various queries about ancestry ( `` is node A a child of node B ? '' , `` what is node A and node B 's lowest common ancestor ? '' , etc ) 
+walking the tree from the root 
+encountered on the way with slashes 
+joining the IDs of the rows encountered on the way with slashes 
+walking the tree from the root , and joining the IDs of the rows encountered on the way with slashes 
+construct a path for a row by walking the tree from the root , and joining the IDs of the rows encountered on the way with slashes 
+could construct a path for a row by walking the tree from the root , and joining the IDs of the rows encountered on the way with slashes 
+construct 
+to construct 
+is simple to construct 
+rearrange the tree 
+maintain if you rearrange the tree 
+to maintain if you rearrange the tree 
+care to maintain if you rearrange the tree 
+is the root 's ID 
+adding CODE0 , where CODE1 is the root 's ID 
+restrict a query to a given tree simply by adding CODE0 , where CODE1 is the root 's ID 
+can restrict a query to a given tree simply by adding CODE0 , where CODE1 is the root 's ID 
+is probably the best way to store and query graph data 
+is not the only option 
+having all your data in a single database 
+using one against the advantages of having all your data in a single database 
+weigh the advantages of using one against the advantages of having all your data in a single database 
+suggest you weigh the advantages of using one against the advantages of having all your data in a single database 
+would suggest you weigh the advantages of using one against the advantages of having all your data in a single database 

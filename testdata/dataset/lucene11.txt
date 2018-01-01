@@ -1,0 +1,210 @@
+QUESTION:
+HTML:
+<p>What's your preferred method of providing a search facility on a website? Currently I prefer to use <a href="http://incubator.apache.org/lucene.net/" rel="nofollow" title="Lucene.net">Lucene.net</a> over Indexing Service / SQL Server full-text search (as there's nothing to set up server-side), but what other ways are being used out there?</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>We used both Lucene.net, Indexing Service and SQL Server full-text. For a project with large and heavy DB search functionality SQL search has an upper hand in terms of performance/resource hit. Otherwise Lucene is much better in all aspects.</p>&#xA;
+Comment:
+
+ANS:
+HTML:
+<p>you could use google, it's not going to be the fastest indexer but it does provide great results when you have no budget.</p>&#xA;
+Comment:
+HTML:
+<p>dtSearch is one we've often used, but I'm not really that big a fan of it.</p>&#xA;
+Comment:
+HTML:
+<p>A lot of people are using Google's custom search these days; even a couple of banks that I know of use it for their intranet.</p>&#xA;
+Comment:
+HTML:
+<p>We used both Lucene.net, Indexing Service and SQL Server full-text. For a project with large and heavy DB search functionality SQL search has an upper hand in terms of performance/resource hit. Otherwise Lucene is much better in all aspects.</p>&#xA;
+Comment:
+HTML:
+<p>If you need to index all the pages of your site (not just the ones Google indexes) or if you want to create a search for your intranet web sites, the <a href="http://www.google.com/enterprise/mini/index.html" rel="nofollow">Google Mini</a> is pretty sweet. It will cost you some money, but it is really easy to have it up and running within just a couple of hours. Depending on how many pages you need to index it can be expensive though.</p>&#xA;
+Comment:
+HTML:
+<p>Take a look at <a href="http://lucene.apache.org/solr/" rel="nofollow" title="Solr">Solr</a>. It uses Lucene for text indexing, but it is a full blown http server so you can post documents over http and do search using urls. The best part is that it gives you faceted searching out of the box which will require a lot of work if you do it yourself.</p>&#xA;
+Comment:
+Solr also provides other features that you might end up reimplementing by going with Lucene.Net. For example: Solr can replicate indexes from one machine to another, which can help with failover or performance. Solr can help deal with gigantic indexes by automatically distributing a query across mutliple "shard" servers. With DataImportHandler, Solr can crawl a SQL database and index the data contained therein without additional code (just XML config). The main potential downside is that if you need to customize the search code, you'll now have to do that customization in Java, not .NET.
+Let it be known there are downsides to Solr.  HTTP is an expensive and wasteful protocol - compared to native code running on the same machine as the web-application.  If you have redundancy built into your application layer already RE-CENTRALIZING the search by aggregating all searches to a single (or few) servers is not ideal for performance either.  By using Solr it becomes much more difficult to manage ever-changing indexes. It also is not a good paradigm fit if your applications have MANY different Lucene indexes or you search multiple indexes at once as part of your implementation.
+HTML:
+<p>I'm using <strong>dtSearch</strong> and I (kind of) like it.  The API isn't the greatest in the world for .NET but it can get the job done and it's pretty fast.  And it's cheap, so your boss will like it (~$1,000 US).</p>&#xA;&#xA;<p>The results leave something to be desired as it doesn't do any kind of semantic relevance rankings or anything fancy.  It does a better job than anything you can get out of MS SQL server though.</p>&#xA;&#xA;<p>It has a web spider that makes it easy to do quick search apps on a website.  If you need to you can use the API to create hooks into your database and to provide item level security - but you have to do the work yourself.  Their forum leaves something to be desired as well but maybe people will start posting dtSearch stuff here.  :)</p>&#xA;
+Comment:
+HTML:
+<p>Has anyone tried Microsoft search server express? </p>&#xA;&#xA;<p><a href="http://www.microsoft.com/enterprisesearch/serverproducts/searchserverexpress/default.aspx" rel="nofollow">http://www.microsoft.com/enterprisesearch/serverproducts/searchserverexpress/default.aspx</a></p>&#xA;&#xA;<p>I haven't tried it yet, but it could potentially be powerful. </p>&#xA;&#xA;<p>From the site it looks primarily geared towards sharepoint users but given its sdk I don't see why you couldn't use it for a regular old site search</p>&#xA;
+Comment:
+HTML:
+<p>I also recommend SOLR. It's easy to set up, maintain, and configure. I've found it to be stable and easy to scale. There's a c# package for interfacing with solr.</p>&#xA;
+Comment:
+
+Phrase:
+providing a search facility on a website 
+set up server-side 
+to set up server-side 
+'s nothing to set up server-side 
+use Lucene.net over Indexing Service / SQL Server full-text search ( as there 's nothing to set up server-side ) 
+to use Lucene.net over Indexing Service / SQL Server full-text search ( as there 's nothing to set up server-side ) 
+used out there 
+being used out there 
+are being used out there 
+prefer to use Lucene.net over Indexing Service / SQL Server full-text search ( as there 's nothing to set up server-side ) , but what other ways are being used out there 
+used both Lucene.net , Indexing Service and SQL Server full-text 
+has an upper hand in terms of performance/resource hit 
+is much better in all aspects 
+use google 
+could use google 
+be the fastest indexer 
+to be the fastest indexer 
+going to be the fastest indexer 
+'s not going to be the fastest indexer 
+have no budget 
+provide great results when you have no budget 
+does provide great results when you have no budget 
+used 
+'ve often used 
+is one we 've often used 
+'m not really that big a fan of it 
+using Google 's custom search these days 
+are using Google 's custom search these days 
+know of 
+use it for their intranet 
+used both Lucene.net , Indexing Service and SQL Server full-text 
+has an upper hand in terms of performance/resource hit 
+is much better in all aspects 
+create a search for your intranet web sites 
+to create a search for your intranet web sites 
+want to create a search for your intranet web sites 
+need to index all the pages of your site ( not just the ones Google indexes ) or if you want to create a search for your intranet web sites 
+is pretty sweet 
+cost you some money 
+will cost you some money 
+running within just a couple of hours 
+have it up and running within just a couple of hours 
+to have it up and running within just a couple of hours 
+is really easy to have it up and running within just a couple of hours 
+need to index 
+be expensive though 
+can be expensive though 
+Take a look at Solr 
+uses Lucene for text indexing 
+post documents over http 
+using urls 
+do search using urls 
+post documents over http and do search using urls 
+can post documents over http and do search using urls 
+is a full blown http server so you can post documents over http and do search using urls 
+do it yourself 
+require a lot of work if you do it yourself 
+will require a lot of work if you do it yourself 
+searching out of the box which will require a lot of work if you do it yourself 
+faceted searching out of the box which will require a lot of work if you do it yourself 
+gives you faceted searching out of the box which will require a lot of work if you do it yourself 
+is that it gives you faceted searching out of the box which will require a lot of work if you do it yourself 
+going with Lucene.Net 
+reimplementing by going with Lucene.Net 
+end up reimplementing by going with Lucene.Net 
+might end up reimplementing by going with Lucene.Net 
+also provides other features that you might end up reimplementing by going with Lucene.Net 
+help with failover or performance 
+can help with failover or performance 
+replicate indexes from one machine to another , which can help with failover or performance 
+can replicate indexes from one machine to another , which can help with failover or performance 
+distributing a query across mutliple `` shard '' servers 
+help deal with gigantic indexes by automatically distributing a query across mutliple `` shard '' servers 
+can help deal with gigantic indexes by automatically distributing a query across mutliple `` shard '' servers 
+contained therein without additional code ( just XML config ) 
+crawl a SQL database and index the data contained therein without additional code ( just XML config ) 
+can crawl a SQL database and index the data contained therein without additional code ( just XML config ) 
+customize the search code 
+to customize the search code 
+need to customize the search code 
+do that customization in Java , not . NET 
+to do that customization in Java , not . NET 
+have to do that customization in Java , not . NET 
+'ll now have to do that customization in Java , not . NET 
+is that if you need to customize the search code , you 'll now have to do that customization in Java , not . NET 
+are downsides to Solr 
+known there are downsides to Solr 
+be known there are downsides to Solr 
+Let it be known there are downsides to Solr 
+running on the same machine as the web-application 
+is an expensive and wasteful protocol - compared to native code running on the same machine as the web-application 
+built into your application layer 
+have redundancy built into your application layer 
+aggregating all searches to a single ( or few ) servers 
+already RE-CENTRALIZING the search by aggregating all searches to a single ( or few ) servers 
+is not ideal for performance 
+manage ever-changing indexes 
+to manage ever-changing indexes 
+becomes much more difficult to manage ever-changing indexes 
+using Solr it becomes much more difficult to manage ever-changing indexes 
+search multiple indexes at once as part of your implementation 
+have MANY different Lucene indexes or you search multiple indexes at once as part of your implementation 
+is not a good paradigm fit if your applications have MANY different Lucene indexes or you search multiple indexes at once as part of your implementation 
+using dtSearch and I ( kind of ) like it 
+'m using dtSearch and I ( kind of ) like it 
+NET 
+is n't the greatest in the world for . NET 
+done 
+get the job done 
+can get the job done 
+'s pretty fast 
+'s cheap 
+like it ( ~ $ 1,000 US ) 
+will like it ( ~ $ 1,000 US ) 
+do any kind of semantic relevance rankings or anything fancy 
+does n't do any kind of semantic relevance rankings or anything fancy 
+be desired as it does n't do any kind of semantic relevance rankings or anything fancy 
+to be desired as it does n't do any kind of semantic relevance rankings or anything fancy 
+leave something to be desired as it does n't do any kind of semantic relevance rankings or anything fancy 
+get out of MS SQL server though 
+can get out of MS SQL server though 
+does a better job than anything you can get out of MS SQL server though 
+do quick search apps on a website 
+to do quick search apps on a website 
+makes it easy to do quick search apps on a website 
+has a web spider that makes it easy to do quick search apps on a website 
+need to you 
+create hooks into your database 
+to create hooks into your database 
+provide item level security 
+to provide item level security 
+to create hooks into your database and to provide item level security 
+use the API to create hooks into your database and to provide item level security 
+can use the API to create hooks into your database and to provide item level security 
+do the work yourself 
+to do the work yourself 
+have to do the work yourself 
+posting dtSearch stuff here 
+start posting dtSearch stuff here 
+will start posting dtSearch stuff here 
+be desired as well but maybe people will start posting dtSearch stuff here 
+to be desired as well but maybe people will start posting dtSearch stuff here 
+leaves something to be desired as well but maybe people will start posting dtSearch stuff here 
+express 
+tried Microsoft search server express 
+tried it yet 
+have n't tried it yet 
+be powerful 
+could potentially be powerful 
+primarily geared towards sharepoint users 
+use it for a regular old site search 
+could n't use it for a regular old site search 
+see why you could n't use it for a regular old site search 
+do n't see why you could n't use it for a regular old site search 
+given its sdk I do n't see why you could n't use it for a regular old site search 
+primarily geared towards sharepoint users but given its sdk I do n't see why you could n't use it for a regular old site search 
+looks primarily geared towards sharepoint users but given its sdk I do n't see why you could n't use it for a regular old site search 
+also recommend SOLR 
+set up , maintain , and configure 
+to set up , maintain , and configure 
+'s easy to set up , maintain , and configure 
+scale 
+to scale 
+be stable and easy to scale 
+to be stable and easy to scale 
+found it to be stable and easy to scale 
+'ve found it to be stable and easy to scale 
+'s a c # package for interfacing with solr 

@@ -1,0 +1,114 @@
+QUESTION:
+HTML:
+<p>I'm using lucene in my project.&#xA;Here is my question:&#xA;should I use lucene to replace the whole search module which has been implemented with sql using a large number of <code>like</code> statement and accurate search by id or sth, &#xA;or should I just use lucene in fuzzy search(i mean full text search)?</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>Probably you should use lucene, unless the SQL search is very performant.</p>&#xA;&#xA;<p>We are right now moving to Solr (based on Lucene) because our search queries are inherently slow, and cannot be sped up with our database.... If you have reasonably large tables, your search queries will start to get really slow unless the DB has some kind of highly optimized free text search mechanisms.</p>&#xA;&#xA;<p>Thus, let Lucene do what it does best....</p>&#xA;
+Comment:
+You helped! Thank you!
+
+ANS:
+HTML:
+<p>I don't think using <strong>like</strong> statement abusively is a good idea.&#xA;And I believe the performance of lucene will be better than database.</p>&#xA;
+Comment:
+HTML:
+<p>Probably you should use lucene, unless the SQL search is very performant.</p>&#xA;&#xA;<p>We are right now moving to Solr (based on Lucene) because our search queries are inherently slow, and cannot be sped up with our database.... If you have reasonably large tables, your search queries will start to get really slow unless the DB has some kind of highly optimized free text search mechanisms.</p>&#xA;&#xA;<p>Thus, let Lucene do what it does best....</p>&#xA;
+Comment:
+You helped! Thank you!
+HTML:
+<p>I'm actually very impressed by Solr, at work we were looking for a replacement for our Google Mini (it's woefully inadequate for any serious site search) and were expecting something that would take a while to implement. Within 30 minutes of installing Solr we had done what we had expected to take at least a few days and provided us with a far more powerful search interface than we had before.</p>&#xA;&#xA;<p>You could probably use Solr to do quite a lot of clever things beyond a simple site search.</p>&#xA;
+Comment:
+
+Phrase:
+using lucene in my project 
+'m using lucene in my project 
+using a large number of CODE0 statement 
+implemented with sql using a large number of CODE0 statement and accurate search by id or sth 
+been implemented with sql using a large number of CODE0 statement and accurate search by id or sth 
+has been implemented with sql using a large number of CODE0 statement and accurate search by id or sth 
+replace the whole search module which has been implemented with sql using a large number of CODE0 statement and accurate search by id or sth 
+to replace the whole search module which has been implemented with sql using a large number of CODE0 statement and accurate search by id or sth 
+use lucene to replace the whole search module which has been implemented with sql using a large number of CODE0 statement and accurate search by id or sth 
+is my question : should I use lucene to replace the whole search module which has been implemented with sql using a large number of CODE0 statement and accurate search by id or sth 
+mean full text search 
+just use lucene in fuzzy search ( i mean full text search ) 
+is very performant 
+use lucene , unless the SQL search is very performant 
+should use lucene , unless the SQL search is very performant 
+are inherently slow 
+sped up with our database 
+be sped up with our database 
+can not be sped up with our database 
+are inherently slow , and can not be sped up with our database 
+Solr ( based on Lucene ) because our search queries are inherently slow , and can not be sped up with our database 
+to Solr ( based on Lucene ) because our search queries are inherently slow , and can not be sped up with our database 
+moving to Solr ( based on Lucene ) because our search queries are inherently slow , and can not be sped up with our database 
+are right now moving to Solr ( based on Lucene ) because our search queries are inherently slow , and can not be sped up with our database 
+have reasonably large tables 
+has some kind of highly optimized free text search mechanisms 
+get really slow unless the DB has some kind of highly optimized free text search mechanisms 
+to get really slow unless the DB has some kind of highly optimized free text search mechanisms 
+start to get really slow unless the DB has some kind of highly optimized free text search mechanisms 
+will start to get really slow unless the DB has some kind of highly optimized free text search mechanisms 
+does best 
+do what it does best 
+let Lucene do what it does best 
+helped 
+Thank you 
+is a good idea 
+using like statement abusively is a good idea 
+think using like statement abusively is a good idea 
+do n't think using like statement abusively is a good idea 
+be better than database 
+will be better than database 
+believe the performance of lucene will be better than database 
+is very performant 
+use lucene , unless the SQL search is very performant 
+should use lucene , unless the SQL search is very performant 
+are inherently slow 
+sped up with our database 
+be sped up with our database 
+can not be sped up with our database 
+are inherently slow , and can not be sped up with our database 
+Solr ( based on Lucene ) because our search queries are inherently slow , and can not be sped up with our database 
+to Solr ( based on Lucene ) because our search queries are inherently slow , and can not be sped up with our database 
+moving to Solr ( based on Lucene ) because our search queries are inherently slow , and can not be sped up with our database 
+are right now moving to Solr ( based on Lucene ) because our search queries are inherently slow , and can not be sped up with our database 
+have reasonably large tables 
+has some kind of highly optimized free text search mechanisms 
+get really slow unless the DB has some kind of highly optimized free text search mechanisms 
+to get really slow unless the DB has some kind of highly optimized free text search mechanisms 
+start to get really slow unless the DB has some kind of highly optimized free text search mechanisms 
+will start to get really slow unless the DB has some kind of highly optimized free text search mechanisms 
+does best 
+do what it does best 
+let Lucene do what it does best 
+helped 
+Thank you 
+looking for a replacement for our Google Mini 
+were looking for a replacement for our Google Mini 
+'s woefully inadequate for any serious site search 
+implement 
+to implement 
+take a while to implement 
+would take a while to implement 
+expecting something that would take a while to implement 
+were expecting something that would take a while to implement 
+were looking for a replacement for our Google Mini ( it 's woefully inadequate for any serious site search ) and were expecting something that would take a while to implement 
+'m actually very impressed by Solr , at work we were looking for a replacement for our Google Mini ( it 's woefully inadequate for any serious site search ) and were expecting something that would take a while to implement 
+installing Solr 
+take at least a few days 
+to take at least a few days 
+expected to take at least a few days 
+had expected to take at least a few days 
+had before 
+provided us with a far more powerful search interface than we had before 
+had expected to take at least a few days and provided us with a far more powerful search interface than we had before 
+done what we had expected to take at least a few days and provided us with a far more powerful search interface than we had before 
+had done what we had expected to take at least a few days and provided us with a far more powerful search interface than we had before 
+do quite a lot of clever things beyond a simple site search 
+to do quite a lot of clever things beyond a simple site search 
+use Solr to do quite a lot of clever things beyond a simple site search 
+could probably use Solr to do quite a lot of clever things beyond a simple site search 

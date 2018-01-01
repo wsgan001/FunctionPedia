@@ -1,0 +1,296 @@
+QUESTION:
+HTML:
+<p>Just saw a crash as we exceeded 255 columns. Maybe this question should go directly to POI, but lets say I do not want to disturb them in their effort to further develop the increadibly useful API it already is. ;-) The <a href="http://poi.apache.org/spreadsheet/limitations.html" rel="nofollow">limitations page</a> is not increadibly detailed.</p>&#xA;&#xA;<p>So: What are your experience of <em>actual</em> limitations assuming the output shall be readable in Excel? Has anyone used POI to benchmark &amp; explore soft &amp; hard limitations of POI-generated Excel files?</p>&#xA;&#xA;<p>The only limitations I can quickly find in the POI interface is the below. Microsoft lists <a href="http://office.microsoft.com/en-gb/excel/HP051992911033.aspx" rel="nofollow">further limitations</a> for Excel that do not seem to be covered in POI.</p>&#xA;&#xA;<p><em>EDIT: Oops. Just realized we have not refreshed POI in the last 5 years, so the code below may have been replaced 100 times over since then.</em></p>&#xA;&#xA;<p><em>EDIT: The code below has not changed since then and ver 3.2 of Oct 19, 2008.</em></p>&#xA;&#xA;<pre><code>/**&#xA; * @throws RuntimeException if the bounds are exceeded.&#xA; */&#xA;private void checkBounds(int cellNum) {&#xA;  if (cellNum &gt; 255) {&#xA;      throw new RuntimeException("You cannot have more than 255 columns "+&#xA;                "in a given row (IV).  Because Excel can't handle it");&#xA;  }&#xA;  else if (cellNum &lt; 0) {&#xA;      throw new RuntimeException("You cannot reference columns with an index of less then 0.");&#xA;  }&#xA;}&#xA;</code></pre>&#xA;
+Comment:
+
+ACCEPTED ANS:
+
+ANS:
+HTML:
+<p>One of the biggest limitations I found with POI for writing Excel files was that it keeps the entire file contents in memory before it is written to file. For very large files (many rows), this became a real problem, leading to frequent OutOfMemory exceptions.</p>&#xA;&#xA;<p>However, like you, this was with a very old version of POI. I am not sure if newer versions use memory more efficiently. </p>&#xA;
+Comment:
+HTML:
+<p>Another serious limitation (not very well explained in my opinion) is that HSSFCellStyle are limited inside a workbook (I think this is an excel limitation).</p>&#xA;&#xA;<p>You should not create a new style on every cell (because then, excel won't be able to open your workbook) but you have to keep a reference to them and reapply them when the cell style is similar.</p>&#xA;&#xA;<p>So, you'll have to manage an internal cache of HSSFCellStyle, like this one for example : <a href="https://sweetdev-ria.svn.sourceforge.net/svnroot/sweetdev-ria/sweetdev-ria/branches/sweetdev-ria-1.1/sweetdev-ria-core/src/main/java/com/ideo/sweetdevria/tag/html/export/formatter/cellStyleCache/CellStyleCacheManager.java" rel="nofollow">CellStyleCacheManager</a>.</p>&#xA;
+Comment:
+According to MSFT link above (http://office.microsoft.com/en-gb/excel/HP051992911033.aspx), you can have 4000 styles in a wb.
+Thanks to get the precise limit number ! That sounds big enough, hoewver, if you build a new CellStyle on each cell, you'll be limited to 266 rows of 15 columns (15*266=4000)... So, I think it's a limitation to keep in mind.
+HTML:
+<p>At paulgreg concerning your CellStyleCacheManager:&#xA;Although it is true, that this is a way to reuse styles, your setCellStyle() method expects an HSSFCellStyle parameter and the only way to create an HSSFCellStyle that I know of is to register it with the workbook by calling it's createCellStyle() method.</p>&#xA;&#xA;<p>Although the cells actually use less styles, don't you end up with the same number of Styles registered with the workbook as without the cache? Or is there some kind of purging of unused styles in HSSF that I'm not aware of?</p>&#xA;
+Comment:
+HTML:
+<p>Marliese, I get annoyed by this mistake in poi framework, and understood that I need a styleManager. These posts, make me feel all the work is done, until I came up the same conclusion as you. I don't want to reinvent the wheel, So I download the source of his framework and search for the uses of CellStyleManager.setCellStyle(). The fact is that in the code, two initial HSSFCellStyle objects are created, defaultCellStyle and cellStyle. Any time you customize a style use cellStyle, and then with CellStyleManager set it. If the style exists, it is reused, if not, it is created. Any other attemp to customize another style starts with a reset of cellStyle using the CellStyleHelper's function and the defaultCellStyle, which is left untouched for all the program. So in the end you will get two styles above the real needed, but so far better than use another api.</p>&#xA;&#xA;<p>As paulgreg says the code is spread all over the framework but I join all the code is needed in just two classes. I left them here, until I wrote to paulgreg and poi develop team to incorporate it on its jar, because I think that for unknow data to write in an excel you need this kind of manager.</p>&#xA;&#xA;<p>the changes are basically, that the manager knows the workbook, provides the style object, and implements the code of the CellStyleHelper. (They are less general because the manager needs to know the workbook and, overall, because you must use only a call of getGeneralStyle a time (because is the same object an it is reset in any call, but for the general use is the code that fits ) So to use it:</p>&#xA;&#xA;<pre><code>... Creates a workbook&#xA;CellStyleManager styleManager = new CellStyleManager(workbook);&#xA;... Create a cell&#xA;HSSFCellStyle style = styleManager.getGeneralStyle();&#xA;styleManager.setCellStyle(cell, style); // no more 4000 styles error!&#xA;</code></pre>&#xA;&#xA;<p>The code: Thanks PaulGreg!</p>&#xA;&#xA;<pre><code>// CellStyleCacheManager.java&#xA;&#xA;public class CellStyleCacheManager {&#xA;    protected Set cellStyles;&#xA;    protected HSSFCellStyle cellStyle;&#xA;    protected HSSFCellStyle defaultValuesCellStyle;&#xA;    protected HSSFWorkbook workbook;&#xA;&#xA;    public CellStyleCacheManager(HSSFWorkbook workbook) {&#xA;    	this.workbook = workbook;&#xA;    	this.cellStyles = new HashSet();&#xA;    	// El desperdicio de estilos será pués de dos&#xA;    	cellStyle = workbook.createCellStyle();&#xA;    	// Estilo almacenado para reiniciar el que se va a usar&#xA;    	defaultValuesCellStyle = workbook.createCellStyle();&#xA;    }&#xA;&#xA;    /** Si el estilo se crea con createCellStyle, ya no podremos hacer nada */&#xA;    public void setCellStyle(HSSFCell cell, HSSFCellStyle cellStyle) {&#xA;    	CellStyleWrapper cellStyleWrp = new CellStyleWrapper(cellStyle);&#xA;    	CellStyleWrapper cachedCellStyleWrp = null;&#xA;&#xA;    	Iterator it = cellStyles.iterator();&#xA;&#xA;    	while(it.hasNext() &amp;&amp; (cachedCellStyleWrp == null)) {&#xA;    		CellStyleWrapper tmpCachedCellStyleWrp = (CellStyleWrapper) it.next();&#xA;&#xA;    		if(tmpCachedCellStyleWrp.equals(cellStyleWrp)) {&#xA;    			// Si algún estilo coincide con el actual usamos ese&#xA;    			cachedCellStyleWrp = tmpCachedCellStyleWrp;&#xA;    		}&#xA;    	}&#xA;&#xA;    	if(cachedCellStyleWrp == null) {&#xA;    		// Si el estilo no existe creamos uno nuevo&#xA;    		HSSFCellStyle newCellStyle = workbook.createCellStyle();&#xA;    		CellStyleCacheManager.copyCellStyle(workbook, cellStyle, newCellStyle);&#xA;&#xA;    		CellStyleWrapper newWrp = new CellStyleWrapper(newCellStyle);&#xA;    		cellStyles.add(newWrp);&#xA;    		cachedCellStyleWrp = newWrp;&#xA;    	}&#xA;&#xA;    	cell.setCellStyle(cachedCellStyleWrp.getHSSFCellStyle());&#xA;    }&#xA;&#xA;    public HSSFCellStyle getGeneralStyle() {&#xA;    	copyCellStyle(workbook, cellStyle, defaultValuesCellStyle);&#xA;    	return cellStyle;&#xA;    }&#xA;&#xA;    public static void copyCellStyle(HSSFWorkbook wb, HSSFCellStyle c1, HSSFCellStyle c2) {&#xA;    	c2.setAlignment(c1.getAlignment());&#xA;    	c2.setBorderBottom(c1.getBorderBottom());&#xA;    	c2.setBorderLeft(c1.getBorderLeft());&#xA;    	c2.setBorderRight(c1.getBorderRight());&#xA;    	c2.setBorderTop(c1.getBorderTop());&#xA;    	c2.setBottomBorderColor(c1.getBottomBorderColor());&#xA;    	c2.setDataFormat(c1.getDataFormat());&#xA;    	c2.setFillBackgroundColor(c1.getFillBackgroundColor());&#xA;    	c2.setFillForegroundColor(c1.getFillForegroundColor());&#xA;    	c2.setFillPattern(c1.getFillPattern());&#xA;&#xA;    	try {&#xA;    		c2.setFont(wb.getFontAt(c1.getFontIndex()));&#xA;    	} catch(NullPointerException e) {&#xA;    		TLogger.getInstance().log(e.getMessage());&#xA;    	} catch(ArrayIndexOutOfBoundsException e) {&#xA;    		TLogger.getInstance().log("Be sure to have intialized all POI font objects !\n%s",e.getMessage());&#xA;    	}&#xA;&#xA;    	c2.setHidden(c1.getHidden());&#xA;    	c2.setIndention(c1.getIndention())
+Comment:
+That hashCode method looks not only rather slow but not very effective as a hash: `if(hashCode == 0) { hashCode = 17;      hashCode = 37 * v(cs.getBorderBottom()); hashCode = 37 * v(cs.getBorderLeft()); etc etc` ... hashCode is going to be set to the LAST of that long list of statements, is it not? So the only possible values are 0, 37, and -37 AFAICT.
+HTML:
+<p>Really it seems some kind strange, but the way I use the code I don't need the hashCode so, I left that code there. I think that is something paulgreg had started but didn't finish yet.</p>&#xA;
+Comment:
+"some kind strange" is a mild description. And why don't you "need" the hashCode? That's because you iterate over ALL of the cellStyles collection comparing against your new style!! At least a hash with only 3 possible values would give some chance of not doing an O(n) comparison. Aarrgghh!!
+HTML:
+<p>@albfan</p>&#xA;&#xA;<p>I liked your cache classes and converted them to .NET. I think I found a bug though.</p>&#xA;&#xA;<p>In getGeneralStyle() there is a call to copyCellStyle(workbook, cellStyle, defaultValuesCellStyle);. This call copies the values from the cellStyle object into the defaultValuesCellStyle thus overwriting the defaults. </p>&#xA;&#xA;<p>I think we want the opposite so it should be changed to: copyCellStyle(workbook, defaultValuesCellStyle, cellStyle);</p>&#xA;
+Comment:
+HTML:
+<p>In regards to the limit to the number of HSSFCellStyles in a workbook, I found an easier way than building a style manager. The POI CellUtils class has a setCellStyleProperty() method that will try and find the style in the workbook and use it or create it if it does not exist.</p>&#xA;&#xA;<p>This example uses POI 3.7 to write a date and only uses one format for every date cell (if the underlying cells all have the same style):</p>&#xA;&#xA;<pre><code>   public void writeFormattedDate(Workbook wb, Cell cell, Date date) {&#xA;            CellUtil.setCellStyleProperty(cell, wb, CellUtil.DATA_FORMAT, wb.getCreationHelper().createDataFormat().getFormat("dd-MMM-yyyy"));&#xA;            cell.setCellValue(date)&#xA;    }&#xA;</code></pre>&#xA;&#xA;<p>The major caveat to setCellStyleProperty() is that you can only set one property at a time. You could easily rewrite it to take a List of properties and values.</p>&#xA;&#xA;<p>In my tests the limit appeared to be about 4030 styles and then when opening the workbook it raises an error and removes excess formats.</p>&#xA;
+Comment:
+
+Phrase:
+saw a crash 
+exceeded 255 columns 
+go directly to POI 
+should go directly to POI 
+is 
+further develop the increadibly useful API it already is 
+to further develop the increadibly useful API it already is 
+disturb them in their effort to further develop the increadibly useful API it already is 
+to disturb them in their effort to further develop the increadibly useful API it already is 
+want to disturb them in their effort to further develop the increadibly useful API it already is 
+do not want to disturb them in their effort to further develop the increadibly useful API it already is 
+say I do not want to disturb them in their effort to further develop the increadibly useful API it already is 
+lets say I do not want to disturb them in their effort to further develop the increadibly useful API it already is 
+should go directly to POI , but lets say I do not want to disturb them in their effort to further develop the increadibly useful API it already is 
+is not increadibly detailed 
+be readable in Excel 
+shall be readable in Excel 
+assuming the output shall be readable in Excel 
+are your experience of actual limitations assuming the output shall be readable in Excel 
+used POI to benchmark & explore soft & hard limitations of POI-generated Excel files 
+find in the POI interface 
+can quickly find in the POI interface 
+is the below 
+covered in POI 
+be covered in POI 
+to be covered in POI 
+seem to be covered in POI 
+do not seem to be covered in POI 
+lists further limitations for Excel that do not seem to be covered in POI 
+refreshed POI in the last 5 years 
+have not refreshed POI in the last 5 years 
+realized we have not refreshed POI in the last 5 years 
+replaced 100 times over since then 
+been replaced 100 times over since then 
+have been replaced 100 times over since then 
+may have been replaced 100 times over since then 
+changed since then and ver 3.2 of Oct 19 , 2008 
+has not changed since then and ver 3.2 of Oct 19 , 2008 
+writing Excel files 
+found with POI for writing Excel files 
+file 
+to file 
+written to file 
+is written to file 
+keeps the entire file contents in memory before it is written to file 
+was that it keeps the entire file contents in memory before it is written to file 
+leading to frequent OutOfMemory exceptions 
+became a real problem , leading to frequent OutOfMemory exceptions 
+was with a very old version of POI 
+use memory more efficiently 
+am not sure if newer versions use memory more efficiently 
+not very well explained in my opinion 
+is an excel limitation 
+think this is an excel limitation 
+limited inside a workbook ( I think this is an excel limitation ) 
+are limited inside a workbook ( I think this is an excel limitation ) 
+is that HSSFCellStyle are limited inside a workbook ( I think this is an excel limitation ) 
+create a new style on every cell 
+should not create a new style on every cell 
+open your workbook 
+to open your workbook 
+be able to open your workbook 
+wo n't be able to open your workbook 
+keep a reference to them 
+is similar 
+reapply them when the cell style is similar 
+keep a reference to them and reapply them when the cell style is similar 
+to keep a reference to them and reapply them when the cell style is similar 
+have to keep a reference to them and reapply them when the cell style is similar 
+manage an internal cache of HSSFCellStyle 
+to manage an internal cache of HSSFCellStyle 
+have to manage an internal cache of HSSFCellStyle 
+'ll have to manage an internal cache of HSSFCellStyle 
+like this one for example : CellStyleCacheManager 
+have 4000 styles in a wb 
+can have 4000 styles in a wb 
+get the precise limit number 
+to get the precise limit number 
+build a new CellStyle on each cell 
+= 4000 
+266 = 4000 
+limited to 266 rows of 15 columns ( 15 * 266 = 4000 ) 
+be limited to 266 rows of 15 columns ( 15 * 266 = 4000 ) 
+'ll be limited to 266 rows of 15 columns ( 15 * 266 = 4000 ) 
+sounds big enough , hoewver , if you build a new CellStyle on each cell , you 'll be limited to 266 rows of 15 columns ( 15 * 266 = 4000 ) . 
+keep in mind 
+to keep in mind 
+'s a limitation to keep in mind 
+think it 's a limitation to keep in mind 
+concerning your CellStyleCacheManager 
+paulgreg concerning your CellStyleCacheManager 
+reuse styles 
+to reuse styles 
+is a way to reuse styles 
+is true , that this is a way to reuse styles 
+know of 
+create an HSSFCellStyle that I know of 
+to create an HSSFCellStyle that I know of 
+calling it 's createCellStyle ( 
+register it with the workbook by calling it 's createCellStyle ( 
+to register it with the workbook by calling it 's createCellStyle ( 
+is to register it with the workbook by calling it 's createCellStyle ( 
+expects an HSSFCellStyle parameter and the only way to create an HSSFCellStyle that I know of is to register it with the workbook by calling it 's createCellStyle ( 
+setCellStyle ( ) method expects an HSSFCellStyle parameter and the only way to create an HSSFCellStyle that I know of is to register it with the workbook by calling it 's createCellStyle ( ) method 
+use less styles 
+do n't 
+registered with the workbook as without the cache 
+'m not aware of 
+purging of unused styles in HSSF that I 'm not aware of 
+get annoyed by this mistake in poi framework 
+need a styleManager 
+understood that I need a styleManager 
+get annoyed by this mistake in poi framework , and understood that I need a styleManager 
+feel all the work 
+make me feel all the work 
+came up the same conclusion as you 
+done , until I came up the same conclusion as you 
+is done , until I came up the same conclusion as you 
+reinvent the wheel 
+to reinvent the wheel 
+want to reinvent the wheel 
+do n't want to reinvent the wheel 
+download the source of his framework and search for the uses of CellStyleManager.setCellStyle ( ) 
+created 
+are created 
+is that in the code , two initial HSSFCellStyle objects are created , defaultCellStyle and cellStyle 
+customize a style use cellStyle 
+set it 
+exists 
+created 
+is created 
+is reused , if not , it is created 
+customize another style 
+to customize another style 
+untouched for all the program 
+is left untouched for all the program 
+using the CellStyleHelper 's function and the defaultCellStyle , which is left untouched for all the program 
+starts with a reset of cellStyle using the CellStyleHelper 's function and the defaultCellStyle , which is left untouched for all the program 
+needed 
+get two styles above the real needed 
+better than use another api 
+get two styles above the real needed , but so far better than use another api 
+will get two styles above the real needed , but so far better than use another api 
+spread all over the framework 
+is spread all over the framework 
+needed in just two classes 
+is needed in just two classes 
+join all the code is needed in just two classes 
+says the code is spread all over the framework but I join all the code is needed in just two classes 
+incorporate it on its jar 
+to incorporate it on its jar 
+write in an excel 
+to write in an excel 
+need this kind of manager 
+think that for unknow data to write in an excel you need this kind of manager 
+develop team to incorporate it on its jar , because I think that for unknow data to write in an excel you need this kind of manager 
+wrote to paulgreg and poi develop team to incorporate it on its jar , because I think that for unknow data to write in an excel you need this kind of manager 
+left them here , until I wrote to paulgreg and poi develop team to incorporate it on its jar , because I think that for unknow data to write in an excel you need this kind of manager 
+knows the workbook 
+provides the style object 
+implements the code of the CellStyleHelper 
+knows the workbook , provides the style object , and implements the code of the CellStyleHelper 
+are basically , that the manager knows the workbook , provides the style object , and implements the code of the CellStyleHelper 
+are less general because the manager 
+know the workbook 
+is reset in any call 
+fits 
+is the code that fits 
+is the same object an it is reset in any call , but for the general use is the code that fits 
+use it 
+to use it 
+use only a call of getGeneralStyle a time ( because is the same object an it is reset in any call , but for the general use is the code that fits ) So to use it 
+must use only a call of getGeneralStyle a time ( because is the same object an it is reset in any call , but for the general use is the code that fits ) So to use it 
+, overall , because you must use only a call of getGeneralStyle a time ( because is the same object an it is reset in any call , but for the general use is the code that fits ) So to use it 
+know the workbook and , overall , because you must use only a call of getGeneralStyle a time ( because is the same object an it is reset in any call , but for the general use is the code that fits ) So to use it 
+to know the workbook and , overall , because you must use only a call of getGeneralStyle a time ( because is the same object an it is reset in any call , but for the general use is the code that fits ) So to use it 
+needs to know the workbook and , overall , because you must use only a call of getGeneralStyle a time ( because is the same object an it is reset in any call , but for the general use is the code that fits ) So to use it 
+= 0 
+= 17 
+looks not only rather slow but not very effective as a hash : ` if ( hashCode = = 0 ) -LCB- hashCode = 17 ; hashCode = 37 * v ( cs.getBorderBottom ( ) ) ; hashCode = 37 * v ( cs.getBorderLeft ( ) ) ; etc etc ` . 
+set to the LAST of that long list of statements 
+be set to the LAST of that long list of statements 
+to be set to the LAST of that long list of statements 
+going to be set to the LAST of that long list of statements 
+is going to be set to the LAST of that long list of statements 
+is it 
+AFAICT 
+are 0 , 37 , and -37 AFAICT 
+seems some kind strange 
+need the hashCode so 
+do n't need the hashCode so 
+use the code I do n't need the hashCode so 
+left that code there 
+started 
+had started 
+is something paulgreg had started 
+think that is something paulgreg had started 
+finish yet 
+did n't finish yet 
+think that is something paulgreg had started but did n't finish yet 
+is a mild description 
+`` need '' the hashCode 
+do n't you `` need '' the hashCode 
+comparing against your new style 
+iterate over ALL of the cellStyles collection comparing against your new style 
+'s because you iterate over ALL of the cellStyles collection comparing against your new style 
+doing an O ( n ) comparison 
+give some chance of not doing an O ( n ) comparison 
+would give some chance of not doing an O ( n ) comparison 
+classes 
+converted them to 
+classes and converted them to 
+liked your cache classes and converted them to . NET 
+found a bug though 
+think I found a bug though 
+copyCellStyle ( workbook , cellStyle , defaultValuesCellStyle ) 
+to copyCellStyle ( workbook , cellStyle , defaultValuesCellStyle ) 
+is a call to copyCellStyle ( workbook , cellStyle , defaultValuesCellStyle ) 
+overwriting the defaults 
+object into the defaultValuesCellStyle thus overwriting the defaults 
+call copies the values from the cellStyle object into the defaultValuesCellStyle thus overwriting the defaults 
+to 
+changed to : copyCellStyle ( workbook , defaultValuesCellStyle , cellStyle ) 
+be changed to : copyCellStyle ( workbook , defaultValuesCellStyle , cellStyle ) 
+should be changed to : copyCellStyle ( workbook , defaultValuesCellStyle , cellStyle ) 
+want the opposite so it should be changed to : copyCellStyle ( workbook , defaultValuesCellStyle , cellStyle ) 
+think we want the opposite so it should be changed to : copyCellStyle ( workbook , defaultValuesCellStyle , cellStyle ) 
+regards to the limit to the number of HSSFCellStyles in a workbook 
+building a style manager 
+found an easier way than building a style manager 
+try and find the style in the workbook 
+use it 
+exist 
+does not exist 
+create it if it does not exist 
+use it or create it if it does not exist 
+try and find the style in the workbook and use it or create it if it does not exist 
+will try and find the style in the workbook and use it or create it if it does not exist 
+has a setCellStyleProperty ( ) method that will try and find the style in the workbook and use it or create it if it does not exist 
+write a date 
+to write a date 
+uses POI 3.7 to write a date 
+have the same style 
+only uses one format for every date cell ( if the underlying cells all have the same style ) 
+uses POI 3.7 to write a date and only uses one format for every date cell ( if the underlying cells all have the same style ) 
+set one property at a time 
+can only set one property at a time 
+is that you can only set one property at a time 
+setCellStyleProperty ( ) is that you can only set one property at a time 
+to setCellStyleProperty ( ) is that you can only set one property at a time 
+take a List of properties and values 
+to take a List of properties and values 
+rewrite it to take a List of properties and values 
+could easily rewrite it to take a List of properties and values 
+be about 4030 styles 
+to be about 4030 styles 
+appeared to be about 4030 styles 
+opening the workbook 
+raises an error 
+removes excess formats 
+raises an error and removes excess formats 

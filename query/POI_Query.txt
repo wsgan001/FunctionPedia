@@ -1,0 +1,20 @@
+Error loading Excel file with images in POI
+Apache POI 3.13 Offline Offset elements for a .doc
+Unable to insert values into existing work book
+set specific cell width in Apache POI
+Index .docx type documents using apache poi
+cant find close method on Apache WorkbookFactory
+Exit from reading file with apache poi xssf
+Apache POI supports only ScatterCharts and LineCharts why?
+Convert multiple files into PDF
+delete the specific rows without removing the contents and without using shiftRows funtion 
+NullPointerException on toCTFont method from ApachePOI
+multiple alignment to one style POI
+How to colspan a table in word with APACHE POI
+Convert ppt to png with apache poi
+How to get the row with the actual index while iterator skips rows that are null
+Vanishing CellStyles?
+How to set background color (Page Color) for word document (.doc or .docx) in Java?
+How do I iterate all the rows in a spreadsheet (including null)
+how to insert frame in word document using poi or any other API
+How to get excel column (.getCell value) by searching for a string with Apache POI?

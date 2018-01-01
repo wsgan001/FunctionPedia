@@ -1,0 +1,178 @@
+QUESTION:
+HTML:
+<p>We're currently using Lucene 2.1.0 for our site search and we've hit a difficult problem: one of our index fields is being ignored during a targeted search. Here is the code for adding the field to a document in our index:</p>&#xA;&#xA;<pre><code>// Add market_local to index&#xA;contactDocument.add(&#xA;    new Field(&#xA;        "market_local"&#xA;        , StringUtils.objectToString(&#xA;            currClip.get(&#xA;                "market_local"&#xA;            )&#xA;        )&#xA;        , Field.Store.YES&#xA;        , Field.Index.UN_TOKENIZED &#xA;    )&#xA;);&#xA;</code></pre>&#xA;&#xA;<p>Running a query ( * ) against the index will return the following results:</p>&#xA;&#xA;<pre><code>Result 1:&#xA;    title: Foo Bar&#xA;    market_local: Local&#xA;&#xA;Result 2:&#xA;    title: Bar Foo&#xA;    market_local: National&#xA;</code></pre>&#xA;&#xA;<p>Running a targeted query:</p>&#xA;&#xA;<pre><code>+( market_local:Local )&#xA;</code></pre>&#xA;&#xA;<p>won't find any results.</p>&#xA;&#xA;<p>I realize this is a highly specific question, I'm just trying to get information on where to start debugging this issue, as I'm a Lucene newbie.</p>&#xA;&#xA;<p><hr /></p>&#xA;&#xA;<p><strong>UPDATE</strong></p>&#xA;&#xA;<p>Installed Luke, checking out latest index... the Field *market_local* is available in searches, so if I execute something like:</p>&#xA;&#xA;<pre><code>market_local:Local&#xA;</code></pre>&#xA;&#xA;<p>The search works correctly (in Luke). I'm going over our Analyzer code now, is there any way I could chalk this issue up to the fact that our search application is using Lucene 2.1.0 and the latest version of Luke is using 2.3.0?</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>For debugging Lucene, the best tool to use is <a href="http://www.getopt.org/luke/">Luke</a>, which lets you poke around in the index itself to see what got indexed, carry out searches, etc. I recommend downloading it, pointing it at your index, and seeing what's in there.</p>&#xA;
+Comment:
+My eyes bleed... Luke is ugly! (But it does the trick. Thanks. +1)
+
+ANS:
+HTML:
+<p>For debugging Lucene, the best tool to use is <a href="http://www.getopt.org/luke/">Luke</a>, which lets you poke around in the index itself to see what got indexed, carry out searches, etc. I recommend downloading it, pointing it at your index, and seeing what's in there.</p>&#xA;
+Comment:
+My eyes bleed... Luke is ugly! (But it does the trick. Thanks. +1)
+HTML:
+<p>The <a href="http://wiki.apache.org/lucene-java/LuceneFAQ#head-3558e5121806fb4fce80fc022d889484a9248b71" rel="nofollow">section on "Why am I getting no hits?"</a> in the Lucene FAQ has some suggestions you might find useful.  You're using Field.Index.UN_TOKENIZED, so no Analyzer will be used for indexing (I think).  If you're using an Analyzer when you're searching then that might be the root of your problem - the indexing and searching Analyzers should be the same to make sure you get the right hits.</p>&#xA;
+Comment:
+HTML:
+<p>Another simple thing to do would be to use a debugger or logging statement to check the value of </p>&#xA;&#xA;<blockquote>&#xA;  <p>StringUtils.objectToString(currClip.get("market_local"))</p>&#xA;</blockquote>&#xA;&#xA;<p>to make sure it is what you think it is.</p>&#xA;
+Comment:
+HTML:
+<p>Luke is bundled with Lucene, but you can tell Luke to use another version of Lucene. Say "lucene-core-2.1.0.jar" contains Lucene 2.1.0 that you want to use and "luke.jar" contains Luke with Lucene 2.3.0. Then you can start Luke with the following command.</p>&#xA;&#xA;<blockquote>&#xA;  <p>java -classpath lucene-core-2.1.0.jar;luke.jar org.getopt.luke.Luke</p>&#xA;</blockquote>&#xA;&#xA;<p>(The trick is to put your version of Lucene before Luke on the classpath. Also, This is on Windows. On Unix, replace ";" with ":".)</p>&#xA;&#xA;<p>As you can check in Luke,</p>&#xA;&#xA;<blockquote>&#xA;  <p>+( market_local:Local )</p>&#xA;</blockquote>&#xA;&#xA;<p>gets rewritten to</p>&#xA;&#xA;<blockquote>&#xA;  <p>market_local:Local</p>&#xA;</blockquote>&#xA;&#xA;<p>if <a href="http://lucene.apache.org/java/2_3_2/api/org/apache/lucene/search/Query.html#rewrite(org.apache.lucene.index.IndexReader)" rel="nofollow">the rewrite(IndexReader) method of the Query object</a> is called. The two queries should be equivalent so there might be a bug in 2.1. If you have to use 2.1, you can try to manually call that method before passing the Query object to the IndexSearcher.</p>&#xA;
+Comment:
+
+Phrase:
+using Lucene 2.1.0 for our site search 
+'re currently using Lucene 2.1.0 for our site search 
+hit a difficult problem 
+'ve hit a difficult problem 
+ignored during a targeted search 
+being ignored during a targeted search 
+is being ignored during a targeted search 
+is 
+adding the field to a document in our index 
+return the following results 
+will return the following results 
+Running a query ( * ) against the index will return the following results 
+Running a targeted query 
+find any results 
+wo n't find any results 
+is a highly specific question 
+realize this is a highly specific question 
+debugging this issue 
+start debugging this issue 
+to start debugging this issue 
+'m a Lucene newbie 
+get information on where to start debugging this issue , as I 'm a Lucene newbie 
+to get information on where to start debugging this issue , as I 'm a Lucene newbie 
+trying to get information on where to start debugging this issue , as I 'm a Lucene newbie 
+'m just trying to get information on where to start debugging this issue , as I 'm a Lucene newbie 
+checking out latest index . 
+is available in searches 
+execute something like 
+works correctly ( in Luke ) 
+going over our Analyzer code now 
+'m going over our Analyzer code now 
+using Lucene 2.1.0 
+is using Lucene 2.1.0 
+using 2.3.0 
+is using 2.3.0 
+chalk this issue up to the fact that our search application is using Lucene 2.1.0 and the latest version of Luke is using 2.3.0 
+could chalk this issue up to the fact that our search application is using Lucene 2.1.0 and the latest version of Luke is using 2.3.0 
+use 
+to use 
+debugging Lucene , the best tool to use 
+is 
+poke around in the index 
+carry out searches 
+got indexed , carry out searches 
+see what got indexed , carry out searches , etc 
+to see what got indexed , carry out searches , etc 
+lets you poke around in the index itself to see what got indexed , carry out searches , etc 
+downloading it 
+pointing it at your index 
+'s in there 
+seeing what 's in there 
+downloading it , pointing it at your index , and seeing what 's in there 
+recommend downloading it , pointing it at your index , and seeing what 's in there 
+is ugly 
+does the trick 
+use 
+to use 
+debugging Lucene , the best tool to use 
+is 
+poke around in the index 
+carry out searches 
+got indexed , carry out searches 
+see what got indexed , carry out searches , etc 
+to see what got indexed , carry out searches , etc 
+lets you poke around in the index itself to see what got indexed , carry out searches , etc 
+downloading it 
+pointing it at your index 
+'s in there 
+seeing what 's in there 
+downloading it , pointing it at your index , and seeing what 's in there 
+recommend downloading it , pointing it at your index , and seeing what 's in there 
+is ugly 
+does the trick 
+getting no hits 
+find useful 
+might find useful 
+has some suggestions you might find useful 
+think 
+used for indexing ( I think ) 
+be used for indexing ( I think ) 
+will be used for indexing ( I think ) 
+using Field.Index.UN _ TOKENIZED , so no Analyzer will be used for indexing ( I think ) 
+'re using Field.Index.UN _ TOKENIZED , so no Analyzer will be used for indexing ( I think ) 
+be the root of your problem - the indexing 
+might be the root of your problem - the indexing 
+searching then that might be the root of your problem - the indexing 
+make sure 
+to make sure 
+be the same to make sure 
+should be the same to make sure 
+searching Analyzers should be the same to make sure 
+searching then that might be the root of your problem - the indexing and searching Analyzers should be the same to make sure 
+'re searching then that might be the root of your problem - the indexing and searching Analyzers should be the same to make sure 
+using an Analyzer when you 're searching then that might be the root of your problem - the indexing and searching Analyzers should be the same to make sure 
+'re using an Analyzer when you 're searching then that might be the root of your problem - the indexing and searching Analyzers should be the same to make sure 
+hits 
+get the right hits 
+do 
+to do 
+check the value of 
+to check the value of 
+use a debugger or logging statement to check the value of 
+to use a debugger or logging statement to check the value of 
+be to use a debugger or logging statement to check the value of 
+would be to use a debugger or logging statement to check the value of 
+StringUtils.objectToString 
+currClip.get ( `` market_local '' ) 
+StringUtils.objectToString ( currClip.get ( `` market_local '' ) ) 
+make sure 
+to make sure 
+is 
+think it is 
+is what you think it is 
+bundled with Lucene 
+is bundled with Lucene 
+use another version of Lucene 
+to use another version of Lucene 
+tell Luke to use another version of Lucene 
+can tell Luke to use another version of Lucene 
+use 
+to use 
+want to use 
+contains Luke with Lucene 2.3.0 
+contains Lucene 2.1.0 that you want to use and `` luke.jar '' contains Luke with Lucene 2.3.0 
+Say `` lucene-core-2 .1.0 . jar '' contains Lucene 2.1.0 that you want to use and `` luke.jar '' contains Luke with Lucene 2.3.0 
+start Luke with the following command 
+can start Luke with the following command 
+put your version of Lucene before Luke on the classpath 
+to put your version of Lucene before Luke on the classpath 
+is to put your version of Lucene before Luke on the classpath 
+is on Windows 
+'' ; '' with '' 
+check in Luke 
+can check in Luke 
+to 
+rewritten to 
+gets rewritten to 
+called 
+is called 
+be a bug in 2.1 
+might be a bug in 2.1 
+be equivalent so there might be a bug in 2.1 
+should be equivalent so there might be a bug in 2.1 
+use 2.1 
+to use 2.1 
+have to use 2.1 
+passing the Query object to the IndexSearcher 
+manually call that method before passing the Query object to the IndexSearcher 
+to manually call that method before passing the Query object to the IndexSearcher 
+try to manually call that method before passing the Query object to the IndexSearcher 
+can try to manually call that method before passing the Query object to the IndexSearcher 

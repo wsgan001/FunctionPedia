@@ -1,0 +1,190 @@
+QUESTION:
+HTML:
+<p>I am looking into mechanisms for better search capabilities against our database.  It is currently a huge bottleneck (causing long-lasting queries that are hurting our database performance).</p>&#xA;&#xA;<p>My boss wanted me to look into <a href="http://lucene.apache.org/solr/" rel="nofollow">Solr</a>, but on closer inspection, it seems we actually want some kind of DB integration mechanism with Lucene itself.</p>&#xA;&#xA;<p>From the <a href="http://wiki.apache.org/lucene-java/LuceneFAQ#head-109358021acbfc89456e446740dc2bbf9049950f" rel="nofollow">Lucene FAQ</a>, they recommend <a href="http://search.hibernate.org/" rel="nofollow">Hibernate Search</a>, <a href="http://www.compass-project.org/" rel="nofollow">Compass</a>, and <strike><a href="http://www.dbsight.net/" rel="nofollow">DBSight</a></strike>.</p>&#xA;&#xA;<p>As a background of our current technology stack, we are using straight JSPs on Tomcat, no Hibernate, no other frameworks on top of it... just straight Java, JSP, and JDBC against a DB2 database.</p>&#xA;&#xA;<p>Given that, it seems Hibernate Search might be a bit more difficult to integrate into our system, though it might be nice to have the option of using Hibernate after such an integration.</p>&#xA;&#xA;<p>Does anyone have any experiences they can share with using one of these tools (or other similar Lucene based solutions) that might help in picking the right tool?</p>&#xA;&#xA;<p>It needs to be a FOSS solution, and ideally will manage updating Lucene with changes from the database automagicly (though efficiently), without extra effort to notify the tool when changes have been made (otherwise, it seems rolling my own Lucene solution would be just as good).  Also, we have multiple application servers with just 1 database (+failover), so it would be nice if it is easy to use the solution from all application servers seamlessly.</p>&#xA;&#xA;<p>I am continuing to inspect the options now, but it would be really helpful to utilize other people's experiences.</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+
+ANS:
+HTML:
+<p>For a pure performance boost with searching Lucene will certainly help out a lot.  Only index what you care about/need and you should be good.  You could use Hibernate or some other piece if you like but I don't think it is required.</p>&#xA;
+Comment:
+Thanks for the response!  Unfortunately, I would really like to see what these frameworks can provide so I don't have to roll my own full-fledged solution.
+HTML:
+<p>Well, it seems DBSight <a href="http://www.dbsight.net/index.php?q=node/42" rel="nofollow">doesn't meet the FOSS requirement</a>, so unless it is an absolutely stellar solution, it is not an option for me right now...</p>&#xA;
+Comment:
+HTML:
+<p>I have had good experiences with Compass. It has really good integration with hibernate and can mirror data changes made through hibernate and jdbc directly to the Lucene indexes though its GPS devices <a href="http://www.compass-project.org/docs/1.2.2/reference/html/gps-jdbc.html" rel="nofollow">http://www.compass-project.org/docs/1.2.2/reference/html/gps-jdbc.html</a>.</p>&#xA;&#xA;<p>Maintaining the Lucene indexes on all your application servers may be an issue. If you have multiple App servers updating the db, then you may hit some issues with keeping the index in sync with all the changes. Compass may have an alternate mechanism for handling this now.</p>&#xA;&#xA;<p>The Alfresco Project (CMS) also uses Lucene and have a mechanism for replicating Lucene index changes between servers that may be useful in handling these issues.</p>&#xA;&#xA;<p>We started using Compass before Hibernate Search was really off the ground so I cannot offer any comparison with it.</p>&#xA;
+Comment:
+HTML:
+<p>When you say "search against a DB", what do you mean?</p>&#xA;&#xA;<p>Relational databases and information retrieval systems use very different approaches for good reason. What kind of data are you searching? What kind of queries do you perform?</p>&#xA;&#xA;<p>If I were going to implement an inverted index on top of a database, as Compass does, I would not use their approach, which is to implement Lucene's <code>Directory</code> abstraction with BLOBs. Rather, I'd implement Lucene's <code>IndexReader</code> abstraction.</p>&#xA;&#xA;<p>Relational databases are quite capable of maintaining indexes. The value that Lucene brings in this context is its analysis capabilities, which are most useful for unstructured text records. A good approach would leverage the strengths of each tool.</p>&#xA;&#xA;<p>As updates are made to the index, Lucene creates more segments (additional files or BLOBs), which degrade performance until a costly "optimize" procedure is used. Most databases will amortize this cost over each index update, giving you more stable performance.</p>&#xA;
+Comment:
+HTML:
+<p>LuSql <a href="http://code.google.com/p/lusql/" rel="nofollow">http://code.google.com/p/lusql/</a> allows you to load the contents of a JDBC-accessible database into Lucene, making it searchable. It is highly optimized and multi-threaded. I am the author of LuSql and will be coming out with a new version (re-architected with a new plugable architecture) in the next month.</p>&#xA;
+Comment:
+
+Phrase:
+looking into mechanisms for better search capabilities against our database 
+am looking into mechanisms for better search capabilities against our database 
+hurting our database performance 
+are hurting our database performance 
+causing long-lasting queries that are hurting our database performance 
+is currently a huge bottleneck ( causing long-lasting queries that are hurting our database performance ) 
+look into Solr 
+to look into Solr 
+wanted me to look into Solr 
+Lucene itself 
+want some kind of DB integration mechanism with Lucene itself 
+seems we actually want some kind of DB integration mechanism with Lucene itself 
+recommend Hibernate Search , Compass , and DBSight 
+using straight JSPs on Tomcat , no Hibernate , no other frameworks on top of it . 
+are using straight JSPs on Tomcat , no Hibernate , no other frameworks on top of it . 
+integrate into our system 
+to integrate into our system 
+using Hibernate after such an integration 
+have the option of using Hibernate after such an integration 
+to have the option of using Hibernate after such an integration 
+be nice to have the option of using Hibernate after such an integration 
+might be nice to have the option of using Hibernate after such an integration 
+be a bit more difficult to integrate into our system , though it might be nice to have the option of using Hibernate after such an integration 
+might be a bit more difficult to integrate into our system , though it might be nice to have the option of using Hibernate after such an integration 
+seems Hibernate Search might be a bit more difficult to integrate into our system , though it might be nice to have the option of using Hibernate after such an integration 
+based solutions 
+picking the right tool 
+help in picking the right tool 
+might help in picking the right tool 
+using one of these tools ( or other similar Lucene based solutions ) that might help in picking the right tool 
+share with using one of these tools ( or other similar Lucene based solutions ) that might help in picking the right tool 
+can share with using one of these tools ( or other similar Lucene based solutions ) that might help in picking the right tool 
+have any experiences they can share with using one of these tools ( or other similar Lucene based solutions ) that might help in picking the right tool 
+be a FOSS solution 
+to be a FOSS solution 
+needs to be a FOSS solution 
+updating Lucene with changes from the database automagicly ( though efficiently ) 
+manage updating Lucene with changes from the database automagicly ( though efficiently ) 
+ideally will manage updating Lucene with changes from the database automagicly ( though efficiently ) 
+rolling my own Lucene solution 
+be just as good 
+would be just as good 
+seems rolling my own Lucene solution would be just as good 
+made ( otherwise , it seems rolling my own Lucene solution would be just as good ) 
+been made ( otherwise , it seems rolling my own Lucene solution would be just as good ) 
+have been made ( otherwise , it seems rolling my own Lucene solution would be just as good ) 
+notify the tool when changes have been made ( otherwise , it seems rolling my own Lucene solution would be just as good ) 
+to notify the tool when changes have been made ( otherwise , it seems rolling my own Lucene solution would be just as good ) 
+needs to be a FOSS solution , and ideally will manage updating Lucene with changes from the database automagicly ( though efficiently ) , without extra effort to notify the tool when changes have been made ( otherwise , it seems rolling my own Lucene solution would be just as good ) 
+use the solution from all application servers seamlessly 
+to use the solution from all application servers seamlessly 
+is easy to use the solution from all application servers seamlessly 
+be nice if it is easy to use the solution from all application servers seamlessly 
+would be nice if it is easy to use the solution from all application servers seamlessly 
+have multiple application servers with just 1 database ( + failover ) , so it would be nice if it is easy to use the solution from all application servers seamlessly 
+inspect the options now 
+to inspect the options now 
+continuing to inspect the options now 
+am continuing to inspect the options now 
+utilize other people 's experiences 
+to utilize other people 's experiences 
+be really helpful to utilize other people 's experiences 
+would be really helpful to utilize other people 's experiences 
+help out a lot 
+will certainly help out a lot 
+searching Lucene will certainly help out a lot 
+care about/need 
+be good 
+should be good 
+required 
+is required 
+think it is required 
+do n't think it is required 
+like but I do n't think it is required 
+use Hibernate or some other piece if you like but I do n't think it is required 
+could use Hibernate or some other piece if you like but I do n't think it is required 
+roll my own full-fledged solution 
+to roll my own full-fledged solution 
+have to roll my own full-fledged solution 
+do n't have to roll my own full-fledged solution 
+provide so I do n't have to roll my own full-fledged solution 
+can provide so I do n't have to roll my own full-fledged solution 
+see what these frameworks can provide so I do n't have to roll my own full-fledged solution 
+to see what these frameworks can provide so I do n't have to roll my own full-fledged solution 
+like to see what these frameworks can provide so I do n't have to roll my own full-fledged solution 
+would really like to see what these frameworks can provide so I do n't have to roll my own full-fledged solution 
+meet the FOSS requirement 
+does n't meet the FOSS requirement 
+is an absolutely stellar solution 
+is not an option for me right now 
+seems DBSight does n't meet the FOSS requirement , so unless it is an absolutely stellar solution , it is not an option for me right now 
+had good experiences with Compass 
+have had good experiences with Compass 
+has really good integration with hibernate 
+made through hibernate and jdbc 
+mirror data changes made through hibernate and jdbc directly to the Lucene indexes though its GPS devices http://www.compass-project.org/docs/1.2.2/reference/html/gps-jdbc.html 
+can mirror data changes made through hibernate and jdbc directly to the Lucene indexes though its GPS devices http://www.compass-project.org/docs/1.2.2/reference/html/gps-jdbc.html 
+has really good integration with hibernate and can mirror data changes made through hibernate and jdbc directly to the Lucene indexes though its GPS devices http://www.compass-project.org/docs/1.2.2/reference/html/gps-jdbc.html 
+be an issue 
+may be an issue 
+Maintaining the Lucene indexes on all your application servers may be an issue 
+updating the db 
+have multiple App servers updating the db 
+keeping the index in sync with all the changes 
+hit some issues with keeping the index in sync with all the changes 
+may hit some issues with keeping the index in sync with all the changes 
+handling this now 
+have an alternate mechanism for handling this now 
+may have an alternate mechanism for handling this now 
+also uses Lucene 
+handling these issues 
+be useful in handling these issues 
+may be useful in handling these issues 
+replicating Lucene index changes between servers that may be useful in handling these issues 
+have a mechanism for replicating Lucene index changes between servers that may be useful in handling these issues 
+also uses Lucene and have a mechanism for replicating Lucene index changes between servers that may be useful in handling these issues 
+offer any comparison with it 
+can not offer any comparison with it 
+was really off the ground so I can not offer any comparison with it 
+using Compass before Hibernate Search was really off the ground so I can not offer any comparison with it 
+started using Compass before Hibernate Search was really off the ground so I can not offer any comparison with it 
+say `` search against a DB '' 
+mean 
+use very different approaches for good reason 
+searching 
+perform 
+does 
+implement an inverted index on top of a database , as Compass does 
+to implement an inverted index on top of a database , as Compass does 
+going to implement an inverted index on top of a database , as Compass does 
+were going to implement an inverted index on top of a database , as Compass does 
+implement Lucene 's CODE0 abstraction with BLOBs 
+to implement Lucene 's CODE0 abstraction with BLOBs 
+is to implement Lucene 's CODE0 abstraction with BLOBs 
+use their approach , which is to implement Lucene 's CODE0 abstraction with BLOBs 
+would not use their approach , which is to implement Lucene 's CODE0 abstraction with BLOBs 
+implement Lucene 's CODE1 abstraction 
+'d implement Lucene 's CODE1 abstraction 
+maintaining indexes 
+are quite capable of maintaining indexes 
+brings in this context 
+are most useful for unstructured text records 
+is its analysis capabilities , which are most useful for unstructured text records 
+leverage the strengths of each tool 
+would leverage the strengths of each tool 
+made to the index 
+are made to the index 
+used 
+is used 
+degrade performance until a costly `` optimize '' procedure is used 
+creates more segments ( additional files or BLOBs ) , which degrade performance until a costly `` optimize '' procedure is used 
+giving you more stable performance 
+amortize this cost over each index update , giving you more stable performance 
+will amortize this cost over each index update , giving you more stable performance 
+making it searchable 
+load the contents of a JDBC-accessible database into Lucene , making it searchable 
+to load the contents of a JDBC-accessible database into Lucene , making it searchable 
+allows you to load the contents of a JDBC-accessible database into Lucene , making it searchable 
+is highly optimized and multi-threaded 
+am the author of LuSql 
+coming out with a new version ( re-architected with a new plugable architecture ) in the next month 
+be coming out with a new version ( re-architected with a new plugable architecture ) in the next month 
+will be coming out with a new version ( re-architected with a new plugable architecture ) in the next month 
+am the author of LuSql and will be coming out with a new version ( re-architected with a new plugable architecture ) in the next month 

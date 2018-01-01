@@ -1,0 +1,158 @@
+QUESTION:
+HTML:
+<p>Anyone know if it is possible?&#xA;And got any sample code for this?&#xA;Or any other java API that can do this?</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+
+ANS:
+HTML:
+<p>As far as can be gathered from the <a href="http://poi.apache.org/" rel="nofollow">project website</a>: no.</p>&#xA;
+Comment:
+HTML:
+<p>The Office 2007 format is based on XML and so can probably be written to using XML tools. However there is <a href="http://www.aspose.com/documentation/file-format-components/aspose.words-for-.net-and-java/index.html" rel="nofollow">this library</a> which claims to be able to write DocX format word documents.</p>&#xA;&#xA;<p>The only other alternative is to use a Java-COM Bridge and use COM to manipulate word. This is probably not a good idea though - I would suggest finding a simpler way.</p>&#xA;&#xA;<p>For example, Word can easily read RTF documents and you can generate .rtf documents from within Java. You don't have to use the Microsoft Word format!</p>&#xA;
+Comment:
+HTML:
+<p>POI's HWPF can extract an MS Word document's text and perform simple modifications (basically deleting and inserting text).&#xA;AFAIK it can't do much more than that.&#xA;Also keep in mind that HWPF works only with the older MS Word (97) format, not the latest ones.</p>&#xA;
+Comment:
+HTML:
+<p>Not sure if Java out of the box can do it directly. But i've read about a component that can pretty much do anything in terms of automating word document generation without having Word. <a href="http://www.aspose.com/categories/file-format-components/aspose.words-for-.net-and-java/default.aspx" rel="nofollow" title="Aspose Words">Aspose Words</a></p>&#xA;
+Comment:
+HTML:
+<p>As others have said POI isn't going to allow you to do anything really fancy - plus it doesn't support Office 2007+ formats.  Treating MS Word as a component that provides this type of functionality via COM is most likely the best approach here (unless you are running on a non-Windows OS or just can't guarantee that Word will be installed on the machine).</p>&#xA;&#xA;<p>If you do go the COM route, I recommend that you look into the <a href="http://sourceforge.net/projects/jacob-project/" rel="nofollow">JACOB project</a>.  You do need to be somewhat familiar with COM (which has a very steep learning curve), but the library works quite well and is easier than trying to do it in native code with a JNI wrapper.</p>&#xA;
+Comment:
+HTML:
+<p>If you are using docx, you could try docx4j.  </p>&#xA;&#xA;<p>See the <a href="http://dev.plutext.org/trac/docx4j/browser/trunk/docx4j/src/main/java/org/docx4j/samples/AddImage.java" rel="nofollow">AddImage sample</a></p>&#xA;
+Comment:
+HTML:
+<p>JasperReports uses this API alternatively to POI, because it supports images:<br />&#xA;<a href="http://sourceforge.net/projects/jexcelapi/" rel="nofollow">JExcelAPI</a></p>&#xA;&#xA;<p>I didn't try it yet and don't know how good/bad it is.</p>&#xA;
+Comment:
+HTML:
+<p>Surely:</p>&#xA;&#xA;<p>Take a look at this: <a href="http://code.google.com/p/java2word" rel="nofollow">http://code.google.com/p/java2word</a></p>&#xA;&#xA;<p>Word 2004+ is XML based. The above framework gets the image, convert to Base64 representation and adds it to the XML.&#xA;When you open your Word Document, there will be your image.</p>&#xA;&#xA;<p>Simple like this:</p>&#xA;&#xA;<pre><code>    IDocument myDoc = new Document2004();   &#xA;    myDoc.getBody().addEle("path/myImage.png"));&#xA;</code></pre>&#xA;&#xA;<p>Java2Word is one API to generate Word Docs using obviously Java code. J2W takes care of all implementation and XML generation behind the scenes.</p>&#xA;
+Comment:
+
+Phrase:
+is possible 
+know if it is possible 
+got any sample code for this 
+do this 
+can do this 
+gathered from the project website : no 
+be gathered from the project website : no 
+can be gathered from the project website : no 
+based on XML 
+is based on XML 
+using XML tools 
+written to using XML tools 
+be written to using XML tools 
+so can probably be written to using XML tools 
+is based on XML and so can probably be written to using XML tools 
+write DocX format word documents 
+to write DocX format word documents 
+be able to write DocX format word documents 
+to be able to write DocX format word documents 
+claims to be able to write DocX format word documents 
+is this library which claims to be able to write DocX format word documents 
+use a Java-COM Bridge 
+manipulate word 
+to manipulate word 
+use COM to manipulate word 
+use a Java-COM Bridge and use COM to manipulate word 
+to use a Java-COM Bridge and use COM to manipulate word 
+is to use a Java-COM Bridge and use COM to manipulate word 
+is probably not a good idea though 
+finding a simpler way 
+suggest finding a simpler way 
+would suggest finding a simpler way 
+generate 
+can generate 
+read RTF documents and you can generate . rtf documents from within Java 
+can easily read RTF documents and you can generate . rtf documents from within Java 
+use the Microsoft Word format 
+to use the Microsoft Word format 
+have to use the Microsoft Word format 
+do n't have to use the Microsoft Word format 
+extract an MS Word document 's text 
+perform 
+basically deleting and inserting text 
+extract an MS Word document 's text and perform simple modifications ( basically deleting and inserting text ) 
+can extract an MS Word document 's text and perform simple modifications ( basically deleting and inserting text ) 
+do much more than 
+ca n't do much more than 
+AFAIK it ca n't do much more than 
+works only with the older MS Word ( 97 ) format , not the latest ones 
+Also keep in mind that HWPF works only with the older MS Word ( 97 ) format , not the latest ones 
+do it directly 
+can do it directly 
+Word 
+having Word 
+automating word document generation without having Word 
+do anything in terms of automating word document generation without having Word 
+can pretty much do anything in terms of automating word document generation without having Word 
+read about a component that can pretty much do anything in terms of automating word document generation without having Word 
+'ve read about a component that can pretty much do anything in terms of automating word document generation without having Word 
+do anything really fancy 
+to do anything really fancy 
+allow you to do anything really fancy 
+to allow you to do anything really fancy 
+going to allow you to do anything really fancy 
+is n't going to allow you to do anything really fancy 
+said POI is n't going to allow you to do anything really fancy 
+have said POI is n't going to allow you to do anything really fancy 
+support Office 2007 + formats 
+does n't support Office 2007 + formats 
+provides this type of functionality via COM 
+Treating MS Word as a component that provides this type of functionality via COM 
+running on a non-Windows OS 
+are running on a non-Windows OS 
+installed on the machine 
+be installed on the machine 
+will be installed on the machine 
+guarantee that Word will be installed on the machine 
+just ca n't guarantee that Word will be installed on the machine 
+are running on a non-Windows OS or just ca n't guarantee that Word will be installed on the machine 
+is most likely the best approach here ( unless you are running on a non-Windows OS or just ca n't guarantee that Word will be installed on the machine ) 
+go the COM route 
+do go the COM route 
+look into the JACOB project 
+recommend that you look into the JACOB project 
+has a very steep learning curve 
+be somewhat familiar with COM ( which has a very steep learning curve ) 
+to be somewhat familiar with COM ( which has a very steep learning curve ) 
+need to be somewhat familiar with COM ( which has a very steep learning curve ) 
+do need to be somewhat familiar with COM ( which has a very steep learning curve ) 
+works quite well 
+do it in native code with a JNI wrapper 
+to do it in native code with a JNI wrapper 
+trying to do it in native code with a JNI wrapper 
+is easier than trying to do it in native code with a JNI wrapper 
+works quite well and is easier than trying to do it in native code with a JNI wrapper 
+using docx 
+are using docx 
+try docx4j 
+could try docx4j 
+See the AddImage sample 
+supports images : JExcelAPI 
+uses this API alternatively to POI , because it supports images : JExcelAPI 
+try it yet 
+did n't try it yet 
+is 
+good/bad it is 
+know how good/bad it is 
+do n't know how good/bad it is 
+did n't try it yet and do n't know how good/bad it is 
+Take a look at this : http://code.google.com/p/java2word 
+based 
+is XML based 
+gets the image 
+convert to Base64 representation 
+adds it to the XML 
+gets the image , convert to Base64 representation and adds it to the XML 
+open your Word Document 
+be your image 
+will be your image 
+using obviously 
+generate Word Docs using obviously 
+to generate Word Docs using obviously 
+is one API to generate Word Docs using obviously 
+takes care of all implementation and XML generation behind the scenes 

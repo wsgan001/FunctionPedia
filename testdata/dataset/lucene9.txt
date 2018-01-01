@@ -1,0 +1,103 @@
+QUESTION:
+HTML:
+<p>I have an MS SQL database and have a varchar field that I would like to do queries like  where name like '%searchTerm%'.  But right now it is too slow, even with sql enterprise's full text indexing.  </p>&#xA;&#xA;<p>Can someone explain how Lucene .Net might help my situation?   How does the indexer work? How do queries work?</p>&#xA;&#xA;<p>What is done for me, and what do I have to do?</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>I saw this guy (Michael Neel) present on Lucene at a user group meeting - effectively, you build index files (using Lucene) and they have pointers to whatever you want (database rows, whatever)</p>&#xA;&#xA;<p><a href="http://code.google.com/p/vinull/source/browse/#svn/Examples/LuceneSearch">http://code.google.com/p/vinull/source/browse/#svn/Examples/LuceneSearch</a></p>&#xA;&#xA;<p>Very fast, flexible and powerful.</p>&#xA;&#xA;<p>What's good with Lucene is the ability to index a variety of things (files, images, database rows) together in your own index using Lucene and then translating that back to your business domain, whereas with SQL Server, it all has to be in SQL to be indexed.</p>&#xA;&#xA;<p>It doesn't look like his slides are up there in Google code.</p>&#xA;
+Comment:
+Slides and code: http://code.google.com/p/vinull/source/browse/#svn/Presentations/Lucene
+
+ANS:
+HTML:
+<p>This <a href="http://blog.scalingweb.com/2007/11/03/full-text-search-for-database-using-lucene-search-engine/" rel="nofollow">article</a> (strangely enough it's on the top of the Google search results :) has a fairly good description of how the Lucene search could be optimised.</p>&#xA;&#xA;<p>Properly configured Lucene should easily beat SQL (pre 2005) full-text indexing search. If you on MS SQL 2005 and your search performance is still too slow you might consider checking your DB setup.</p>&#xA;
+Comment:
+Voted down because link is dead.
+The link is dead.  I provided what may be an alternate link: http://it-stream.blogspot.com/2007/12/full-text-search-for-database-using.html
+HTML:
+<p>I saw this guy (Michael Neel) present on Lucene at a user group meeting - effectively, you build index files (using Lucene) and they have pointers to whatever you want (database rows, whatever)</p>&#xA;&#xA;<p><a href="http://code.google.com/p/vinull/source/browse/#svn/Examples/LuceneSearch">http://code.google.com/p/vinull/source/browse/#svn/Examples/LuceneSearch</a></p>&#xA;&#xA;<p>Very fast, flexible and powerful.</p>&#xA;&#xA;<p>What's good with Lucene is the ability to index a variety of things (files, images, database rows) together in your own index using Lucene and then translating that back to your business domain, whereas with SQL Server, it all has to be in SQL to be indexed.</p>&#xA;&#xA;<p>It doesn't look like his slides are up there in Google code.</p>&#xA;
+Comment:
+Slides and code: http://code.google.com/p/vinull/source/browse/#svn/Presentations/Lucene
+
+Phrase:
+have an MS SQL database 
+like ' % 
+do queries like where name like ' % 
+to do queries like where name like ' % 
+like to do queries like where name like ' % searchTerm % 
+would like to do queries like where name like ' % searchTerm % 
+have a varchar field that I would like to do queries like where name like ' % searchTerm % ' 
+have an MS SQL database and have a varchar field that I would like to do queries like where name like ' % searchTerm % ' 
+is too slow , even with sql enterprise 's full text indexing 
+help my situation 
+might help my situation 
+explain how Lucene . Net might help my situation 
+work 
+work 
+done for me 
+do 
+to do 
+have to do 
+saw this guy ( Michael Neel ) present on Lucene at a user group meeting 
+using Lucene 
+build index files ( using Lucene ) 
+want 
+have pointers to whatever you want ( database rows , whatever ) 
+http://code.google.com/p/vinull/source/browse/#svn/Examples/LuceneSearch 
+'s good with Lucene 
+together in your own index using Lucene 
+be in SQL 
+to be in SQL 
+indexed 
+be indexed 
+to be indexed 
+has to be in SQL to be indexed 
+then translating that back to your business domain , whereas with SQL Server , it all has to be in SQL to be indexed 
+together in your own index using Lucene and then translating that back to your business domain , whereas with SQL Server , it all has to be in SQL to be indexed 
+index a variety of things ( files , images , database rows ) together in your own index using Lucene and then translating that back to your business domain , whereas with SQL Server , it all has to be in SQL to be indexed 
+to index a variety of things ( files , images , database rows ) together in your own index using Lucene and then translating that back to your business domain , whereas with SQL Server , it all has to be in SQL to be indexed 
+is the ability to index a variety of things ( files , images , database rows ) together in your own index using Lucene and then translating that back to your business domain , whereas with SQL Server , it all has to be in SQL to be indexed 
+are up there in Google code 
+look like his slides are up there in Google code 
+does n't look like his slides are up there in Google code 
+'s on the top of the Google search results :) 
+optimised 
+be optimised 
+could be optimised 
+has a fairly good description of how the Lucene search could be optimised 
+beat SQL ( pre 2005 ) 
+should easily beat SQL ( pre 2005 ) 
+configured Lucene should easily beat SQL ( pre 2005 ) 
+is still too slow 
+checking your DB setup 
+consider checking your DB setup 
+might consider checking your DB setup 
+Voted down because link 
+is dead 
+is dead 
+be an alternate link : http://it-stream.blogspot.com/2007/12/full-text-search-for-database-using.html 
+may be an alternate link : http://it-stream.blogspot.com/2007/12/full-text-search-for-database-using.html 
+provided what may be an alternate link : http://it-stream.blogspot.com/2007/12/full-text-search-for-database-using.html 
+saw this guy ( Michael Neel ) present on Lucene at a user group meeting 
+using Lucene 
+build index files ( using Lucene ) 
+want 
+have pointers to whatever you want ( database rows , whatever ) 
+http://code.google.com/p/vinull/source/browse/#svn/Examples/LuceneSearch 
+'s good with Lucene 
+together in your own index using Lucene 
+be in SQL 
+to be in SQL 
+indexed 
+be indexed 
+to be indexed 
+has to be in SQL to be indexed 
+then translating that back to your business domain , whereas with SQL Server , it all has to be in SQL to be indexed 
+together in your own index using Lucene and then translating that back to your business domain , whereas with SQL Server , it all has to be in SQL to be indexed 
+index a variety of things ( files , images , database rows ) together in your own index using Lucene and then translating that back to your business domain , whereas with SQL Server , it all has to be in SQL to be indexed 
+to index a variety of things ( files , images , database rows ) together in your own index using Lucene and then translating that back to your business domain , whereas with SQL Server , it all has to be in SQL to be indexed 
+is the ability to index a variety of things ( files , images , database rows ) together in your own index using Lucene and then translating that back to your business domain , whereas with SQL Server , it all has to be in SQL to be indexed 
+are up there in Google code 
+look like his slides are up there in Google code 
+does n't look like his slides are up there in Google code 

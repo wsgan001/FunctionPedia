@@ -1,0 +1,64 @@
+QUESTION:
+HTML:
+<p>Whilst trying to parse MS Excel file using <a href="http://poi.apache.org/spreadsheet/index.html" rel="nofollow">POI-HSSF v3.2</a> I am getting IndexOutOfBoundsException. The spreadsheet I am trying to read isn't empty it has been created using MS Excel 2003 and BiffViewer included with the POI package has no problem parsing it.</p>&#xA;&#xA;<p>My code is as follows:</p>&#xA;&#xA;<pre><code>package src;&#xA;&#xA;import java.io.*;&#xA;import org.apache.poi.hssf.record.*;&#xA;import org.apache.poi.hssf.eventusermodel.*;&#xA;&#xA;class Excel implements HSSFListener&#xA;{&#xA;    public static void main (String[] args) throws Exception&#xA;    {&#xA;    	FileInputStream stream = new FileInputStream("c:\\temp\\a.xls");&#xA;&#xA;&#xA;    	HSSFEventFactory f = new HSSFEventFactory();&#xA;&#xA;    	HSSFRequest req = new HSSFRequest();&#xA;&#xA;    	req.addListenerForAllRecords(new Excel());&#xA;&#xA;    	f.processEvents(req,stream);&#xA;&#xA;    	stream.close();&#xA;    }&#xA;&#xA;    public void processRecord (Record r)&#xA;    {&#xA;    	System.out.println(r);&#xA;    }&#xA;}&#xA;</code></pre>&#xA;&#xA;<p>And here is the stack trace I am getting:</p>&#xA;&#xA;<p><sub>&#xA;Exception in thread "main" java.lang.IndexOutOfBoundsException&#xA;        at java.io.FileInputStream.readBytes(Native Method)&#xA;        at java.io.FileInputStream.read(FileInputStream.java:199)&#xA;        at org.apache.poi.hssf.record.RecordInputStream.nextRecord(RecordInputStream.java:106)&#xA;        at org.apache.poi.hssf.eventusermodel.HSSFRecordStream.getNextRecord(HSSFRecordStream.java:128)&#xA;        at org.apache.poi.hssf.eventusermodel.HSSFRecordStream.nextRecord(HSSFRecordStream.java:93)&#xA;        at org.apache.poi.hssf.eventusermodel.HSSFEventFactory.genericProcessEvents(HSSFEventFactory.java:141)&#xA;        at org.apache.poi.hssf.eventusermodel.HSSFEventFactory.processEvents(HSSFEventFactory.java:98)&#xA;        at src.Excel.main(Excel.java:21)&#xA;</sub></p>&#xA;&#xA;<p>Many thanks! I know, I am being plain lazy and could have looked at the POI source myself, but, hopefully, someone here will be able to point out swiftly whatever silly thing I've done within my code.</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>Mystery solved, the correct way of getting an input stream is as follows</p>&#xA;&#xA;<pre><code>FileInputStream file   = new FileInputStream("c:\\temp\\a.xls");&#xA;POIFSFileSystem poifs  = new POIFSFileSystem(file);&#xA;InputStream     stream = poifs.createDocumentInputStream("Workbook");&#xA;</code></pre>&#xA;
+Comment:
+
+ANS:
+HTML:
+<p>Mystery solved, the correct way of getting an input stream is as follows</p>&#xA;&#xA;<pre><code>FileInputStream file   = new FileInputStream("c:\\temp\\a.xls");&#xA;POIFSFileSystem poifs  = new POIFSFileSystem(file);&#xA;InputStream     stream = poifs.createDocumentInputStream("Workbook");&#xA;</code></pre>&#xA;
+Comment:
+HTML:
+<pre><code>FileInputStream stream =&#xA;   new FileInputStream("abcd.xls");  &#xA;  HSSFEventFactory f = new HSSFEventFactory(); &#xA;  HSSFRequest req = new HSSFRequest(); &#xA;  req.addListenerForAllRecords(new Excel());  &#xA;  Workbook wb;&#xA;  wb = new HSSFWorkbook(stream); &#xA;  Sheet sheet=wb.getSheet("abcd11042009");&#xA;  int rows=sheet.getPhysicalNumberOfRows();&#xA;  Row headerRow;&#xA;  Cell cell;&#xA;  for(int i=0;i&lt;rows;i++)&#xA;  {&#xA;    headerRow= sheet.getRow(i);&#xA;&#xA;    cell = headerRow.getCell(1);&#xA;    System.out.println("Doing..."+ cell.getStringCellValue());&#xA;  }&#xA;</code></pre>&#xA;
+Comment:
+
+Phrase:
+parse MS Excel 
+to parse MS Excel 
+trying to parse MS Excel 
+getting IndexOutOfBoundsException 
+am getting IndexOutOfBoundsException 
+using POI-HSSF v3 .2 I am getting IndexOutOfBoundsException 
+file using POI-HSSF v3 .2 I am getting IndexOutOfBoundsException 
+read 
+to read 
+trying to read 
+am trying to read 
+using MS Excel 2003 
+created using MS Excel 2003 
+been created using MS Excel 2003 
+has been created using MS Excel 2003 
+parsing it 
+has no problem parsing it 
+included with the POI package has no problem parsing it 
+is n't empty it has been created using MS Excel 2003 and BiffViewer included with the POI package has no problem parsing it 
+follows 
+is as follows 
+getting 
+am getting 
+is the stack trace I am getting 
+know 
+being plain lazy 
+am being plain lazy 
+looked at the POI source 
+have looked at the POI source 
+could have looked at the POI source 
+am being plain lazy and could have looked at the POI source myself 
+done within my code 
+'ve done within my code 
+point out swiftly whatever silly thing I 've done within my code 
+to point out swiftly whatever silly thing I 've done within my code 
+be able to point out swiftly whatever silly thing I 've done within my code 
+will be able to point out swiftly whatever silly thing I 've done within my code 
+Mystery solved 
+getting an input stream 
+follows 
+is as follows 
+Mystery solved 
+getting an input stream 
+follows 
+is as follows 

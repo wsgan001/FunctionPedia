@@ -1,0 +1,215 @@
+QUESTION:
+HTML:
+<p>This is a graph whose nodes exist in many connected components at once because a node's relationships are a collection of edge groups such that only one edge per edge group can be present at once. I need to be able to find all of the connected components that a node exists in. What would be the best way to store this graph in neo4j to quickly find all of the connected components that a node exists in? Is there a way to use the built in traversals to do this? </p>&#xA;&#xA;<p>Also: is there a name for this kind of graph? I'd appreciate any help/ideas.</p>&#xA;&#xA;<p><strong>Update:</strong></p>&#xA;&#xA;<p>Sorry for not being clear. All nodes are of the same type. Nodes have a variable number of edge groups. Exactly one edge from each edge group needs to be chosen for a particular connected component. I'm going to try to explain through example: </p>&#xA;&#xA;<pre><code>Node x1 is related to: (x2 or x3 or x4) AND (x5 or x6) AND (x7)&#xA;Node x2 is related to: (x8) AND (x9 or x10)&#xA;</code></pre>&#xA;&#xA;<p>So x1's first edge group is <code>(x2, x3, x4)</code>, its second edge group is <code>(x5, x6)</code>, and its third edge group is <code>(x7)</code>.</p>&#xA;&#xA;<p>So here are a few connected components that <strong><code>x1</code></strong> exists in:</p>&#xA;&#xA;<p>CC1:</p>&#xA;&#xA;<pre><code>x1 is related to: x2, x5, x7&#xA;x2 is related to: x8 x9 &#xA;</code></pre>&#xA;&#xA;<p>CC2: </p>&#xA;&#xA;<pre><code>x1 is related to: x2, x6, x7&#xA;x2 is related to: x8, x9&#xA;</code></pre>&#xA;&#xA;<p>CC3:</p>&#xA;&#xA;<pre><code>x1 is related to: x3, x5, x7&#xA;</code></pre>&#xA;&#xA;<p>CC4:</p>&#xA;&#xA;<pre><code>x1 is related to: x3, x6, x7&#xA;</code></pre>&#xA;&#xA;<p>etc.</p>&#xA;&#xA;<p>I'm grateful for your help in this.</p>&#xA;&#xA;<p><strong>Update2:</strong></p>&#xA;&#xA;<p>I think I'll be able to do this if there's an answer to this question: &#xA;<a href="http://stackoverflow.com/questions/2430196/how-can-i-specify-which-relationship-type-to-use-as-a-function-of-the-current-nod">How can I specify which relationship type to use as a function of the current node at every step of a traversal with neo4j?</a></p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>They way I understand your question you have a number of nodes, let's call them <em>X nodes</em>, that are connected to a number of type nodes (or something similar), let's call these nodes <em>T nodes</em>. An X node can have connections to multiple T nodes, but only one connection to each T node, or possibly only one connection to each <em>kind</em> of T node (your description is a bit fuzzy here).</p>&#xA;&#xA;<p>The way I would model this is by using one RelationshipType for each (kind of) T node. Then you can use x_node.getRelationships(T_TYPE_ONE, T_TYPE_TWO, ...etc...) to get all the T nodes from an X node. When you mutate an X node is where you need to maintain your invariant that it can only have at most one relationship to each (kind of) T node. You do this by using x_node.getSingleRelationship(THE_T_TYPE_YOURE_MUTATING), if that returns null, it's safe to add a new relationship of that type, if it returns a relationship, you will have to remove it before you can add the new one.</p>&#xA;&#xA;<p>ASCII-art example of this model (as I interpret it):</p>&#xA;&#xA;<pre><code>(x1)--T_ONE--&gt;(t1a)   (t1b)&lt;--T_ONE--(x2)--T_FOUR--&gt;(t4a)&#xA; |\                                   |&#xA; \ |---T_TWO--&gt;(t2a)                 /&#xA;  \                                 /&#xA;   |---T_THREE--&gt;(t3a)&lt;--T_THREE---/&#xA;</code></pre>&#xA;&#xA;<p>In the example above both X nodes are part of T_ONE components, but x1 is part of T_ONE component t1a and x2 is part of t1b. They are both part of T_THREE component t3a, then x1 is part of T_TWO component t2a, and x2 is part of T_FOUR component t4a. Querying in this example would look something like:</p>&#xA;&#xA;<pre><code>Iterable&lt;Relationship&gt; x1_comps = x1.getRelationships(T_ONE, T_TWO, T_THREE, T_FOUR);&#xA;Iterable&lt;Relationship&gt; x2_comps = x2.getRelationships(T_ONE, T_TWO, T_THREE, T_FOUR);&#xA;</code></pre>&#xA;&#xA;<p>And updating would look like this:</p>&#xA;&#xA;<pre><code>void setComponent(Node xNode, RelationshipType tType, Node tNode) {&#xA;    Relationship current = xNode.getSingleRelationship(tType);&#xA;    if (current != null) current.delete();&#xA;    xNode.createRelationshipTo(tNode, tType);&#xA;}&#xA;</code></pre>&#xA;&#xA;<p>Please let me know if I've misinterpreted your requirements, and I'll be happy to give your updated description a stab.</p>&#xA;
+Comment:
+I've updated the description for clarity. Thank you!
+I think the solution I proposed is still valid with the updated problem description.
+
+ANS:
+HTML:
+<p>They way I understand your question you have a number of nodes, let's call them <em>X nodes</em>, that are connected to a number of type nodes (or something similar), let's call these nodes <em>T nodes</em>. An X node can have connections to multiple T nodes, but only one connection to each T node, or possibly only one connection to each <em>kind</em> of T node (your description is a bit fuzzy here).</p>&#xA;&#xA;<p>The way I would model this is by using one RelationshipType for each (kind of) T node. Then you can use x_node.getRelationships(T_TYPE_ONE, T_TYPE_TWO, ...etc...) to get all the T nodes from an X node. When you mutate an X node is where you need to maintain your invariant that it can only have at most one relationship to each (kind of) T node. You do this by using x_node.getSingleRelationship(THE_T_TYPE_YOURE_MUTATING), if that returns null, it's safe to add a new relationship of that type, if it returns a relationship, you will have to remove it before you can add the new one.</p>&#xA;&#xA;<p>ASCII-art example of this model (as I interpret it):</p>&#xA;&#xA;<pre><code>(x1)--T_ONE--&gt;(t1a)   (t1b)&lt;--T_ONE--(x2)--T_FOUR--&gt;(t4a)&#xA; |\                                   |&#xA; \ |---T_TWO--&gt;(t2a)                 /&#xA;  \                                 /&#xA;   |---T_THREE--&gt;(t3a)&lt;--T_THREE---/&#xA;</code></pre>&#xA;&#xA;<p>In the example above both X nodes are part of T_ONE components, but x1 is part of T_ONE component t1a and x2 is part of t1b. They are both part of T_THREE component t3a, then x1 is part of T_TWO component t2a, and x2 is part of T_FOUR component t4a. Querying in this example would look something like:</p>&#xA;&#xA;<pre><code>Iterable&lt;Relationship&gt; x1_comps = x1.getRelationships(T_ONE, T_TWO, T_THREE, T_FOUR);&#xA;Iterable&lt;Relationship&gt; x2_comps = x2.getRelationships(T_ONE, T_TWO, T_THREE, T_FOUR);&#xA;</code></pre>&#xA;&#xA;<p>And updating would look like this:</p>&#xA;&#xA;<pre><code>void setComponent(Node xNode, RelationshipType tType, Node tNode) {&#xA;    Relationship current = xNode.getSingleRelationship(tType);&#xA;    if (current != null) current.delete();&#xA;    xNode.createRelationshipTo(tNode, tType);&#xA;}&#xA;</code></pre>&#xA;&#xA;<p>Please let me know if I've misinterpreted your requirements, and I'll be happy to give your updated description a stab.</p>&#xA;
+Comment:
+I've updated the description for clarity. Thank you!
+I think the solution I proposed is still valid with the updated problem description.
+HTML:
+<p>Regarding the other query, I pointed out some possibilities for fine grained functions at <a href="http://stackoverflow.com/questions/2430196/how-can-i-specify-which-relationship-type-to-use-as-a-function-of-the-current-nod">http://stackoverflow.com/questions/2430196/how-can-i-specify-which-relationship-type-to-use-as-a-function-of-the-current-nod</a>&#xA;Basically, don't use a traverser but the more direct node.getRelationship* API and build your own iteration for fine grained control.</p>&#xA;&#xA;<p>Does that solve your problem?</p>&#xA;&#xA;<p>/peter neubauer</p>&#xA;
+Comment:
+
+Phrase:
+be present at once 
+can be present at once 
+are a collection of edge groups such that only one edge per edge group can be present at once 
+exist in many connected components at once because a node 's relationships are a collection of edge groups such that only one edge per edge group can be present at once 
+is a graph whose nodes exist in many connected components at once because a node 's relationships are a collection of edge groups such that only one edge per edge group can be present at once 
+find all of the connected components 
+to find all of the connected components 
+exists in 
+be able to find all of the connected components that a node exists in 
+to be able to find all of the connected components that a node exists in 
+need to be able to find all of the connected components that a node exists in 
+quickly find all of the connected components 
+to quickly find all of the connected components 
+store this graph in neo4j to quickly find all of the connected components 
+to store this graph in neo4j to quickly find all of the connected components 
+exists in 
+be the best way to store this graph in neo4j to quickly find all of the connected components that a node exists in 
+would be the best way to store this graph in neo4j to quickly find all of the connected components that a node exists in 
+do 
+to do 
+there a way to use the built in traversals to do 
+Is there a way to use the built in traversals to do 
+appreciate any help/ideas 
+'d appreciate any help/ideas 
+being clear 
+are of the same type 
+have a variable number of edge groups 
+chosen for a particular connected component 
+be chosen for a particular connected component 
+to be chosen for a particular connected component 
+needs to be chosen for a particular connected component 
+explain through example 
+to explain through example 
+try to explain through example 
+to try to explain through example 
+going to try to explain through example 
+'m going to try to explain through example 
+is CODE0 
+is CODE1 
+is CODE2 
+exists in 
+are a few connected components that CODE0 exists in 
+'m grateful for your help in this 
+use as a function of the current node at every step of a traversal with neo4j 
+to use as a function of the current node at every step of a traversal with neo4j 
+specify which relationship type to use as a function of the current node at every step of a traversal with neo4j 
+'s an answer to this question : How can I specify which relationship type to use as a function of the current node at every step of a traversal with neo4j ? 
+do this if there 's an answer to this question : How can I specify which relationship type to use as a function of the current node at every step of a traversal with neo4j ? 
+to do this if there 's an answer to this question : How can I specify which relationship type to use as a function of the current node at every step of a traversal with neo4j ? 
+be able to do this if there 's an answer to this question : How can I specify which relationship type to use as a function of the current node at every step of a traversal with neo4j ? 
+'ll be able to do this if there 's an answer to this question : How can I specify which relationship type to use as a function of the current node at every step of a traversal with neo4j ? 
+think I 'll be able to do this if there 's an answer to this question : How can I specify which relationship type to use as a function of the current node at every step of a traversal with neo4j ? 
+have a number of nodes 
+understand your question you have a number of nodes 
+connected to a number of type nodes ( or something similar ) 
+are connected to a number of type nodes ( or something similar ) 
+call these nodes 
+let 's call these nodes 
+X nodes , that are connected to a number of type nodes ( or something similar ) , let 's call these nodes 
+call them X nodes , that are connected to a number of type nodes ( or something similar ) , let 's call these nodes 
+let 's call them X nodes , that are connected to a number of type nodes ( or something similar ) , let 's call these nodes 
+have connections to multiple T nodes , but only one connection to each T node , or possibly only one connection to each kind of T node 
+can have connections to multiple T nodes , but only one connection to each T node , or possibly only one connection to each kind of T node 
+is a bit fuzzy here 
+model this 
+would model this 
+using one RelationshipType for each ( kind of ) T node 
+is by using one RelationshipType for each ( kind of ) T node 
+get all the T nodes from an X node 
+to get all the T nodes from an X node 
+use x_node . getRelationships ( T_TYPE_ONE , T_TYPE_TWO , ... etc. . . ) to get all the T nodes from an X node 
+can use x_node . getRelationships ( T_TYPE_ONE , T_TYPE_TWO , ... etc. . . ) to get all the T nodes from an X node 
+have at most one relationship to each ( kind of ) T node 
+can only have at most one relationship to each ( kind of ) T node 
+maintain your invariant that it can only have at most one relationship to each ( kind of ) T node 
+to maintain your invariant that it can only have at most one relationship to each ( kind of ) T node 
+need to maintain your invariant that it can only have at most one relationship to each ( kind of ) T node 
+is where you need to maintain your invariant that it can only have at most one relationship to each ( kind of ) T node 
+mutate an X node is where you need to maintain your invariant that it can only have at most one relationship to each ( kind of ) T node 
+using x_node . getSingleRelationship ( THE_T_TYPE_YOURE_MUTATING ) 
+add a new relationship of that type 
+to add a new relationship of that type 
+'s safe to add a new relationship of that type 
+returns a relationship 
+null , it 's safe to add a new relationship of that type , if it returns a relationship 
+do this by using x_node . getSingleRelationship ( THE_T_TYPE_YOURE_MUTATING ) , if that returns null , it 's safe to add a new relationship of that type , if it returns a relationship 
+add the new one 
+can add the new one 
+remove it before you can add the new one 
+to remove it before you can add the new one 
+have to remove it before you can add the new one 
+will have to remove it before you can add the new one 
+interpret it 
+are part of T_ONE components 
+is part of T_ONE component t1a 
+is part of t1b 
+are both part of T_THREE component t3a 
+is part of T_TWO component t2a 
+is part of T_FOUR component t4a 
+look something like 
+would look something like 
+Querying in this example would look something like 
+look like this 
+would look like this 
+misinterpreted your requirements 
+'ve misinterpreted your requirements 
+know if I 've misinterpreted your requirements 
+let me know if I 've misinterpreted your requirements 
+give your updated description a stab 
+to give your updated description a stab 
+be happy to give your updated description a stab 
+'ll be happy to give your updated description a stab 
+updated the description for clarity 
+'ve updated the description for clarity 
+Thank you 
+is still valid with the updated problem description 
+proposed is still valid with the updated problem description 
+think the solution I proposed is still valid with the updated problem description 
+have a number of nodes 
+understand your question you have a number of nodes 
+connected to a number of type nodes ( or something similar ) 
+are connected to a number of type nodes ( or something similar ) 
+call these nodes 
+let 's call these nodes 
+X nodes , that are connected to a number of type nodes ( or something similar ) , let 's call these nodes 
+call them X nodes , that are connected to a number of type nodes ( or something similar ) , let 's call these nodes 
+let 's call them X nodes , that are connected to a number of type nodes ( or something similar ) , let 's call these nodes 
+have connections to multiple T nodes , but only one connection to each T node , or possibly only one connection to each kind of T node 
+can have connections to multiple T nodes , but only one connection to each T node , or possibly only one connection to each kind of T node 
+is a bit fuzzy here 
+model this 
+would model this 
+using one RelationshipType for each ( kind of ) T node 
+is by using one RelationshipType for each ( kind of ) T node 
+get all the T nodes from an X node 
+to get all the T nodes from an X node 
+use x_node . getRelationships ( T_TYPE_ONE , T_TYPE_TWO , ... etc. . . ) to get all the T nodes from an X node 
+can use x_node . getRelationships ( T_TYPE_ONE , T_TYPE_TWO , ... etc. . . ) to get all the T nodes from an X node 
+have at most one relationship to each ( kind of ) T node 
+can only have at most one relationship to each ( kind of ) T node 
+maintain your invariant that it can only have at most one relationship to each ( kind of ) T node 
+to maintain your invariant that it can only have at most one relationship to each ( kind of ) T node 
+need to maintain your invariant that it can only have at most one relationship to each ( kind of ) T node 
+is where you need to maintain your invariant that it can only have at most one relationship to each ( kind of ) T node 
+mutate an X node is where you need to maintain your invariant that it can only have at most one relationship to each ( kind of ) T node 
+using x_node . getSingleRelationship ( THE_T_TYPE_YOURE_MUTATING ) 
+add a new relationship of that type 
+to add a new relationship of that type 
+'s safe to add a new relationship of that type 
+returns a relationship 
+null , it 's safe to add a new relationship of that type , if it returns a relationship 
+do this by using x_node . getSingleRelationship ( THE_T_TYPE_YOURE_MUTATING ) , if that returns null , it 's safe to add a new relationship of that type , if it returns a relationship 
+add the new one 
+can add the new one 
+remove it before you can add the new one 
+to remove it before you can add the new one 
+have to remove it before you can add the new one 
+will have to remove it before you can add the new one 
+interpret it 
+are part of T_ONE components 
+is part of T_ONE component t1a 
+is part of t1b 
+are both part of T_THREE component t3a 
+is part of T_TWO component t2a 
+is part of T_FOUR component t4a 
+look something like 
+would look something like 
+Querying in this example would look something like 
+look like this 
+would look like this 
+misinterpreted your requirements 
+'ve misinterpreted your requirements 
+know if I 've misinterpreted your requirements 
+let me know if I 've misinterpreted your requirements 
+give your updated description a stab 
+to give your updated description a stab 
+be happy to give your updated description a stab 
+'ll be happy to give your updated description a stab 
+updated the description for clarity 
+'ve updated the description for clarity 
+Thank you 
+is still valid with the updated problem description 
+proposed is still valid with the updated problem description 
+think the solution I proposed is still valid with the updated problem description 
+Regarding the other query 
+pointed out some possibilities for fine grained functions at http://stackoverflow.com/questions/2430196/how-can-i-specify-which-relationship-type-to-use-as-a-function-of-the-current-nod Basically 
+use a traverser but the more direct node.getRelationship * API 
+build your own iteration for fine grained control 
+use a traverser but the more direct node.getRelationship * API and build your own iteration for fine grained control 
+do n't use a traverser but the more direct node.getRelationship * API and build your own iteration for fine grained control 
+solve your problem 
+/ peter neubauer 

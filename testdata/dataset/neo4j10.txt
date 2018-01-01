@@ -1,0 +1,214 @@
+QUESTION:
+HTML:
+<p>What is the difference between graph-based databases (<a href="http://neo4j.org/">http://neo4j.org/</a>) and object-oriented databases (<a href="http://www.db4o.com/">http://www.db4o.com/</a>)?</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>I'd answer this differently: object and graph databases operate on two different levels of abstraction.</p>&#xA;&#xA;<p>An object database's main data elements are objects, the way we know them from an object-oriented programming language. </p>&#xA;&#xA;<p>A graph database's main data elements are nodes and edges.</p>&#xA;&#xA;<p>An object database does not have the notion of a (bidirectional) edge between two things with automatic referential integrity etc. A graph database does not have the notion of a pointer that can be NULL. (Of course one can imagine hybrids.)</p>&#xA;&#xA;<p>In terms of schema, an object database's schema is whatever the set of classes is in the application. A graph database's schema (whether implicit, by convention of what String labels mean, or explicit, by declaration as models as we do it in <a href="http://infogrid.org/">InfoGrid</a> for example) is independent of the application. This makes it much simpler, for example, to write multiple applications against the same data using a graph database instead of an object database, because the schema is application-independent. On the other hand, using a graph database you can't simply take an arbitrary object and persist it.</p>&#xA;&#xA;<p>Different tools for different jobs I would think.</p>&#xA;
+Comment:
+
+ANS:
+HTML:
+<p>From a quick browse of both their websites:</p>&#xA;&#xA;<p>The major difference is the way the APIs are structured, rather than the kind of free-form database you can build with them.</p>&#xA;&#xA;<p>db4o uses an object mapping - you create a Java/C# class, and it uses reflection to persist it in the database.</p>&#xA;&#xA;<p>neo4j has an explicit manipulation API.</p>&#xA;&#xA;<p>Neo4j seemed, in my humble opinion, much nicer to interact with.</p>&#xA;&#xA;<p>You might also consider a key-value store - you could make exactly the same free-form database with one of those.</p>&#xA;
+Comment:
+HTML:
+<p>As Will descibes from another angle, a graphdb will keep your data separated from your application classes and objects. A graphdb also has more built-in functionality to deal with graphs, obviously - like shortest path or deep traversals.</p>&#xA;&#xA;<p>Another important difference is that in a graphdb like neo4j you can traverse the graph based on relationship (edge) types and directions without loading the full nodes (including node properties/attributes). There's also the choice of using neo4j as backend of an object db, still being able to use all the graphy stuff, see: <a href="http://code.google.com/p/jo4neo/" rel="nofollow">jo4neo</a> This project has a different approach that could also count as an object db on top of neo4j: <a href="http://github.com/andreasronge/neo4j" rel="nofollow">neo4j.rb</a>. A new option is to use <a href="http://www.springsource.org/spring-data" rel="nofollow">Spring Data Graph</a>, which gives graphdb support through annotations.</p>&#xA;&#xA;<p>The same question was asked in the comments to <a href="http://nosql.mypopescu.com/post/371163653/comparing-oodb-and-nosql" rel="nofollow">this blogpost</a>.</p>&#xA;
+Comment:
+HTML:
+<p>With graph databases, you have a slight semblance of a chance that it is based on mathematical graph theory.  With Object-oriented databases, you have the certainty that it is based on nothing at all (and most certainly no mathematical theory at all).</p>&#xA;
+Comment:
+HTML:
+<p>I'd answer this differently: object and graph databases operate on two different levels of abstraction.</p>&#xA;&#xA;<p>An object database's main data elements are objects, the way we know them from an object-oriented programming language. </p>&#xA;&#xA;<p>A graph database's main data elements are nodes and edges.</p>&#xA;&#xA;<p>An object database does not have the notion of a (bidirectional) edge between two things with automatic referential integrity etc. A graph database does not have the notion of a pointer that can be NULL. (Of course one can imagine hybrids.)</p>&#xA;&#xA;<p>In terms of schema, an object database's schema is whatever the set of classes is in the application. A graph database's schema (whether implicit, by convention of what String labels mean, or explicit, by declaration as models as we do it in <a href="http://infogrid.org/">InfoGrid</a> for example) is independent of the application. This makes it much simpler, for example, to write multiple applications against the same data using a graph database instead of an object database, because the schema is application-independent. On the other hand, using a graph database you can't simply take an arbitrary object and persist it.</p>&#xA;&#xA;<p>Different tools for different jobs I would think.</p>&#xA;
+Comment:
+HTML:
+<p>Yes, the API seems like the major difference, but is not really a superficial one. Conceptually a set of objects will form a graph and you could think of an API that treats this graph in a uniform way. Conversely, you could in theory mine a generic graph structure for patterns and map them to objects exposed via some API. But the design of the API of an actual product will generally have consequence on how data is actually stored, how it can be queried, so it would be far from trivial to, say, create a wrapper and make it look like something else. Also, an object-oriented database must offer some integrity guarantees and a typing structure that a graph database won't normally do. In fact, serious OO database are far from "free form" :)</p>&#xA;&#xA;<p>Take a look at [HyperGraphDB][1] - it is both a full object-oriented database (like db4o) and a very advanced graph database both in terms of representational and querying capabilities. It is capable of storing generalized hypergraphs (where edges can point to more than one node and also to other edges as well), it has a fully extensible type system embedded as a graph etc.</p>&#xA;&#xA;<p>Unlike other graph databases, in HyperGraphDB every object becomes a node or an edge in the graph, with none-to-minimal API intrusion and you have the choice of representing your objects as a graph or treating them in a way that is orthogonal to the graph structure (as "payload" values of your nodes or edges). You can do sophisticated traversals, customized indexing and querying.</p>&#xA;&#xA;<p>An explanation why HyperGraphDB is in fact an ODMS, see the blog post Is HyperGraphDB an OO Database? at Kobrix's website.</p>&#xA;
+Comment:
+HTML:
+<p>The difference at low-level is not so huge. Both manage relationships as direct links without costly joins. Furthermore both have a way to traverse relationships with the Query language, but the graph database has operators to go recursively at Nth level.</p>&#xA;&#xA;<p>But the biggest difference is in the domain: in a Graph databases all is based on the 2 types:  vertexes and edges, even if usually you can define your own types as a sort of subtypes of Vertex or Edge.</p>&#xA;&#xA;<p>In the ODBMS you have no Vertex and Edge concepts, unless you write your own.</p>&#xA;
+Comment:
+
+Phrase:
+answer this differently 
+'d answer this differently 
+operate on two different levels of abstraction 
+know them from an object-oriented programming language 
+are objects , the way we know them from an object-oriented programming language 
+are nodes and edges 
+have the notion of a ( bidirectional ) edge between two things with automatic referential integrity etc 
+does not have the notion of a ( bidirectional ) edge between two things with automatic referential integrity etc 
+be NULL 
+can be NULL 
+have the notion of a pointer that can be NULL 
+does not have the notion of a pointer that can be NULL 
+imagine hybrids 
+can imagine hybrids 
+is in the application 
+is whatever the set of classes is in the application 
+mean 
+do it in InfoGrid 
+is independent of the application 
+using a graph database instead of an object database 
+is application-independent 
+write multiple applications against the same data using a graph database instead of an object database , because the schema is application-independent 
+to write multiple applications against the same data using a graph database instead of an object database , because the schema is application-independent 
+makes it much simpler , for example , to write multiple applications against the same data using a graph database instead of an object database , because the schema is application-independent 
+using a graph database 
+take an arbitrary object 
+persist it 
+take an arbitrary object and persist it 
+ca n't simply take an arbitrary object and persist it 
+think 
+would think 
+structured 
+are structured 
+build with them 
+can build with them 
+is the way the APIs are structured , rather than the kind of free-form database you can build with them 
+uses an object mapping 
+create a Java/C # class 
+persist it in the database 
+to persist it in the database 
+uses reflection to persist it in the database 
+has an explicit manipulation API 
+interact with 
+to interact with 
+seemed , in my humble opinion , much nicer to interact with 
+consider a key-value store 
+might also consider a key-value store 
+make exactly the same free-form database with one of those 
+could make exactly the same free-form database with one of those 
+descibes from another angle 
+separated from your application classes and objects 
+keep your data separated from your application classes and objects 
+will keep your data separated from your application classes and objects 
+deal with graphs , obviously - like shortest path or deep traversals 
+to deal with graphs , obviously - like shortest path or deep traversals 
+has more built-in functionality to deal with graphs , obviously - like shortest path or deep traversals 
+loading the full nodes 
+based on relationship ( edge ) types and directions without loading the full nodes 
+traverse the graph based on relationship ( edge ) types and directions without loading the full nodes ( including node properties/attributes ) 
+can traverse the graph based on relationship ( edge ) types and directions without loading the full nodes ( including node properties/attributes ) 
+is that in a graphdb like neo4j you can traverse the graph based on relationship ( edge ) types and directions without loading the full nodes ( including node properties/attributes ) 
+use all the graphy stuff 
+see 
+count as an object db on top of neo4j 
+could also count as an object db on top of neo4j 
+has a different approach that could also count as an object db on top of neo4j : neo4j.rb 
+use all the graphy stuff , see : jo4neo This project has a different approach that could also count as an object db on top of neo4j : neo4j.rb 
+to use all the graphy stuff , see : jo4neo This project has a different approach that could also count as an object db on top of neo4j : neo4j.rb 
+being able to use all the graphy stuff , see : jo4neo This project has a different approach that could also count as an object db on top of neo4j : neo4j.rb 
+using neo4j as backend of an object db , still being able to use all the graphy stuff , see : jo4neo This project has a different approach that could also count as an object db on top of neo4j : neo4j.rb 
+'s also the choice of using neo4j as backend of an object db , still being able to use all the graphy stuff , see : jo4neo This project has a different approach that could also count as an object db on top of neo4j : neo4j.rb 
+gives graphdb support through annotations 
+use Spring Data Graph , which gives graphdb support through annotations 
+to use Spring Data Graph , which gives graphdb support through annotations 
+is to use Spring Data Graph , which gives graphdb support through annotations 
+asked in the comments to this blogpost 
+was asked in the comments to this blogpost 
+based on mathematical graph theory 
+is based on mathematical graph theory 
+have a slight semblance of a chance that it is based on mathematical graph theory 
+based on nothing at all ( and most certainly no mathematical theory at all ) 
+is based on nothing at all ( and most certainly no mathematical theory at all ) 
+have the certainty that it is based on nothing at all ( and most certainly no mathematical theory at all ) 
+answer this differently 
+'d answer this differently 
+operate on two different levels of abstraction 
+know them from an object-oriented programming language 
+are objects , the way we know them from an object-oriented programming language 
+are nodes and edges 
+have the notion of a ( bidirectional ) edge between two things with automatic referential integrity etc 
+does not have the notion of a ( bidirectional ) edge between two things with automatic referential integrity etc 
+be NULL 
+can be NULL 
+have the notion of a pointer that can be NULL 
+does not have the notion of a pointer that can be NULL 
+imagine hybrids 
+can imagine hybrids 
+is in the application 
+is whatever the set of classes is in the application 
+mean 
+do it in InfoGrid 
+is independent of the application 
+using a graph database instead of an object database 
+is application-independent 
+write multiple applications against the same data using a graph database instead of an object database , because the schema is application-independent 
+to write multiple applications against the same data using a graph database instead of an object database , because the schema is application-independent 
+makes it much simpler , for example , to write multiple applications against the same data using a graph database instead of an object database , because the schema is application-independent 
+using a graph database 
+take an arbitrary object 
+persist it 
+take an arbitrary object and persist it 
+ca n't simply take an arbitrary object and persist it 
+think 
+would think 
+seems like the major difference 
+is not really a superficial one 
+seems like the major difference , but is not really a superficial one 
+form a graph 
+will form a graph 
+treats this graph in a uniform way 
+think of an API that treats this graph in a uniform way 
+could think of an API that treats this graph in a uniform way 
+mine a generic graph structure for patterns 
+map them to objects 
+mine a generic graph structure for patterns and map them to objects 
+exposed via some API 
+could in theory mine a generic graph structure for patterns and map them to objects exposed via some API 
+stored 
+is actually stored 
+queried 
+be queried 
+can be queried 
+have consequence on how data is actually stored , how it can be queried 
+will generally have consequence on how data is actually stored , how it can be queried 
+create a wrapper 
+look like something else 
+make it look like something else 
+create a wrapper and make it look like something else 
+to , say , create a wrapper and make it look like something else 
+be far from trivial to , say , create a wrapper and make it look like something else 
+would be far from trivial to , say , create a wrapper and make it look like something else 
+do 
+wo n't normally do 
+offer some integrity guarantees and a typing structure that a graph database wo n't normally do 
+must offer some integrity guarantees and a typing structure that a graph database wo n't normally do 
+are far from `` free form '' : 
+is both a full object-oriented database ( like db4o ) and a very advanced graph database both in terms of representational and querying capabilities 
+-LSB- 1 -RSB- - it is both a full object-oriented database ( like db4o ) and a very advanced graph database both in terms of representational and querying capabilities 
+Take a look at -LSB- HyperGraphDB -RSB- -LSB- 1 -RSB- - it is both a full object-oriented database ( like db4o ) and a very advanced graph database both in terms of representational and querying capabilities 
+storing generalized hypergraphs 
+point to more than one node and also to other edges as well 
+can point to more than one node and also to other edges as well 
+is capable of storing generalized hypergraphs ( where edges can point to more than one node and also to other edges as well ) 
+embedded as a graph etc. 
+has a fully extensible type system embedded as a graph etc. 
+becomes a node or an edge in the graph , with none-to-minimal API intrusion 
+representing your objects as a graph 
+is orthogonal to the graph structure ( as `` payload '' values of your nodes or edges ) 
+treating them in a way that is orthogonal to the graph structure ( as `` payload '' values of your nodes or edges ) 
+representing your objects as a graph or treating them in a way that is orthogonal to the graph structure ( as `` payload '' values of your nodes or edges ) 
+have the choice of representing your objects as a graph or treating them in a way that is orthogonal to the graph structure ( as `` payload '' values of your nodes or edges ) 
+do sophisticated traversals , customized indexing and querying 
+can do sophisticated traversals , customized indexing and querying 
+is in fact an ODMS 
+HyperGraphDB an OO Database 
+Is HyperGraphDB an OO Database 
+see the blog post Is HyperGraphDB an OO Database 
+at Kobrix 's website 
+is not so huge 
+manage relationships as direct links without costly joins 
+traverse relationships with the Query language 
+to traverse relationships with the Query language 
+have a way to traverse relationships with the Query language 
+go recursively at Nth level 
+to go recursively at Nth level 
+has operators to go recursively at Nth level 
+based on the 2 types 
+is based on the 2 types 
+define your own types as a sort of subtypes of Vertex or Edge 
+can define your own types as a sort of subtypes of Vertex or Edge 
+is in the domain : in a Graph databases all is based on the 2 types : vertexes and edges , even if usually you can define your own types as a sort of subtypes of Vertex or Edge 
+write your own 
+have no Vertex and Edge concepts , unless you write your own 

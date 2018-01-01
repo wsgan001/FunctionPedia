@@ -1,0 +1,46 @@
+QUESTION:
+HTML:
+<p>According to this post on <a href="http://stackoverflow.com/questions/120180/how-to-do-query-auto-completionsuggestions-in-lucene">how to do query auto-completionsuggestions in lucene</a> getting "Did You Mean" functionality best involves using a LuceneDictionary. But I probably would have used a fuzzy query for this before reading this post. Now I'm wondering which is faster, which is easier to implement?</p>&#xA;
+Comment:
+You may find helpful this discussion:  http://norvig.com/spell-correct.html
+While not about Lucene, nor an answer, that page is a good read, and makes Python look awesome.
+
+ACCEPTED ANS:
+
+ANS:
+HTML:
+<p>Have you looked at some NGram wrappers for Lucene. They are the best ways to do the "did you mean" functionality in Lucene. I <a href="http://lucene.apache.org/java/2%5F2%5F0/api/org/apache/lucene/analysis/ngram/package-summary.html" rel="nofollow">found this page</a> for the docs. </p>&#xA;
+Comment:
+No, but I will. Thanks!
+
+Phrase:
+getting 
+Mean 
+do query auto-completionsuggestions in lucene getting `` Did You Mean '' 
+to do query auto-completionsuggestions in lucene getting `` Did You Mean '' 
+using a LuceneDictionary 
+best involves using a LuceneDictionary 
+reading this post 
+used a fuzzy query for this before reading this post 
+have used a fuzzy query for this before reading this post 
+would have used a fuzzy query for this before reading this post 
+implement 
+to implement 
+is easier to implement 
+is faster , which is easier to implement 
+wondering which is faster , which is easier to implement 
+'m wondering which is faster , which is easier to implement 
+find helpful this discussion : http://norvig.com/spell-correct.html 
+may find helpful this discussion : http://norvig.com/spell-correct.html 
+is a good read 
+look awesome 
+makes Python look awesome 
+is a good read , and makes Python look awesome 
+looked at some NGram wrappers for Lucene 
+Have you looked at some NGram wrappers for Lucene 
+mean 
+did you mean 
+do the `` did you mean '' functionality in Lucene 
+to do the `` did you mean '' functionality in Lucene 
+are the best ways to do the `` did you mean '' functionality in Lucene 
+found this page for the docs 

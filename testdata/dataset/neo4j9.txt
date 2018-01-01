@@ -1,0 +1,71 @@
+QUESTION:
+HTML:
+<p>I downloaded <a href="http://wiki.neo4j.org/content/Neoclipse#Running_from_source_code" rel="nofollow">Neoclipse Source</a>  and downloaded the <a href="http://neo4j.org/download/" rel="nofollow">Neo4J source</a>. However some of the classes that the Neoclipse source file refers to are not found in the Neo4J source. Are they deprecated? Can I get an updated version of the Neoclipse?</p>&#xA;
+Comment:
+Since there are so little question here at SO about this piece of software (and therefore also little users is my best guess), I'd try my luck on the mailing list of Neo4J: http://neo4j.org/community/list/
+
+ACCEPTED ANS:
+HTML:
+<p>Neoclipse shouldn't be built together with the current Neo4j trunk sources, but with the libraries in the lib/ directory of the project. The same libraries are referenced in the pom.xml as well, it's a bit messy to keep both Eclipse RCP and Maven happy! The disk format of Neo4j databases hasn't changed between the versions, so the older libraries used in Neoclipse shouldn't be a big issue. Neoclipse will be updated once the Neo4j kernel version 1.0 has been released (which I hope is pretty soon).</p>&#xA;
+Comment:
+
+ANS:
+HTML:
+<p>Neoclipse shouldn't be built together with the current Neo4j trunk sources, but with the libraries in the lib/ directory of the project. The same libraries are referenced in the pom.xml as well, it's a bit messy to keep both Eclipse RCP and Maven happy! The disk format of Neo4j databases hasn't changed between the versions, so the older libraries used in Neoclipse shouldn't be a big issue. Neoclipse will be updated once the Neo4j kernel version 1.0 has been released (which I hope is pretty soon).</p>&#xA;
+Comment:
+
+Phrase:
+downloaded Neoclipse Source 
+downloaded the Neo4J source 
+downloaded Neoclipse Source and downloaded the Neo4J source 
+found in the Neo4J source 
+are not found in the Neo4J source 
+to are not found in the Neo4J source 
+refers to are not found in the Neo4J source 
+Are they deprecated 
+get an updated version of the Neoclipse 
+is my best guess 
+question here at SO about this piece of software ( and therefore also little users is my best guess ) 
+are so little question here at SO about this piece of software ( and therefore also little users is my best guess ) 
+try my luck on the mailing list of Neo4J : http://neo4j.org/community/list/ 
+'d try my luck on the mailing list of Neo4J : http://neo4j.org/community/list/ 
+built together with the current Neo4j trunk sources , but with the libraries in the lib / directory of the project 
+be built together with the current Neo4j trunk sources , but with the libraries in the lib / directory of the project 
+should n't be built together with the current Neo4j trunk sources , but with the libraries in the lib / directory of the project 
+keep both Eclipse RCP 
+to keep both Eclipse RCP 
+'s a bit messy to keep both Eclipse RCP 
+referenced in the pom.xml as well , it 's a bit messy to keep both Eclipse RCP and Maven happy 
+are referenced in the pom.xml as well , it 's a bit messy to keep both Eclipse RCP and Maven happy 
+used in Neoclipse 
+be a big issue 
+should n't be a big issue 
+changed between the versions , so the older libraries used in Neoclipse should n't be a big issue 
+has n't changed between the versions , so the older libraries used in Neoclipse should n't be a big issue 
+is pretty soon 
+hope is pretty soon 
+released ( which I hope is pretty soon ) 
+been released ( which I hope is pretty soon ) 
+has been released ( which I hope is pretty soon ) 
+be updated once the Neo4j kernel version 1.0 has been released ( which I hope is pretty soon ) 
+will be updated once the Neo4j kernel version 1.0 has been released ( which I hope is pretty soon ) 
+built together with the current Neo4j trunk sources , but with the libraries in the lib / directory of the project 
+be built together with the current Neo4j trunk sources , but with the libraries in the lib / directory of the project 
+should n't be built together with the current Neo4j trunk sources , but with the libraries in the lib / directory of the project 
+keep both Eclipse RCP 
+to keep both Eclipse RCP 
+'s a bit messy to keep both Eclipse RCP 
+referenced in the pom.xml as well , it 's a bit messy to keep both Eclipse RCP and Maven happy 
+are referenced in the pom.xml as well , it 's a bit messy to keep both Eclipse RCP and Maven happy 
+used in Neoclipse 
+be a big issue 
+should n't be a big issue 
+changed between the versions , so the older libraries used in Neoclipse should n't be a big issue 
+has n't changed between the versions , so the older libraries used in Neoclipse should n't be a big issue 
+is pretty soon 
+hope is pretty soon 
+released ( which I hope is pretty soon ) 
+been released ( which I hope is pretty soon ) 
+has been released ( which I hope is pretty soon ) 
+be updated once the Neo4j kernel version 1.0 has been released ( which I hope is pretty soon ) 
+will be updated once the Neo4j kernel version 1.0 has been released ( which I hope is pretty soon ) 

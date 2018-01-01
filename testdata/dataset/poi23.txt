@@ -1,0 +1,126 @@
+QUESTION:
+HTML:
+<p>How can I efficiently import CSV data with Apache POI?  If I have a very large CSV file that I would like to store in my Excel spreadsheet, then I don't imagine that going cell-by-cell is the best way to import...?</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+
+ANS:
+HTML:
+<p>How big is your CSV file? &#xA;Maybe its senseless to do this with java! &#xA;Both OpenOffice and M$ Excel can open CSV files and transform them into a table "on the fly"!</p>&#xA;&#xA;<p>So: Open the CSV file with Excel, a dialog is shown, you fill out what seperators are used, <strong>here is your ready sheet</strong>, save it as xls ...</p>&#xA;
+Comment:
+But the point is that the import should be automated...
+You mean transformation or import? You can access the OpenOffice API via Java or write a cronjob / shellscript on a Unix/linux machine.
+HTML:
+<p>The most efficient way to add information to your Excel spreadsheet is by using an array.  This code:</p>&#xA;&#xA;<pre><code>Sheets(1).Range("A1").Resize(uBound(myArray),uBound(myArray,2)).Value = myArray&#xA;</code></pre>&#xA;&#xA;<p>populates the sheet range from a two dimensional array, where the lower bound is 1.</p>&#xA;&#xA;<p>In your situation, I would read the CSV file into an array first, and THEN use syntax like the above to place it on the worksheet.</p>&#xA;&#xA;<p>Stan Scott</p>&#xA;
+Comment:
+HTML:
+<p>Apache POI was never designed to call on CSV files. While a CSV File may be opened in Excel, Excel has its own reader that does an auto import. This is assuming that your CSV has the .csv instead of the .txt suffix. If it has the .txt suffix, save it as a .csv. All then you have to do is right click on the CSV and Open With Excel. Presto, the CSV has been imported into Excel.  </p>&#xA;&#xA;<p>I am assuming that you are wanting to parse the data from a txt file into the Excel File. If that is the case I would suggest you use a Library liKe <a href="http://supercsv.sourceforge.net/">SuperCSV</a> instead of trying to get POI to do something it was never designed to do. It will load it all into a Bean, Map or List of your choice as it parses the data and then you can either write it back in the format you chose into a .csv file or use a JDBC-ODBC Bridge or Apache POI to write it directly into and .XLS format. Adds an extra step, but then you have complete control of the data.  </p>&#xA;&#xA;<p>SuperCSV carries the Apache2 License, so it should be good for anything you choose to do with it.</p>&#xA;&#xA;<p>Or just use the .split() function in java and parse up the CSV into arrays and load the arrays into .xls with POI.</p>&#xA;
+Comment:
+
+Phrase:
+efficiently import CSV data with Apache POI 
+store in my Excel spreadsheet 
+to store in my Excel spreadsheet 
+like to store in my Excel spreadsheet 
+would like to store in my Excel spreadsheet 
+going cell-by-cell 
+is the best way to import 
+imagine that going cell-by-cell is the best way to import 
+do n't imagine that going cell-by-cell is the best way to import 
+have a very large CSV file that I would like to store in my Excel spreadsheet , then I do n't imagine that going cell-by-cell is the best way to import 
+do this with java 
+to do this with java 
+open CSV files 
+transform them into a table `` on the fly '' 
+open CSV files and transform them into a table `` on the fly '' 
+can open CSV files and transform them into a table `` on the fly '' 
+Open 
+used 
+are used 
+fill out what seperators are used 
+shown , you fill out what seperators are used 
+is shown , you fill out what seperators are used 
+save it as xls 
+is your ready sheet , save it as xls 
+be automated 
+should be automated 
+is that the import should be automated 
+mean transformation or import 
+access the OpenOffice API via Java 
+write a cronjob / shellscript on a Unix/linux machine 
+access the OpenOffice API via Java or write a cronjob / shellscript on a Unix/linux machine 
+can access the OpenOffice API via Java or write a cronjob / shellscript on a Unix/linux machine 
+add information to your Excel spreadsheet 
+to add information to your Excel spreadsheet 
+using an array 
+is by using an array 
+is 1 
+range from a two dimensional array , where the lower bound is 1 
+read the CSV file into an array first 
+would read the CSV file into an array first 
+place it on the worksheet 
+to place it on the worksheet 
+use syntax like the above to place it on the worksheet 
+call on CSV files 
+to call on CSV files 
+designed to call on CSV files 
+was never designed to call on CSV files 
+opened in Excel 
+be opened in Excel 
+may be opened in Excel 
+does an auto import 
+has its own reader that does an auto import 
+has the . csv instead of the . txt suffix 
+assuming that your CSV has the . csv instead of the . txt suffix 
+is assuming that your CSV has the . csv instead of the . txt suffix 
+has the . txt suffix , save it as a . csv 
+do 
+to do 
+have to do 
+is right click on the CSV and Open With Excel 
+imported into Excel 
+been imported into Excel 
+has been imported into Excel 
+parse the data from a txt file into the Excel File 
+to parse the data from a txt file into the Excel File 
+wanting to parse the data from a txt file into the Excel File 
+are wanting to parse the data from a txt file into the Excel File 
+assuming that you are wanting to parse the data from a txt file into the Excel File 
+am assuming that you are wanting to parse the data from a txt file into the Excel File 
+do 
+to do 
+designed to do 
+was never designed to do 
+do something it was never designed to do 
+to do something it was never designed to do 
+get POI to do something it was never designed to do 
+to get POI to do something it was never designed to do 
+trying to get POI to do something it was never designed to do 
+use a Library liKe SuperCSV instead of trying to get POI to do something it was never designed to do 
+suggest you use a Library liKe SuperCSV instead of trying to get POI to do something it was never designed to do 
+would suggest you use a Library liKe SuperCSV instead of trying to get POI to do something it was never designed to do 
+is the case I would suggest you use a Library liKe SuperCSV instead of trying to get POI to do something it was never designed to do 
+parses the data 
+write it directly into and . XLS format 
+to write it directly into and . XLS format 
+file or use a JDBC-ODBC Bridge or Apache POI to write it directly into and . XLS format 
+csv file or use a JDBC-ODBC Bridge or Apache POI to write it directly into and . XLS format 
+chose into a . csv file or use a JDBC-ODBC Bridge or Apache POI to write it directly into and . XLS format 
+write it back in the format you chose into a . csv file or use a JDBC-ODBC Bridge or Apache POI to write it directly into and . XLS format 
+can either write it back in the format you chose into a . csv file or use a JDBC-ODBC Bridge or Apache POI to write it directly into and . XLS format 
+load it all into a Bean , Map or List of your choice as it parses the data and then you can either write it back in the format you chose into a . csv file or use a JDBC-ODBC Bridge or Apache POI to write it directly into and . XLS format 
+will load it all into a Bean , Map or List of your choice as it parses the data and then you can either write it back in the format you chose into a . csv file or use a JDBC-ODBC Bridge or Apache POI to write it directly into and . XLS format 
+Adds 
+have complete control 
+carries the Apache2 License 
+do with it 
+to do with it 
+choose to do with it 
+be good for anything you choose to do with it 
+should be good for anything you choose to do with it 
+split ( ) function in java 
+parse up the CSV into arrays 
+load the arrays into 
+split ( ) function in java and parse up the CSV into arrays and load the arrays into 
+xls with POI 

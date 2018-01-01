@@ -1,0 +1,11 @@
+String gameJSON = "[{\"guild\": \"Crimson\", \"region\": \"us\", \"realm\": \"Caelestrasz\", \"timestamp\": 1311860040}, {\"guild\": \"Crimson\", \"region\": \"us\", \"realm\": \"Caelestrasz\",\"timestamp\": 1311511740}]";
+JSONArray array = new JSONArray(gameJSON);
+for (int i = 0; i < array.length(); i++) {
+    System.out.println(array.getJSONObject(i));
+}
+// Access by key : value
+for (int i = 0; i < array.length(); i++) {
+    JSONObject element = array.getJSONObject(0);
+    System.out.format("Player #%d: Realm = %s, Guild = %s\n" , i + 1, element.get("realm"),element.get("guild"));
+
+}

@@ -1,0 +1,109 @@
+QUESTION:
+HTML:
+<p>Hey everyone, I am trying to run the following program, but am getting a NullPointerException. I am new to the Java swing library so I could be doing something very dumb. Either way here are my two classes I am just playing around for now and all i want to do is draw a damn circle (ill want to draw a gallow, with a hangman on it in the end).</p>&#xA;&#xA;<pre><code>package hangman2;&#xA;&#xA;import java.awt.*;&#xA;import javax.swing.*;&#xA;&#xA;public class Hangman2 extends JFrame{&#xA;    private GridLayout alphabetLayout = new GridLayout(2,2,5,5);&#xA;    private Gallow gallow = new Gallow();&#xA;&#xA;    public Hangman2() {&#xA;&#xA;        setLayout(alphabetLayout);&#xA;&#xA;        setSize(1000,500);&#xA;        setVisible( true );&#xA;&#xA;    }&#xA;&#xA;    public static void main( String args[] ) {   &#xA;     Hangman2 application = new Hangman2();&#xA;     application.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );&#xA;    }&#xA;}&#xA;&#xA;&#xA;package hangman2;&#xA;&#xA;import java.awt.*;&#xA;import javax.swing.*;&#xA;&#xA;public class Gallow extends JPanel {&#xA;    private Graphics g;&#xA;&#xA;    public Gallow(){&#xA;        g.fillOval(10, 20, 40, 25);       &#xA;    }&#xA;}&#xA;</code></pre>&#xA;&#xA;<p>The NullPointerException comes in at the g.fillOval line.</p>&#xA;&#xA;<p>Thanks in advance,</p>&#xA;&#xA;<p>Tomek</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>You're getting NPE because <code>g</code> is not set, therefore, it's <code>null</code>. Furthermore, you shouldn't be doing the drawing in the constructor. Overload <a href="http://java.sun.com/j2se/1.5.0/docs/api/javax/swing/JComponent.html#paintComponent(java.awt.Graphics)" rel="nofollow"><code>paintComponent(Graphics g)</code></a> instead.</p>&#xA;&#xA;<pre><code>public class Gallow extends JPanel {&#xA;    public paintComponent(Graphics g){&#xA;        g.fillOval(10, 20, 40, 25);       &#xA;    }&#xA;}&#xA;</code></pre>&#xA;&#xA;<p>I'd also look into <a href="http://java.sun.com/j2se/1.5.0/docs/api/java/awt/image/BufferedImage.html" rel="nofollow">BufferedImage</a>.</p>&#xA;
+Comment:
+I see, so im guessing the paintComponent is called each time a JPanel is created.
+Actually, it's called each time the component is redrawn. Swing doesn't remember the appearance of each component, rather each component is responsible for drawing and redrawing itself as needed.
+
+ANS:
+HTML:
+<p>You're getting NPE because <code>g</code> is not set, therefore, it's <code>null</code>. Furthermore, you shouldn't be doing the drawing in the constructor. Overload <a href="http://java.sun.com/j2se/1.5.0/docs/api/javax/swing/JComponent.html#paintComponent(java.awt.Graphics)" rel="nofollow"><code>paintComponent(Graphics g)</code></a> instead.</p>&#xA;&#xA;<pre><code>public class Gallow extends JPanel {&#xA;    public paintComponent(Graphics g){&#xA;        g.fillOval(10, 20, 40, 25);       &#xA;    }&#xA;}&#xA;</code></pre>&#xA;&#xA;<p>I'd also look into <a href="http://java.sun.com/j2se/1.5.0/docs/api/java/awt/image/BufferedImage.html" rel="nofollow">BufferedImage</a>.</p>&#xA;
+Comment:
+I see, so im guessing the paintComponent is called each time a JPanel is created.
+Actually, it's called each time the component is redrawn. Swing doesn't remember the appearance of each component, rather each component is responsible for drawing and redrawing itself as needed.
+HTML:
+<p>A couple of things: Don't forget to add the panel to the JFrame. And override the paint() method of JPanel for your custom painting. You do not need to declare a Graphics object since the JPanel's paint method will have a reference to one in any case.</p>&#xA;&#xA;<pre><code>package hangman2;&#xA;&#xA;import java.awt.*;&#xA;import javax.swing.*;&#xA;&#xA;public class Hangman2 extends JFrame{&#xA;private GridLayout alphabetLayout = new GridLayout(2,2,5,5);&#xA;private Gallow gallow = new Gallow();&#xA;&#xA;public Hangman2() {&#xA;&#xA;    setLayout(alphabetLayout);&#xA;    add(gallow, BorderLayout.CENTER);//here&#xA;    setSize(1000,500);&#xA;    setVisible( true );&#xA;&#xA; }&#xA;&#xA; public static void main( String args[] ) {   &#xA;  Hangman2 application = new Hangman2();&#xA;  application.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );&#xA; }&#xA;}&#xA;&#xA;&#xA;package hangman2;&#xA;&#xA;import java.awt.*;&#xA;import javax.swing.*;&#xA;&#xA;public class Gallow extends JPanel {&#xA;&#xA;  public Gallow(){&#xA;     super();&#xA;  }&#xA;&#xA;  public void paint(Graphics g){&#xA;       g.fillOval(10, 20, 40, 25);       &#xA;  }&#xA;</code></pre>&#xA;&#xA;<p>}</p>&#xA;
+Comment:
+You should override paintComponent, not paint
+
+Phrase:
+run the following program 
+to run the following program 
+trying to run the following program 
+am trying to run the following program 
+getting a NullPointerException 
+am getting a NullPointerException 
+am trying to run the following program , but am getting a NullPointerException 
+doing something very dumb 
+be doing something very dumb 
+could be doing something very dumb 
+am new to the Java swing library so I could be doing something very dumb 
+playing around for now 
+am just playing around for now 
+draw a gallow 
+to draw a gallow 
+want to draw a gallow , with a hangman on it in the end 
+draw a damn circle ( ill want to draw a gallow , with a hangman on it in the end ) 
+is draw a damn circle ( ill want to draw a gallow , with a hangman on it in the end ) 
+do is draw a damn circle ( ill want to draw a gallow , with a hangman on it in the end ) 
+to do is draw a damn circle ( ill want to draw a gallow , with a hangman on it in the end ) 
+want to do is draw a damn circle ( ill want to draw a gallow , with a hangman on it in the end ) 
+are my two classes I am just playing around for now and all i want to do is draw a damn circle ( ill want to draw a gallow , with a hangman on it in the end ) 
+comes in at the g.fillOval line 
+Tomek 
+set , therefore 
+is not set , therefore 
+'s CODE1 
+getting NPE because CODE0 is not set , therefore , it 's CODE1 
+'re getting NPE because CODE0 is not set , therefore , it 's CODE1 
+doing the drawing in the constructor 
+be doing the drawing in the constructor 
+should n't be doing the drawing in the constructor 
+look into BufferedImage 
+'d also look into BufferedImage 
+see 
+guessing the paintComponent 
+created 
+is created 
+called each time a JPanel is created 
+is called each time a JPanel is created 
+redrawn 
+is redrawn 
+called each time the component is redrawn 
+'s called each time the component is redrawn 
+drawing and redrawing itself as needed 
+is responsible for drawing and redrawing itself as needed 
+remember the appearance of each component , rather each component is responsible for drawing and redrawing itself as needed 
+does n't remember the appearance of each component , rather each component is responsible for drawing and redrawing itself as needed 
+set , therefore 
+is not set , therefore 
+'s CODE1 
+getting NPE because CODE0 is not set , therefore , it 's CODE1 
+'re getting NPE because CODE0 is not set , therefore , it 's CODE1 
+doing the drawing in the constructor 
+be doing the drawing in the constructor 
+should n't be doing the drawing in the constructor 
+look into BufferedImage 
+'d also look into BufferedImage 
+see 
+guessing the paintComponent 
+created 
+is created 
+called each time a JPanel is created 
+is called each time a JPanel is created 
+redrawn 
+is redrawn 
+called each time the component is redrawn 
+'s called each time the component is redrawn 
+drawing and redrawing itself as needed 
+is responsible for drawing and redrawing itself as needed 
+remember the appearance of each component , rather each component is responsible for drawing and redrawing itself as needed 
+does n't remember the appearance of each component , rather each component is responsible for drawing and redrawing itself as needed 
+add the panel to the JFrame 
+to add the panel to the JFrame 
+forget to add the panel to the JFrame 
+Do n't forget to add the panel to the JFrame 
+override the paint ( ) method of JPanel for your custom painting 
+have a reference to one in any case 
+will have a reference to one in any case 
+declare a Graphics object since the JPanel 's paint method will have a reference to one in any case 
+to declare a Graphics object since the JPanel 's paint method will have a reference to one in any case 
+need to declare a Graphics object since the JPanel 's paint method will have a reference to one in any case 
+do not need to declare a Graphics object since the JPanel 's paint method will have a reference to one in any case 
+override paintComponent , not paint 
+should override paintComponent , not paint 

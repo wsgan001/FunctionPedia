@@ -1,0 +1,84 @@
+QUESTION:
+HTML:
+<p>I'm using POI HSSF API for my excel manipulations in Java. I've a date value "8/1/2009" in one of my excel cell and while I try to read this value using HSSF API, it detects the cell type as Numeric and returns the 'Double' value of my date. See the sample code below:</p>&#xA;&#xA;<pre><code>cell = row.getCell(); // date in the cell '8/1/2009'&#xA;switch (cell.getCellType()) {&#xA;&#xA;case HSSFCell.CELL_TYPE_STRING:&#xA;    cellValue = cell.getRichStringCellValue().getString();&#xA;    break;&#xA;case HSSFCell.CELL_TYPE_NUMERIC:&#xA;    cellValue = new Double(cell.getNumericCellValue()).toString();&#xA;    break;&#xA;default:&#xA;}&#xA;</code></pre>&#xA;&#xA;<p>Cell.getCellType() returns NUMERIC_TYPE and thus this code converts the date to double! :(</p>&#xA;&#xA;<p>Is there any way to read the date as it is in HSSF POI !?</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>You could take a look at:</p>&#xA;&#xA;<pre><code>HSSFDateUtil.isCellDateFormatted()&#xA;</code></pre>&#xA;&#xA;<p>See the POI Horrible Spreadsheet Format API for more details on HSSFDateUtil:</p>&#xA;&#xA;<p><a href="http://poi.apache.org/apidocs/org/apache/poi/hssf/usermodel/HSSFDateUtil.html">http://poi.apache.org/apidocs/org/apache/poi/hssf/usermodel/HSSFDateUtil.html</a></p>&#xA;&#xA;<p>That also provides some helper methods for returning Excel <code>getExcelDate()</code> and Java dates <code>getJavaDate()</code>.  You need to be somewhat wary of different date formats though...</p>&#xA;
+Comment:
+<rant> I wish those POI developers would comment their source code... </rant>
+
+ANS:
+HTML:
+<p>You could take a look at:</p>&#xA;&#xA;<pre><code>HSSFDateUtil.isCellDateFormatted()&#xA;</code></pre>&#xA;&#xA;<p>See the POI Horrible Spreadsheet Format API for more details on HSSFDateUtil:</p>&#xA;&#xA;<p><a href="http://poi.apache.org/apidocs/org/apache/poi/hssf/usermodel/HSSFDateUtil.html">http://poi.apache.org/apidocs/org/apache/poi/hssf/usermodel/HSSFDateUtil.html</a></p>&#xA;&#xA;<p>That also provides some helper methods for returning Excel <code>getExcelDate()</code> and Java dates <code>getJavaDate()</code>.  You need to be somewhat wary of different date formats though...</p>&#xA;
+Comment:
+<rant> I wish those POI developers would comment their source code... </rant>
+HTML:
+<p>Excel treats dates and times as numbers... Jon said it better, so I won't echo him here... </p>&#xA;&#xA;<p>However, sample code for what you've put in the question is at <a href="http://poi.apache.org/spreadsheet/quick-guide.html#CellContents">http://poi.apache.org/spreadsheet/quick-guide.html#CellContents</a></p>&#xA;
+Comment:
+HTML:
+<p>If you using the POI 3.5 you can use the following</p>&#xA;&#xA;<p>cell.getDateCellValue() method. This will work for excel 2007 as well.</p>&#xA;
+Comment:
+HTML:
+<p>If you want to reference the date in the same format in as in the Excel file, you should use the CellDateFormatter. Sample code:</p>&#xA;&#xA;<pre><code>CellValue cValue = formulaEv.evaluate(cell);&#xA;double dv = cValue.getNumberValue();&#xA;if (HSSFDateUtil.isCellDateFormatted(cell)) {&#xA;    Date date = HSSFDateUtil.getJavaDate(dv);&#xA;&#xA;    String dateFmt = cell.getCellStyle().getDataFormatString();&#xA;    /* strValue = new SimpleDateFormat(dateFmt).format(date); - won't work as &#xA;    Java fmt differs from Excel fmt. If Excel date format is mm/dd/yyyy, Java &#xA;    will always be 00 for date since "m" is minutes of the hour.*/&#xA;&#xA;    strValue = new CellDateFormatter(dateFmt).format(date); &#xA;    // takes care of idiosyncrasies of Excel&#xA;}&#xA;</code></pre>&#xA;
+Comment:
+
+Phrase:
+using POI HSSF API for my excel manipulations in Java 
+'m using POI HSSF API for my excel manipulations in Java 
+'ve a date value `` 8/1/2009 '' in one of my excel cell 
+using HSSF API 
+read this value using HSSF API 
+to read this value using HSSF API 
+try to read this value using HSSF API 
+detects the cell type as Numeric 
+returns the ` Double ' value of my date 
+detects the cell type as Numeric and returns the ` Double ' value of my date 
+See the sample code below 
+double 
+to double 
+converts the date to double 
+Is there 
+is in HSSF POI !? 
+read the date as it is in HSSF POI !? 
+to read the date as it is in HSSF POI !? 
+take a look at 
+could take a look at 
+See the POI Horrible Spreadsheet Format API for more details on HSSFDateUtil 
+returning Excel CODE0 and Java dates CODE1 
+also provides some helper methods for returning Excel CODE0 and Java dates CODE1 
+be somewhat wary of different date formats though 
+to be somewhat wary of different date formats though 
+need to be somewhat wary of different date formats though 
+comment their source code 
+would comment their source code 
+wish those POI developers would comment their source code . 
+take a look at 
+could take a look at 
+See the POI Horrible Spreadsheet Format API for more details on HSSFDateUtil 
+returning Excel CODE0 and Java dates CODE1 
+also provides some helper methods for returning Excel CODE0 and Java dates CODE1 
+be somewhat wary of different date formats though 
+to be somewhat wary of different date formats though 
+need to be somewhat wary of different date formats though 
+comment their source code 
+would comment their source code 
+wish those POI developers would comment their source code . 
+treats dates and times as numbers 
+said it better 
+echo him here 
+wo n't echo him here 
+put in the question 
+'ve put in the question 
+is at http://poi.apache.org/spreadsheet/quick-guide.html#CellContents 
+use the following 
+can use the following 
+using the POI 3.5 you can use the following 
+work for excel 2007 as well 
+will work for excel 2007 as well 
+reference the date in the same format in as in the Excel file 
+to reference the date in the same format in as in the Excel file 
+want to reference the date in the same format in as in the Excel file 
+use the CellDateFormatter 
+should use the CellDateFormatter 

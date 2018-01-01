@@ -1,0 +1,244 @@
+QUESTION:
+HTML:
+<p>When using Lucene.Net with ASP.NET, I can imagine that one web request can trigger an update to the index while another web request is performing a search.   Does Lucene.Net have built in it the ability to manage concurrent access, or do I have to manage it, to avoid "being used by another process" errors?</p>&#xA;&#xA;<p>EDIT:  After reading docs and experimentation, this is what I think I've learned:  There are two issues, thread safety and concurrency.   Multithreading is "safe" in that you can't do anything bad to the index.   But, it's safe at the cost of just one object having a lock on the index at one time.   The second object will come along and throw an exception.   So, you can't leave a search open and expect a writer in another thread to be able to update the index.   And if a thread is busy updating the index, then trying to create a searcher will fail.</p>&#xA;&#xA;<p>Also, Searchers see the index as it was at the time that they open it, so if you keep them around, and update the index, they won't see the updates. </p>&#xA;&#xA;<p>I wanted my searchers to see the latest updates. </p>&#xA;&#xA;<p>My design, and it seems to be working so far, is that my writers and searchers share a lock, so that they don't fail - they just wait - until the current write or search is done.</p>&#xA;
+Comment:
+Could you explain how did you implemented locks? Do you use read and write locks or just one shared lock?
+One shared lock.  I wrote up what I did:  &#xA;http://ifdefined.com/blog/post/Full-Text-Search-in-ASPNET-using-LuceneNET.aspx
+@CoreyTrager this question is 4 years old! Consider accepting an answer?
+
+ACCEPTED ANS:
+
+ANS:
+HTML:
+<p>You don't have a problem with that so much as managing concurrent writes to the index. I've had an easier path going with SOLR, which abstracts most of those differences away for me since it runs as a server. </p>&#xA;
+Comment:
+HTML:
+<p>According to <a href="http://darksleep.com/lucene/">this page</a>,</p>&#xA;&#xA;<blockquote>&#xA;  <p>Indexing and searching are not only&#xA;  thread safe, but process safe. What&#xA;  this means is that:</p>&#xA;  &#xA;  <ul>&#xA;  <li>Multiple index searchers can read the&#xA;  lucene index files at the same time.</li>&#xA;  <li>An index writer or reader can edit the&#xA;  lucene index files while searches are&#xA;  ongoing </li>&#xA;  <li>Multiple index writers or&#xA;  readers can try to edit the lucene&#xA;  index files at the same time (it's&#xA;  important for the index writer/reader&#xA;  to be closed so it will release the&#xA;  file lock). However, the query parser&#xA;  is not thread safe, so each thread&#xA;  using the index should have its own&#xA;  query parser.</li>&#xA;  </ul>&#xA;  &#xA;  <p>The index writer however, is thread&#xA;  safe, so you can update the index&#xA;  while people are searching it.&#xA;  However, you then have to make sure&#xA;  that the threads with open index&#xA;  searchers close them and open new&#xA;  ones, to get the newly updated data.</p>&#xA;</blockquote>&#xA;
+Comment:
+What is overhead of opening index at each query?
+We have a fairly large (multi-gigabyte) search index, and the cost of opening an index at each query has been negligible.
+It should be noted that this article is about the original Lucene for Java. There is no mention of the .NET implementation, nor whether the behavior described is a feature of the Lucene "standard" (and thus would be reimplemented in Lucene.Net) or if it's implementation-specific behavior.
+Of course. However, the Lucene.NET implementation almost perfectly matches the Java Lucene implementation. I suspect they're actually running a Java-to-C# converter on it, patching it up, and releasing it as Lucene.NET.
+HTML:
+<p>You may have issues, if your indexing thread is creating a new document which results in merging of some index segments, then the merged segments will be deleted and new segment will be created.  The problem is that your index searcher loaded up all the segments when it was opened, such that is has "pointers" to those segments which existed when it was opened. Now if the index writer does a segment merge and deletes a segment, your index searcher will still think that segment file exists and will fail with a "file not found error".  What you really need to do is seperate your writable index from your searchable index, by using SOLR or doing your own index snapshot replication similar to what SOLR does.  I have build very similar system to SOLR using .NET and Lucene.NET on Windows, using NTFS hard-links to make efficient snapshot replication.  I can give you more info if you are interested.</p>&#xA;
+Comment:
+Hi Bob, I'm using SolrNet with asp.net mvc.  I'm starting to experience real problems with the index corrupting whilst trying to add new items whilst searches are being performed.&#xA;&#xA;Would be grateful if you could provide any insight into best practice.
+
+Phrase:
+using Lucene.Net with ASP.NET 
+performing a search 
+is performing a search 
+trigger an update to the index while another web request is performing a search 
+can trigger an update to the index while another web request is performing a search 
+imagine that one web request can trigger an update to the index while another web request is performing a search 
+can imagine that one web request can trigger an update to the index while another web request is performing a search 
+manage concurrent access 
+to manage concurrent access 
+built in it the ability to manage concurrent access 
+have built in it the ability to manage concurrent access 
+used by another process '' errors 
+being used by another process '' errors 
+avoid `` being used by another process '' errors 
+to avoid `` being used by another process '' errors 
+manage it , to avoid `` being used by another process '' errors 
+to manage it , to avoid `` being used by another process '' errors 
+have to manage it , to avoid `` being used by another process '' errors 
+learned 
+'ve learned 
+think I 've learned 
+are two issues , thread safety and concurrency 
+is what I think I 've learned : There are two issues , thread safety and concurrency 
+do anything bad to the index 
+ca n't do anything bad to the index 
+is `` safe '' in that you ca n't do anything bad to the index 
+having a lock on the index at one time 
+object having a lock on the index at one time 
+come along 
+throw an exception 
+come along and throw an exception 
+will come along and throw an exception 
+update the index 
+to update the index 
+be able to update the index 
+to be able to update the index 
+open and expect a writer in another thread to be able to update the index 
+leave a search open and expect a writer in another thread to be able to update the index 
+ca n't leave a search open and expect a writer in another thread to be able to update the index 
+updating the index 
+is busy updating the index 
+create a searcher 
+to create a searcher 
+trying to create a searcher 
+fail 
+will fail 
+open it 
+was at the time that they open it 
+see the index as it was at the time that they open it 
+keep them around 
+update the index 
+keep them around , and update the index 
+see the updates 
+wo n't see the updates 
+see the latest updates 
+to see the latest updates 
+wanted my searchers to see the latest updates 
+working so far 
+be working so far 
+to be working so far 
+seems to be working so far 
+share a lock 
+fail 
+do n't fail 
+is that my writers and searchers share a lock , so that they do n't fail 
+done 
+is done 
+wait - until the current write or search is done 
+implemented locks 
+did you implemented locks 
+explain how did you implemented locks 
+Could you explain how did you implemented locks 
+read and write locks or just one shared lock 
+use read and write locks or just one shared lock 
+shared lock 
+did 
+wrote up what I did : & #xA ; http://ifdefined.com/blog/post/Full-Text-Search-in-ASPNET-using-LuceneNET.aspx 
+is 4 years old 
+@CoreyTrager this question is 4 years old 
+accepting an answer 
+Consider accepting an answer 
+writes to the index 
+have a problem with that so much as managing concurrent writes to the index 
+do n't have a problem with that so much as managing concurrent writes to the index 
+abstracts most of those differences away for me 
+going with SOLR , which abstracts most of those differences away for me 
+runs as a server 
+had an easier path going with SOLR , which abstracts most of those differences away for me since it runs as a server 
+'ve had an easier path going with SOLR , which abstracts most of those differences away for me since it runs as a server 
+are not only thread safe 
+process safe 
+are not only thread safe , but process safe 
+is that 
+means is that 
+read the lucene index files at the same time 
+can read the lucene index files at the same time 
+are ongoing 
+edit the lucene index files while searches are ongoing 
+can edit the lucene index files while searches are ongoing 
+release the file lock 
+will release the file lock 
+closed so it will release the file lock 
+be closed so it will release the file lock 
+to be closed so it will release the file lock 
+'s important for the index writer/reader to be closed so it will release the file lock 
+edit the lucene index files at the same time ( it 's important for the index writer/reader to be closed so it will release the file lock ) 
+to edit the lucene index files at the same time ( it 's important for the index writer/reader to be closed so it will release the file lock ) 
+try to edit the lucene index files at the same time ( it 's important for the index writer/reader to be closed so it will release the file lock ) 
+can try to edit the lucene index files at the same time ( it 's important for the index writer/reader to be closed so it will release the file lock ) 
+using the index 
+have its own query parser 
+should have its own query parser 
+is not thread safe , so each thread using the index should have its own query parser 
+writer however 
+searching it 
+are searching it 
+update the index while people are searching it 
+can update the index while people are searching it 
+is thread safe , so you can update the index while people are searching it 
+make sure 
+to make sure 
+close them 
+open new ones 
+close them and open new ones 
+get the newly updated data 
+to get the newly updated data 
+have to make sure that the threads with open index searchers close them and open new ones , to get the newly updated data 
+have a fairly large ( multi-gigabyte ) search index 
+opening an index at each query 
+been negligible 
+has been negligible 
+is about the original Lucene for Java 
+noted that this article is about the original Lucene for Java 
+be noted that this article is about the original Lucene for Java 
+should be noted that this article is about the original Lucene for Java 
+is a feature of the Lucene `` standard '' 
+reimplemented in Lucene.Net 
+be reimplemented in Lucene.Net 
+thus would be reimplemented in Lucene.Net 
+is a feature of the Lucene `` standard '' ( and thus would be reimplemented in Lucene.Net ) 
+'s implementation-specific behavior 
+described is a feature of the Lucene `` standard '' ( and thus would be reimplemented in Lucene.Net ) or if it 's implementation-specific behavior 
+is no mention of the . NET implementation , nor whether the behavior described is a feature of the Lucene `` standard '' ( and thus would be reimplemented in Lucene.Net ) or if it 's implementation-specific behavior 
+almost perfectly matches the Java Lucene implementation 
+running a Java-to-C # converter on it 
+patching it up 
+releasing it as Lucene.NET 
+running a Java-to-C # converter on it , patching it up , and releasing it as Lucene.NET 
+'re actually running a Java-to-C # converter on it , patching it up , and releasing it as Lucene.NET 
+suspect they 're actually running a Java-to-C # converter on it , patching it up , and releasing it as Lucene.NET 
+have issues 
+may have issues 
+merging of some index segments 
+results in merging of some index segments 
+creating a new document which results in merging of some index segments 
+is creating a new document which results in merging of some index segments 
+deleted 
+be deleted 
+will be deleted 
+created 
+be created 
+will be created 
+opened 
+was opened 
+is 
+opened 
+was opened 
+existed when it was opened 
+has `` pointers '' to those segments which existed when it was opened 
+loaded up all the segments when it was opened , such that is has `` pointers '' to those segments which existed when it was opened 
+is that your index searcher loaded up all the segments when it was opened , such that is has `` pointers '' to those segments which existed when it was opened 
+merge 
+does a segment merge 
+deletes a segment 
+does a segment merge and deletes a segment 
+exists 
+fail with a `` file not found error 
+will fail with a `` file not found error 
+exists and will fail with a `` file not found error 
+think that segment file exists and will fail with a `` file not found error 
+will still think that segment file exists and will fail with a `` file not found error 
+using SOLR 
+does 
+doing your own index snapshot replication similar to what SOLR does 
+using SOLR or doing your own index snapshot replication similar to what SOLR does 
+seperate your writable index from your searchable index , by using SOLR or doing your own index snapshot replication similar to what SOLR does 
+is seperate your writable index from your searchable index , by using SOLR or doing your own index snapshot replication similar to what SOLR does 
+do is seperate your writable index from your searchable index , by using SOLR or doing your own index snapshot replication similar to what SOLR does 
+to do is seperate your writable index from your searchable index , by using SOLR or doing your own index snapshot replication similar to what SOLR does 
+need to do is seperate your writable index from your searchable index , by using SOLR or doing your own index snapshot replication similar to what SOLR does 
+using 
+make efficient snapshot replication 
+to make efficient snapshot replication 
+using NTFS hard-links to make efficient snapshot replication 
+build very similar system to SOLR using . NET and Lucene.NET on Windows , using NTFS hard-links to make efficient snapshot replication 
+have build very similar system to SOLR using . NET and Lucene.NET on Windows , using NTFS hard-links to make efficient snapshot replication 
+are interested 
+give you more info if you are interested 
+can give you more info if you are interested 
+Hi Bob 
+using SolrNet with asp.net mvc 
+'m using SolrNet with asp.net mvc 
+add new items 
+to add new items 
+trying to add new items 
+performed 
+being performed 
+are being performed 
+corrupting whilst trying to add new items whilst searches are being performed . 
+experience real problems with the index corrupting whilst trying to add new items whilst searches are being performed . 
+to experience real problems with the index corrupting whilst trying to add new items whilst searches are being performed . 
+starting to experience real problems with the index corrupting whilst trying to add new items whilst searches are being performed . 
+'m starting to experience real problems with the index corrupting whilst trying to add new items whilst searches are being performed . 
+provide any insight into best practice 
+could provide any insight into best practice 
+be grateful if you could provide any insight into best practice 
+Would be grateful if you could provide any insight into best practice 

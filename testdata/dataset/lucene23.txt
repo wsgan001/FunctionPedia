@@ -1,0 +1,88 @@
+QUESTION:
+HTML:
+<p>Was looking to get peoples thoughts on keeping a Lucene index up to date as changes are made to the domain model objects of an application.  </p>&#xA;&#xA;<p>The application in question is a Java/J2EE based web app that uses Hibernate.  The way I currently have things working is that the Hibernate mapped model objects all implement a common "Indexable" interface that can return a set of key/value pairs that are recorded in Lucene.  Whenever a CRUD operation is performed involving such an object I send it via JMS queue into a message driven bean that records in Lucene the primary key of the object and the key/value pairs returned from the index( ) method of the Indexable object that was provided.  </p>&#xA;&#xA;<p>My main worries about this scheme is if the MDB gets behind and can't keep up with the indexing operations that are coming in or if some sort of error/exception stops an object from being index.  The result is an out-of-date index for either a sort, or long, period of time.  </p>&#xA;&#xA;<p>Basically I was just wondering what kind of strategies others had come up with for this sort of thing.  Not necessarily looking for one correct answer but am imagining a list of "whiteboard" sort of ideas to get my brain thinking about alternatives.</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>Change the message: just provide the primary key and the current date, not the key/value pairs. Your mdb fetches the entity by primary key and calls index(). After indexing you set a value "updated" in your index to the message date. You update your index only if the message date is after the "updated" field of the index. This way you can't get behind because you always fetch the current key/value pairs first.</p>&#xA;&#xA;<p>As an alternative: have a look at <a href="http://www.compass-project.org" rel="nofollow">http://www.compass-project.org</a>.</p>&#xA;
+Comment:
+
+ANS:
+HTML:
+<p>Change the message: just provide the primary key and the current date, not the key/value pairs. Your mdb fetches the entity by primary key and calls index(). After indexing you set a value "updated" in your index to the message date. You update your index only if the message date is after the "updated" field of the index. This way you can't get behind because you always fetch the current key/value pairs first.</p>&#xA;&#xA;<p>As an alternative: have a look at <a href="http://www.compass-project.org" rel="nofollow">http://www.compass-project.org</a>.</p>&#xA;
+Comment:
+
+Phrase:
+keeping a Lucene index up to date 
+made to the domain 
+are made to the domain 
+get peoples thoughts on keeping a Lucene index up to date as changes are made to the domain 
+to get peoples thoughts on keeping a Lucene index up to date as changes are made to the domain 
+looking to get peoples thoughts on keeping a Lucene index up to date as changes are made to the domain 
+Was looking to get peoples thoughts on keeping a Lucene index up to date as changes are made to the domain 
+uses Hibernate 
+is a Java/J2EE based web app that uses Hibernate 
+working 
+have things working 
+recorded in Lucene 
+are recorded in Lucene 
+return a set of key/value pairs that are recorded in Lucene 
+can return a set of key/value pairs that are recorded in Lucene 
+implement a common `` Indexable '' interface that can return a set of key/value pairs that are recorded in Lucene 
+mapped model objects all implement a common `` Indexable '' interface that can return a set of key/value pairs that are recorded in Lucene 
+is that the Hibernate mapped model objects all implement a common `` Indexable '' interface that can return a set of key/value pairs that are recorded in Lucene 
+provided 
+was provided 
+returned from the index ( ) method of the Indexable object that was provided 
+driven bean that records in Lucene the primary key of the object and the key/value pairs returned from the index ( ) method of the Indexable object that was provided 
+send it via JMS queue into a message driven bean that records in Lucene the primary key of the object and the key/value pairs returned from the index ( ) method of the Indexable object that was provided 
+involving such an object I send it via JMS queue into a message driven bean that records in Lucene the primary key of the object and the key/value pairs returned from the index ( ) method of the Indexable object that was provided 
+performed involving such an object I send it via JMS queue into a message driven bean that records in Lucene the primary key of the object and the key/value pairs returned from the index ( ) method of the Indexable object that was provided 
+is performed involving such an object I send it via JMS queue into a message driven bean that records in Lucene the primary key of the object and the key/value pairs returned from the index ( ) method of the Indexable object that was provided 
+gets behind 
+coming in 
+are coming in 
+keep up with the indexing operations that are coming in 
+ca n't keep up with the indexing operations that are coming in 
+gets behind and ca n't keep up with the indexing operations that are coming in 
+being index 
+stops an object from being index 
+is if the MDB gets behind and ca n't keep up with the indexing operations that are coming in or if some sort of error/exception stops an object from being index 
+is an out-of-date index for either a sort , or long , period of time 
+come up with for this sort of thing 
+had come up with for this sort of thing 
+wondering what kind of strategies others had come up with for this sort of thing 
+was just wondering what kind of strategies others had come up with for this sort of thing 
+Basically I was just wondering what kind of strategies others had come up with for this sort of thing 
+looking for one 
+correct answer 
+get my brain thinking about alternatives 
+to get my brain thinking about alternatives 
+imagining a list of `` whiteboard '' sort of ideas to get my brain thinking about alternatives 
+am imagining a list of `` whiteboard '' sort of ideas to get my brain thinking about alternatives 
+correct answer but am imagining a list of `` whiteboard '' sort of ideas to get my brain thinking about alternatives 
+just provide the primary key 
+the message : just provide the primary key and the current date , not the key/value pairs 
+fetches the entity by primary key 
+calls index ( 
+fetches the entity by primary key and calls index ( 
+set a value `` updated '' in your index to the message date 
+is after the `` updated '' field of the index 
+update your index only if the message date is after the `` updated '' field of the index 
+fetch the current key/value pairs first 
+get behind because you always fetch the current key/value pairs first 
+ca n't get behind because you always fetch the current key/value pairs first 
+have a look at http://www.compass-project.org 
+just provide the primary key 
+the message : just provide the primary key and the current date , not the key/value pairs 
+fetches the entity by primary key 
+calls index ( 
+fetches the entity by primary key and calls index ( 
+set a value `` updated '' in your index to the message date 
+is after the `` updated '' field of the index 
+update your index only if the message date is after the `` updated '' field of the index 
+fetch the current key/value pairs first 
+get behind because you always fetch the current key/value pairs first 
+ca n't get behind because you always fetch the current key/value pairs first 
+have a look at http://www.compass-project.org 

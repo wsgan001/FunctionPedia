@@ -1,0 +1,239 @@
+QUESTION:
+HTML:
+<p>There is some <a href="http://neo4j.org/">hype around graph databases</a>. I'm wondering why. </p>&#xA;&#xA;<p>What are the possible problems that one can be confronted with in today's web environment that can be solved using graph databases? And are graph databases suitable for classical applications, i.e. can one be used as a drop-in replacement for a Relational Database? So in fact it's two questions in one.</p>&#xA;&#xA;<p><strong>Related:</strong> <a href="http://stackoverflow.com/questions/1000162/has-anyone-used-graph-based-databases-http-neo4j-org">Has anyone used Graph-based Databases (<a href="http://neo4j.org/">http://neo4j.org/</a>)?</a></p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>Many relational representations of graphs aren't particularly efficient for all operations you might want to perform.</p>&#xA;&#xA;<p>For example, if one wants the connected set of all nodes where edges satisfy a given predicate, starting from a given node, there's no natural way in SQL to express that. Likely you'll either do a query for edges with the predicate, and then have to exclude disconnected edges locally, or have a very verbose conversation with the database server following one set of links to the next in iterated queries.</p>&#xA;&#xA;<p>Graphs aren't a general replacement for relational databases. RDBs deal primarily in sets (tables), while graphs are primarily interesting because of the "shape" of interconnections. With relational DBs you follow links of a predetermined depth (a fixed number of joins) between sets, with results progressively filtered and grouped, while graphs are usually navigated to arbitrary and recursively-defined depth (i.e. not a predetermined number of "joins"). You can abuse either to match the characteristics of the other, but they'll have different strengths.</p>&#xA;
+Comment:
+Transitive closure may not be part of the SQL standard (and is presumably hard to implement in the general case, or more vendors would have done it) but it is not hard to implement for a specific application using stored procedures.
+For sure; but having to write ad-hoc queries as stored procedures can put a crimp in your style.
+@finnw The problem isn't being able to do it, the problems are  efficiency and performance. To gain good read performance you'd have to sacrifice insert performance and waste lots of disk space. This article: http://www.codeproject.com/KB/database/Modeling_DAGs_on_SQL_DBs.aspx outlines how this can be done using stored procedures for inserts and common SQL for reads.
+And I believe also how elegant/ natural one can solve problems. That's why people prefer different programming languages, and that's why people might prefer different data stores.
+You *can* do transitive closure in standard SQL - you can use recursive common table expressions. I've used them on PostgreSQL and MS SQL Server, and i believe they are supported by other leading RDBMSs. The syntax is slightly clunky, but they're really good fun once you get the hang of them. I suspect they aren't as fast as the equivalent queries in a graph database, though.
+
+ANS:
+HTML:
+<p>Many relational representations of graphs aren't particularly efficient for all operations you might want to perform.</p>&#xA;&#xA;<p>For example, if one wants the connected set of all nodes where edges satisfy a given predicate, starting from a given node, there's no natural way in SQL to express that. Likely you'll either do a query for edges with the predicate, and then have to exclude disconnected edges locally, or have a very verbose conversation with the database server following one set of links to the next in iterated queries.</p>&#xA;&#xA;<p>Graphs aren't a general replacement for relational databases. RDBs deal primarily in sets (tables), while graphs are primarily interesting because of the "shape" of interconnections. With relational DBs you follow links of a predetermined depth (a fixed number of joins) between sets, with results progressively filtered and grouped, while graphs are usually navigated to arbitrary and recursively-defined depth (i.e. not a predetermined number of "joins"). You can abuse either to match the characteristics of the other, but they'll have different strengths.</p>&#xA;
+Comment:
+Transitive closure may not be part of the SQL standard (and is presumably hard to implement in the general case, or more vendors would have done it) but it is not hard to implement for a specific application using stored procedures.
+For sure; but having to write ad-hoc queries as stored procedures can put a crimp in your style.
+@finnw The problem isn't being able to do it, the problems are  efficiency and performance. To gain good read performance you'd have to sacrifice insert performance and waste lots of disk space. This article: http://www.codeproject.com/KB/database/Modeling_DAGs_on_SQL_DBs.aspx outlines how this can be done using stored procedures for inserts and common SQL for reads.
+And I believe also how elegant/ natural one can solve problems. That's why people prefer different programming languages, and that's why people might prefer different data stores.
+You *can* do transitive closure in standard SQL - you can use recursive common table expressions. I've used them on PostgreSQL and MS SQL Server, and i believe they are supported by other leading RDBMSs. The syntax is slightly clunky, but they're really good fun once you get the hang of them. I suspect they aren't as fast as the equivalent queries in a graph database, though.
+HTML:
+<p>In my opinion, social networking sites may benefit from graph databases because graph is a natural way of storing connections between users.</p>&#xA;
+Comment:
+HTML:
+<p>Answwer to Q1: routing</p>&#xA;
+Comment:
+HTML:
+<p>You will find some answers in these two stackoverflow threads:</p>&#xA;&#xA;<ul>&#xA;<li><a href="http://stackoverflow.com/questions/703999/what-are-some-examples-of-problems-that-are-best-solved-with-graphs">What are some examples of problems&#xA;that are best solved with graphs?</a></li>&#xA;<li><a href="http://stackoverflow.com/questions/1000162/have-anyone-used-graph-based-databases-http-neo4j-org">Have anyone used Graph based&#xA;Databases : <a href="http://neo4j.org/">http://neo4j.org/</a></a></li>&#xA;</ul>&#xA;&#xA;<p>Regarding classical apps, this Neo4j wiki page could be of interest: <a href="http://wiki.neo4j.org/content/Domain%5FModeling%5FGallery">Domain Modeling Gallery</a> (I wrote it).</p>&#xA;
+Comment:
+
+Phrase:
+is some hype around graph databases 
+wondering why 
+'m wondering why 
+using graph databases 
+solved using graph databases 
+be solved using graph databases 
+can be solved using graph databases 
+confronted with in today 's web environment that can be solved using graph databases 
+be confronted with in today 's web environment that can be solved using graph databases 
+can be confronted with in today 's web environment that can be solved using graph databases 
+used as a drop-in replacement for a Relational Database 
+be used as a drop-in replacement for a Relational Database 
+'s two questions in one 
+used Graph-based Databases ( http://neo4j.org/ ) 
+perform 
+to perform 
+want to perform 
+might want to perform 
+are n't particularly efficient for all operations you might want to perform 
+satisfy a given predicate 
+wants the connected set of all nodes where edges satisfy a given predicate , starting from a given node 
+express that 
+to express that 
+'s no natural way in SQL to express that 
+do a query for edges with the predicate 
+exclude disconnected edges locally 
+to exclude disconnected edges locally 
+have to exclude disconnected edges locally 
+have a very verbose conversation with the database server following one set of links to the next in iterated queries 
+do a query for edges with the predicate , and then have to exclude disconnected edges locally , or have a very verbose conversation with the database server following one set of links to the next in iterated queries 
+'ll either do a query for edges with the predicate , and then have to exclude disconnected edges locally , or have a very verbose conversation with the database server following one set of links to the next in iterated queries 
+are n't a general replacement for relational databases 
+are primarily interesting because of the `` shape '' of interconnections 
+deal primarily in sets ( tables ) , while graphs are primarily interesting because of the `` shape '' of interconnections 
+navigated to arbitrary and recursively-defined depth ( i.e 
+are usually navigated to arbitrary and recursively-defined depth ( i.e 
+progressively filtered and grouped , while graphs are usually navigated to arbitrary and recursively-defined depth ( i.e 
+follow links of a predetermined depth ( a fixed number of joins ) between sets , with results progressively filtered and grouped , while graphs are usually navigated to arbitrary and recursively-defined depth ( i.e 
+match the characteristics of the other 
+to match the characteristics of the other 
+abuse either to match the characteristics of the other 
+can abuse either to match the characteristics of the other 
+have different strengths 
+'ll have different strengths 
+be part of the SQL standard 
+may not be part of the SQL standard 
+implement in the general case 
+to implement in the general case 
+done it 
+have done it 
+would have done it 
+is presumably hard to implement in the general case , or more vendors would have done it 
+using stored procedures 
+implement for a specific application using stored procedures 
+to implement for a specific application using stored procedures 
+is not hard to implement for a specific application using stored procedures 
+write ad-hoc queries as stored procedures 
+to write ad-hoc queries as stored procedures 
+having to write ad-hoc queries as stored procedures 
+put a crimp in your style 
+can put a crimp in your style 
+do it 
+to do it 
+being able to do it 
+is n't being able to do it 
+are efficiency and performance 
+@finnw The problem is n't being able to do it , the problems are efficiency and performance 
+sacrifice insert performance and waste lots of disk space 
+to sacrifice insert performance and waste lots of disk space 
+have to sacrifice insert performance and waste lots of disk space 
+'d have to sacrifice insert performance and waste lots of disk space 
+gain good read performance you 'd have to sacrifice insert performance and waste lots of disk space 
+To gain good read performance you 'd have to sacrifice insert performance and waste lots of disk space 
+using stored procedures for inserts and common SQL for reads 
+done using stored procedures for inserts and common SQL for reads 
+be done using stored procedures for inserts and common SQL for reads 
+can be done using stored procedures for inserts and common SQL for reads 
+outlines how this can be done using stored procedures for inserts and common SQL for reads 
+solve problems 
+can solve problems 
+believe also how elegant / natural one can solve problems 
+prefer different programming languages 
+'s why people prefer different programming languages 
+prefer different data stores 
+might prefer different data stores 
+'s why people might prefer different data stores 
+do transitive closure in standard SQL 
+can * do transitive closure in standard SQL 
+use recursive common table expressions 
+can use recursive common table expressions 
+used them on PostgreSQL and MS SQL Server 
+'ve used them on PostgreSQL and MS SQL Server 
+supported by other leading RDBMSs 
+are supported by other leading RDBMSs 
+believe they are supported by other leading RDBMSs 
+is slightly clunky 
+get the hang of them 
+'re really good fun once you get the hang of them 
+queries in a graph database , though 
+are n't as fast as the equivalent queries in a graph database , though 
+suspect they are n't as fast as the equivalent queries in a graph database , though 
+perform 
+to perform 
+want to perform 
+might want to perform 
+are n't particularly efficient for all operations you might want to perform 
+satisfy a given predicate 
+wants the connected set of all nodes where edges satisfy a given predicate , starting from a given node 
+express that 
+to express that 
+'s no natural way in SQL to express that 
+do a query for edges with the predicate 
+exclude disconnected edges locally 
+to exclude disconnected edges locally 
+have to exclude disconnected edges locally 
+have a very verbose conversation with the database server following one set of links to the next in iterated queries 
+do a query for edges with the predicate , and then have to exclude disconnected edges locally , or have a very verbose conversation with the database server following one set of links to the next in iterated queries 
+'ll either do a query for edges with the predicate , and then have to exclude disconnected edges locally , or have a very verbose conversation with the database server following one set of links to the next in iterated queries 
+are n't a general replacement for relational databases 
+are primarily interesting because of the `` shape '' of interconnections 
+deal primarily in sets ( tables ) , while graphs are primarily interesting because of the `` shape '' of interconnections 
+navigated to arbitrary and recursively-defined depth ( i.e 
+are usually navigated to arbitrary and recursively-defined depth ( i.e 
+progressively filtered and grouped , while graphs are usually navigated to arbitrary and recursively-defined depth ( i.e 
+follow links of a predetermined depth ( a fixed number of joins ) between sets , with results progressively filtered and grouped , while graphs are usually navigated to arbitrary and recursively-defined depth ( i.e 
+match the characteristics of the other 
+to match the characteristics of the other 
+abuse either to match the characteristics of the other 
+can abuse either to match the characteristics of the other 
+have different strengths 
+'ll have different strengths 
+be part of the SQL standard 
+may not be part of the SQL standard 
+implement in the general case 
+to implement in the general case 
+done it 
+have done it 
+would have done it 
+is presumably hard to implement in the general case , or more vendors would have done it 
+using stored procedures 
+implement for a specific application using stored procedures 
+to implement for a specific application using stored procedures 
+is not hard to implement for a specific application using stored procedures 
+write ad-hoc queries as stored procedures 
+to write ad-hoc queries as stored procedures 
+having to write ad-hoc queries as stored procedures 
+put a crimp in your style 
+can put a crimp in your style 
+do it 
+to do it 
+being able to do it 
+is n't being able to do it 
+are efficiency and performance 
+@finnw The problem is n't being able to do it , the problems are efficiency and performance 
+sacrifice insert performance and waste lots of disk space 
+to sacrifice insert performance and waste lots of disk space 
+have to sacrifice insert performance and waste lots of disk space 
+'d have to sacrifice insert performance and waste lots of disk space 
+gain good read performance you 'd have to sacrifice insert performance and waste lots of disk space 
+To gain good read performance you 'd have to sacrifice insert performance and waste lots of disk space 
+using stored procedures for inserts and common SQL for reads 
+done using stored procedures for inserts and common SQL for reads 
+be done using stored procedures for inserts and common SQL for reads 
+can be done using stored procedures for inserts and common SQL for reads 
+outlines how this can be done using stored procedures for inserts and common SQL for reads 
+solve problems 
+can solve problems 
+believe also how elegant / natural one can solve problems 
+prefer different programming languages 
+'s why people prefer different programming languages 
+prefer different data stores 
+might prefer different data stores 
+'s why people might prefer different data stores 
+do transitive closure in standard SQL 
+can * do transitive closure in standard SQL 
+use recursive common table expressions 
+can use recursive common table expressions 
+used them on PostgreSQL and MS SQL Server 
+'ve used them on PostgreSQL and MS SQL Server 
+supported by other leading RDBMSs 
+are supported by other leading RDBMSs 
+believe they are supported by other leading RDBMSs 
+is slightly clunky 
+get the hang of them 
+'re really good fun once you get the hang of them 
+queries in a graph database , though 
+are n't as fast as the equivalent queries in a graph database , though 
+suspect they are n't as fast as the equivalent queries in a graph database , though 
+storing connections between users 
+is a natural way of storing connections between users 
+benefit from graph databases because graph is a natural way of storing connections between users 
+may benefit from graph databases because graph is a natural way of storing connections between users 
+Answwer to Q1 : routing 
+find some answers in these two stackoverflow threads 
+will find some answers in these two stackoverflow threads 
+best solved with graphs 
+are best solved with graphs 
+based Databases : http://neo4j.org/ 
+used Graph based Databases : http://neo4j.org/ 
+Have anyone used Graph based Databases : http://neo4j.org/ 
+be of interest 
+wrote it 
+be of interest : Domain Modeling Gallery ( I wrote it ) 
+could be of interest : Domain Modeling Gallery ( I wrote it ) 

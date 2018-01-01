@@ -1,0 +1,49 @@
+QUESTION:
+HTML:
+<p>Lucene has quite poor support for Russian language.</p>&#xA;&#xA;<p>RussianAnalyzer (part of lucene-contrib) is of very low quality.</p>&#xA;&#xA;<p>RussianStemmer module for Snowball is even worse. It does not recognize Russian text in Unicode strings, apparently assuming that some bizarre mix of Unicode and KOI8-R must be used instead.</p>&#xA;&#xA;<p>Do you know any better solutions?</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+
+ANS:
+HTML:
+<p>If all else fails, use <a href="http://www.sphinxsearch.com/" rel="nofollow">Sphinx</a></p>&#xA;
+Comment:
+HTML:
+<p>That's the beauty of open source. You have the source code, so if the current implementations don't work for you, you can always create your own or even better, extend the existing ones.&#xA;A good start would be the "Lucene in Action" book.</p>&#xA;
+Comment:
+HTML:
+<p>My answer is probably too late, but for the record, I've found <a href="http://code.google.com/p/russianmorphology/" rel="nofollow">analyzers from AOT project</a> much better then those shipped with Lucene.</p>&#xA;
+Comment:
+HTML:
+<p>I used <a href="http://code.google.com/p/russianmorphology/" rel="nofollow">http://code.google.com/p/russianmorphology/</a></p>&#xA;
+Comment:
+
+Phrase:
+has quite poor support for Russian language 
+is of very low quality 
+is even worse 
+used instead 
+be used instead 
+must be used instead 
+assuming that some bizarre mix of Unicode and KOI8-R must be used instead 
+recognize Russian text in Unicode strings , apparently assuming that some bizarre mix of Unicode and KOI8-R must be used instead 
+does not recognize Russian text in Unicode strings , apparently assuming that some bizarre mix of Unicode and KOI8-R must be used instead 
+know any better solutions 
+fails 
+use Sphinx 
+'s the beauty of open source 
+work for you 
+do n't work for you 
+create your own 
+extend the existing ones 
+create your own or even better , extend the existing ones 
+can always create your own or even better , extend the existing ones 
+have the source code , so if the current implementations do n't work for you , you can always create your own or even better , extend the existing ones 
+be the `` Lucene in Action '' book 
+would be the `` Lucene in Action '' book 
+is probably too late 
+shipped with Lucene 
+found analyzers from AOT project much better then those shipped with Lucene 
+'ve found analyzers from AOT project much better then those shipped with Lucene 
+used http://code.google.com/p/russianmorphology/ 

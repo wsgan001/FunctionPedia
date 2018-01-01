@@ -1,0 +1,166 @@
+QUESTION:
+HTML:
+<p>I want my web application users to download some data as an Excel file. </p>&#xA;&#xA;<p>I have the next function to send an Input Stream in the response object.  </p>&#xA;&#xA;<pre><code>public static void sendFile(InputStream is, HttpServletResponse response) throws IOException {&#xA;    	BufferedInputStream in = null;&#xA;    	try {&#xA;    		int count;&#xA;    		byte[] buffer = new byte[BUFFER_SIZE];&#xA;    		in = new BufferedInputStream(is);&#xA;    		ServletOutputStream out = response.getOutputStream();&#xA;    		while(-1 != (count = in.read(buffer)))&#xA;    			out.write(buffer, 0, count);&#xA;    		out.flush();			&#xA;    	}	catch (IOException ioe) { &#xA;    		System.err.println("IOException in Download::sendFile"); &#xA;    		ioe.printStackTrace();&#xA;    	} finally {&#xA;    		if (in != null) {&#xA;    			try { in.close(); &#xA;    			} catch (IOException ioe) { ioe.printStackTrace(); }&#xA;    		}	&#xA;    	}&#xA;    }&#xA;</code></pre>&#xA;&#xA;<p>I would like to transform my HSSFWorkbook Object to an input stream and pass it to the previous method. </p>&#xA;&#xA;<pre><code>public InputStream generateApplicationsExcel() {&#xA;    HSSFWorkbook wb = new HSSFWorkbook();&#xA;    // Populate the excel object&#xA;    return null; // TODO. return the wb as InputStream &#xA;}&#xA;</code></pre>&#xA;&#xA;<p><a href="http://poi.apache.org/apidocs/org/apache/poi/hssf/usermodel/HSSFWorkbook.html" rel="nofollow">http://poi.apache.org/apidocs/org/apache/poi/hssf/usermodel/HSSFWorkbook.html</a></p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>The problem with your question is that you are mixing OutputStreams and InputStreams.  An InputStream is something you read from and an OutputStream is something you write to.  </p>&#xA;&#xA;<p>This is how I write a POI object to the output stream.</p>&#xA;&#xA;<pre><code>// this part is important to let the browser know what you're sending&#xA;response.setContentType("application/vnd.ms-excel");&#xA;// the next two lines make the report a downloadable file;&#xA;// leave this out if you want IE to show the file in the browser window&#xA;String fileName = "Blah_Report.xls";&#xA;response.setHeader("Content-Disposition", "attachment; filename=" + fileName); &#xA;&#xA;// get the workbook from wherever&#xA;HSSFWorkbook wb = getWorkbook();&#xA;OutputStream out = response.getOutputStream();&#xA;try {&#xA;   wb.write(out);&#xA;}       &#xA;catch (IOException ioe) { &#xA;  // if this happens there is probably no way to report the error to the user&#xA;  if (!response.isCommited()) {&#xA;    response.setContentType("text/html");&#xA;    // show response text now&#xA;  }&#xA;}&#xA;</code></pre>&#xA;&#xA;<p>If you wanted to re-use your existing code you'd have to store the POI data somewhere then turn THAT into an input stream.  That'd be easily done by writing it to a ByteArrayOutputStream, then reading those bytes using a ByteArrayInputStream, but I wouldn't recommend it.  Your existing method would be more useful as a generic Pipe implementation, where you can pipe the data from an InputStream to and OutputStream, but you don't need it for writing POI objects.</p>&#xA;
+Comment:
++1 for example. But how I can get file size of HSSFWorkbook? I want to add a header `Content-Length`
+@MyTitle I think if you wanted to set a content-length header you'd need to write the stream to a ByteArrayOutputStream first, then get its length, then write it to the HTTP response.
+
+ANS:
+HTML:
+<p>I think I understand what you're trying to do (maybe I am undershooting, though)</p>&#xA;&#xA;<p>you don't really need that much code - check out the write method - </p>&#xA;&#xA;<pre><code>HSSFWorkbook wb = new HSSFWorkBook();&#xA;//populate&#xA;&#xA;ServletOutputStream out = response.getOutputStream();&#xA;try {&#xA;   wb.write(out);&#xA;   out.flush();&#xA;}       &#xA;catch (IOException ioe) { &#xA;   //whatever&#xA;}&#xA;out.close();&#xA;</code></pre>&#xA;&#xA;<p>As far as I remember when I worked w/ POI that's what I did.  If you're inside a web framework you may have to finaggle it so that the framework doesn't try to do something with the that ServletOutputStream after you've closed it.  If it tries, you'll get an exception throwing telling you that the output stream is closed already.</p>&#xA;
+Comment:
+HTML:
+<p>The problem with your question is that you are mixing OutputStreams and InputStreams.  An InputStream is something you read from and an OutputStream is something you write to.  </p>&#xA;&#xA;<p>This is how I write a POI object to the output stream.</p>&#xA;&#xA;<pre><code>// this part is important to let the browser know what you're sending&#xA;response.setContentType("application/vnd.ms-excel");&#xA;// the next two lines make the report a downloadable file;&#xA;// leave this out if you want IE to show the file in the browser window&#xA;String fileName = "Blah_Report.xls";&#xA;response.setHeader("Content-Disposition", "attachment; filename=" + fileName); &#xA;&#xA;// get the workbook from wherever&#xA;HSSFWorkbook wb = getWorkbook();&#xA;OutputStream out = response.getOutputStream();&#xA;try {&#xA;   wb.write(out);&#xA;}       &#xA;catch (IOException ioe) { &#xA;  // if this happens there is probably no way to report the error to the user&#xA;  if (!response.isCommited()) {&#xA;    response.setContentType("text/html");&#xA;    // show response text now&#xA;  }&#xA;}&#xA;</code></pre>&#xA;&#xA;<p>If you wanted to re-use your existing code you'd have to store the POI data somewhere then turn THAT into an input stream.  That'd be easily done by writing it to a ByteArrayOutputStream, then reading those bytes using a ByteArrayInputStream, but I wouldn't recommend it.  Your existing method would be more useful as a generic Pipe implementation, where you can pipe the data from an InputStream to and OutputStream, but you don't need it for writing POI objects.</p>&#xA;
+Comment:
++1 for example. But how I can get file size of HSSFWorkbook? I want to add a header `Content-Length`
+@MyTitle I think if you wanted to set a content-length header you'd need to write the stream to a ByteArrayOutputStream first, then get its length, then write it to the HTTP response.
+
+Phrase:
+download some data as an Excel file 
+to download some data as an Excel file 
+want my web application users to download some data as an Excel file 
+send an Input Stream in the response object 
+to send an Input Stream in the response object 
+have the next function to send an Input Stream in the response object 
+transform my HSSFWorkbook Object to an input stream 
+pass it to the previous method 
+transform my HSSFWorkbook Object to an input stream and pass it to the previous method 
+to transform my HSSFWorkbook Object to an input stream and pass it to the previous method 
+like to transform my HSSFWorkbook Object to an input stream and pass it to the previous method 
+would like to transform my HSSFWorkbook Object to an input stream and pass it to the previous method 
+mixing OutputStreams and InputStreams 
+are mixing OutputStreams and InputStreams 
+is that you are mixing OutputStreams and InputStreams 
+read from 
+write to 
+is something you write to 
+is something you read from and an OutputStream is something you write to 
+write a POI object to the output stream 
+is how I write a POI object to the output stream 
+store the POI data somewhere then turn THAT into an input stream 
+to store the POI data somewhere then turn THAT into an input stream 
+have to store the POI data somewhere then turn THAT into an input stream 
+'d have to store the POI data somewhere then turn THAT into an input stream 
+re-use your existing code you 'd have to store the POI data somewhere then turn THAT into an input stream 
+to re-use your existing code you 'd have to store the POI data somewhere then turn THAT into an input stream 
+wanted to re-use your existing code you 'd have to store the POI data somewhere then turn THAT into an input stream 
+using a ByteArrayInputStream 
+bytes using a ByteArrayInputStream 
+recommend it 
+would n't recommend it 
+reading those bytes using a ByteArrayInputStream , but I would n't recommend it 
+writing it to a ByteArrayOutputStream , then reading those bytes using a ByteArrayInputStream , but I would n't recommend it 
+easily done by writing it to a ByteArrayOutputStream , then reading those bytes using a ByteArrayInputStream , but I would n't recommend it 
+be easily done by writing it to a ByteArrayOutputStream , then reading those bytes using a ByteArrayInputStream , but I would n't recommend it 
+'d be easily done by writing it to a ByteArrayOutputStream , then reading those bytes using a ByteArrayInputStream , but I would n't recommend it 
+pipe the data from an InputStream to and OutputStream 
+can pipe the data from an InputStream to and OutputStream 
+be more useful as a generic Pipe implementation , where you can pipe the data from an InputStream to and OutputStream 
+would be more useful as a generic Pipe implementation , where you can pipe the data from an InputStream to and OutputStream 
+writing POI objects 
+need it for writing POI objects 
+do n't need it for writing POI objects 
+get file size of HSSFWorkbook 
+can get file size of HSSFWorkbook 
+add 
+to add 
+want to add 
+header ` Content-Length 
+write the stream to a ByteArrayOutputStream first 
+to write the stream to a ByteArrayOutputStream first 
+need to write the stream to a ByteArrayOutputStream first 
+'d need to write the stream to a ByteArrayOutputStream first 
+set a content-length header you 'd need to write the stream to a ByteArrayOutputStream first 
+to set a content-length header you 'd need to write the stream to a ByteArrayOutputStream first 
+get its length 
+write it to the HTTP response 
+get its length , then write it to the HTTP response 
+wanted to set a content-length header you 'd need to write the stream to a ByteArrayOutputStream first , then get its length , then write it to the HTTP response 
+think if you wanted to set a content-length header you 'd need to write the stream to a ByteArrayOutputStream first , then get its length , then write it to the HTTP response 
+undershooting , though 
+am undershooting , though 
+do ( maybe I am undershooting , though ) 
+to do ( maybe I am undershooting , though ) 
+trying to do ( maybe I am undershooting , though ) 
+'re trying to do ( maybe I am undershooting , though ) 
+understand what you 're trying to do ( maybe I am undershooting , though ) 
+think I understand what you 're trying to do ( maybe I am undershooting , though ) 
+need that much code 
+do n't really need that much code 
+check out the write method 
+did 
+'s what I did 
+worked w / POI that 's what I did 
+remember when I worked w / POI that 's what I did 
+do something with the that ServletOutputStream 
+to do something with the that ServletOutputStream 
+try to do something with the that ServletOutputStream 
+does n't try to do something with the that ServletOutputStream 
+finaggle it so that the framework does n't try to do something with the that ServletOutputStream 
+to finaggle it so that the framework does n't try to do something with the that ServletOutputStream 
+closed it 
+'ve closed it 
+have to finaggle it so that the framework does n't try to do something with the that ServletOutputStream after you 've closed it 
+may have to finaggle it so that the framework does n't try to do something with the that ServletOutputStream after you 've closed it 
+'re inside a web framework you may have to finaggle it so that the framework does n't try to do something with the that ServletOutputStream after you 've closed it 
+tries 
+closed already 
+is closed already 
+telling you that the output stream is closed already 
+throwing telling you that the output stream is closed already 
+get an exception throwing telling you that the output stream is closed already 
+'ll get an exception throwing telling you that the output stream is closed already 
+mixing OutputStreams and InputStreams 
+are mixing OutputStreams and InputStreams 
+is that you are mixing OutputStreams and InputStreams 
+read from 
+write to 
+is something you write to 
+is something you read from and an OutputStream is something you write to 
+write a POI object to the output stream 
+is how I write a POI object to the output stream 
+store the POI data somewhere then turn THAT into an input stream 
+to store the POI data somewhere then turn THAT into an input stream 
+have to store the POI data somewhere then turn THAT into an input stream 
+'d have to store the POI data somewhere then turn THAT into an input stream 
+re-use your existing code you 'd have to store the POI data somewhere then turn THAT into an input stream 
+to re-use your existing code you 'd have to store the POI data somewhere then turn THAT into an input stream 
+wanted to re-use your existing code you 'd have to store the POI data somewhere then turn THAT into an input stream 
+using a ByteArrayInputStream 
+bytes using a ByteArrayInputStream 
+recommend it 
+would n't recommend it 
+reading those bytes using a ByteArrayInputStream , but I would n't recommend it 
+writing it to a ByteArrayOutputStream , then reading those bytes using a ByteArrayInputStream , but I would n't recommend it 
+easily done by writing it to a ByteArrayOutputStream , then reading those bytes using a ByteArrayInputStream , but I would n't recommend it 
+be easily done by writing it to a ByteArrayOutputStream , then reading those bytes using a ByteArrayInputStream , but I would n't recommend it 
+'d be easily done by writing it to a ByteArrayOutputStream , then reading those bytes using a ByteArrayInputStream , but I would n't recommend it 
+pipe the data from an InputStream to and OutputStream 
+can pipe the data from an InputStream to and OutputStream 
+be more useful as a generic Pipe implementation , where you can pipe the data from an InputStream to and OutputStream 
+would be more useful as a generic Pipe implementation , where you can pipe the data from an InputStream to and OutputStream 
+writing POI objects 
+need it for writing POI objects 
+do n't need it for writing POI objects 
+get file size of HSSFWorkbook 
+can get file size of HSSFWorkbook 
+add 
+to add 
+want to add 
+header ` Content-Length 
+write the stream to a ByteArrayOutputStream first 
+to write the stream to a ByteArrayOutputStream first 
+need to write the stream to a ByteArrayOutputStream first 
+'d need to write the stream to a ByteArrayOutputStream first 
+set a content-length header you 'd need to write the stream to a ByteArrayOutputStream first 
+to set a content-length header you 'd need to write the stream to a ByteArrayOutputStream first 
+get its length 
+write it to the HTTP response 
+get its length , then write it to the HTTP response 
+wanted to set a content-length header you 'd need to write the stream to a ByteArrayOutputStream first , then get its length , then write it to the HTTP response 
+think if you wanted to set a content-length header you 'd need to write the stream to a ByteArrayOutputStream first , then get its length , then write it to the HTTP response 

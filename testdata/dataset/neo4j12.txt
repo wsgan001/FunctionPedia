@@ -1,0 +1,122 @@
+QUESTION:
+HTML:
+<p>I'm learning to use <a href="http://neo4j.org" rel="nofollow">neo4j</a>, but am a bit confused on its usage. When I'm adding nodes and relationships, I can do it like this:</p>&#xA;&#xA;<pre><code>GraphDatabaseService graphDb = new EmbeddedGraphDatabase("C:/temp/graphdb");&#xA;Transaction tx = graphDb.beginTx();&#xA;try {&#xA;  org.neo4j.graphdb.Node node = graphDb.createNode();&#xA;  ...&#xA;</code></pre>&#xA;&#xA;<p>I could also do it like this:</p>&#xA;&#xA;<pre><code>NeoService neoService = new EmbeddedNeo("C:/temp/graphdb");&#xA;Transaction tx = neoService.beginTx();&#xA;try {&#xA;  org.neo4j.api.core.Node node = neoService.createNode();&#xA;  ...&#xA;</code></pre>&#xA;&#xA;<p>What is the difference here really? Which one should I use? Why are they 2 different mechanisms? Is this just API evolution here? :) I want to use the MetaModel API and it needs a NeoService, so the choice there is clear I guess.</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>Sorry,&#xA;you should use the first one, since in the latest 1.0-RC1 the namespace was moved. This is just naming, the semantics are the same. The second example is outdated and should be removed form the official documentation. Where did you find that?</p>&#xA;&#xA;<p>Cheers,</p>&#xA;&#xA;<p>/peter neubauer</p>&#xA;
+Comment:
+Thanks for the answer! I'm trying to use the MetaModel and it needs a NeoService in the MetaModelImpl constuctor.
+
+ANS:
+HTML:
+<p>Sorry,&#xA;you should use the first one, since in the latest 1.0-RC1 the namespace was moved. This is just naming, the semantics are the same. The second example is outdated and should be removed form the official documentation. Where did you find that?</p>&#xA;&#xA;<p>Cheers,</p>&#xA;&#xA;<p>/peter neubauer</p>&#xA;
+Comment:
+Thanks for the answer! I'm trying to use the MetaModel and it needs a NeoService in the MetaModelImpl constuctor.
+HTML:
+<p>You're spot on with the API evolution comment. The old API is NeoService, so you shouldn't use that. Go with your first snippet. For more information on the API change see e.g. the release mail for the latest rc:</p>&#xA;&#xA;<p><a href="http://www.mail-archive.com/user@lists.neo4j.org/msg02378.html" rel="nofollow">http://www.mail-archive.com/user@lists.neo4j.org/msg02378.html</a></p>&#xA;&#xA;<p>If you use the latest snapshot (0.7-SNAPSHOT) of the meta-model component, you'll find that it uses the latest API. For our 1.0 release (should be out Real Soon Now :), we're going to make non-SNAPSHOT releases of all components that will use the new API.</p>&#xA;&#xA;<p>-EE</p>&#xA;
+Comment:
+It seems that meta-model component 0.7-SNAPSHOT still uses the old Neoservice. So, I cannot use the new API in neo4j-kernel 1.0-rc (that has GraphDataService). In the meta-model trunk, this seems to be fixed, though :)
+HTML:
+<p>And regarding the meta model, please use the meta-model component (now with the maven artifactId: neo4j-meta-model).</p>&#xA;&#xA;<p>I also notice that the component overview <a href="http://components.neo4j.org/neo4j-meta-model/" rel="nofollow">http://components.neo4j.org/neo4j-meta-model/</a> has some invalid example code and descriptions. I'll try to fix that.</p>&#xA;
+Comment:
+
+Phrase:
+use neo4j 
+to use neo4j 
+learning to use neo4j 
+'m learning to use neo4j 
+am a bit confused on its usage 
+'m learning to use neo4j , but am a bit confused on its usage 
+adding nodes and relationships 
+'m adding nodes and relationships 
+do it like this 
+can do it like this 
+do it like this 
+could also do it like this 
+use 
+Is 
+use the MetaModel API 
+to use the MetaModel API 
+want to use the MetaModel API 
+needs a NeoService 
+guess 
+is clear I guess 
+moved 
+was moved 
+use the first one , since in the latest 1.0-RC1 the namespace was moved 
+should use the first one , since in the latest 1.0-RC1 the namespace was moved 
+naming 
+is just naming 
+are the same 
+is outdated 
+form the official documentation 
+removed form the official documentation 
+be removed form the official documentation 
+should be removed form the official documentation 
+is outdated and should be removed form the official documentation 
+find that 
+/ peter neubauer 
+use the MetaModel 
+to use the MetaModel 
+trying to use the MetaModel 
+'m trying to use the MetaModel 
+needs a NeoService in the MetaModelImpl constuctor 
+moved 
+was moved 
+use the first one , since in the latest 1.0-RC1 the namespace was moved 
+should use the first one , since in the latest 1.0-RC1 the namespace was moved 
+naming 
+is just naming 
+are the same 
+is outdated 
+form the official documentation 
+removed form the official documentation 
+be removed form the official documentation 
+should be removed form the official documentation 
+is outdated and should be removed form the official documentation 
+find that 
+/ peter neubauer 
+use the MetaModel 
+to use the MetaModel 
+trying to use the MetaModel 
+'m trying to use the MetaModel 
+needs a NeoService in the MetaModelImpl constuctor 
+'re spot on with the API evolution comment 
+use that 
+should n't use that 
+is NeoService , so you should n't use that 
+Go with your first snippet 
+see e.g 
+use the latest snapshot ( 0.7-SNAPSHOT ) of the meta-model component 
+uses the latest API 
+find that it uses the latest API 
+'ll find that it uses the latest API 
+out Real Soon Now :) 
+be out Real Soon Now :) 
+release ( should be out Real Soon Now :) 
+use the new API 
+will use the new API 
+make non-SNAPSHOT releases of all components that will use the new API 
+to make non-SNAPSHOT releases of all components that will use the new API 
+going to make non-SNAPSHOT releases of all components that will use the new API 
+'re going to make non-SNAPSHOT releases of all components that will use the new API 
+uses the old Neoservice 
+seems that meta-model component 0.7-SNAPSHOT still uses the old Neoservice 
+has GraphDataService 
+use the new API in neo4j-kernel 1.0-rc ( that has GraphDataService ) 
+can not use the new API in neo4j-kernel 1.0-rc ( that has GraphDataService ) 
+fixed 
+be fixed 
+be fixed , though : 
+to be fixed , though : 
+seems to be fixed , though : 
+use the meta-model component ( now with the maven artifactId : neo4j-meta-model ) 
+please use the meta-model component ( now with the maven artifactId : neo4j-meta-model ) 
+has some invalid example code and descriptions 
+also notice that the component overview http://components.neo4j.org/neo4j-meta-model/ has some invalid example code and descriptions 
+fix that 
+to fix that 
+try to fix that 
+'ll try to fix that 

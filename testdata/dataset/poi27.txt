@@ -1,0 +1,33 @@
+QUESTION:
+HTML:
+<p>I've recently download <code>poi-src-3.2-FINAL</code> from apache.org.  Now I can't write these:</p>&#xA;&#xA;<pre><code>import org.apache.poi.poifs.filesystem.*;&#xA;import org.apache.poi.hwpf.*;&#xA;import org.apache.poi.hwpf.extractor.*;&#xA;</code></pre>&#xA;&#xA;<p>Now I can't use the classes of <code>HWPFDocument</code> and <code>WordExtractor</code>.  I can only</p>&#xA;&#xA;<pre><code>import org.apache.*;&#xA;</code></pre>&#xA;&#xA;<p>Did I forget to download any other thing?</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+
+ANS:
+HTML:
+<p>"src" usually indicates a package containing <em>only</em> the source code, not the compiled classes. Check to see if there is a "bin" download available for you.</p>&#xA;&#xA;<p>Update: the binary release is indeed named poi-<strong>bin</strong>-3.2-FINAL, <a href="http://www.signal42.com/mirrors/apache/poi/release/bin/poi-bin-3.2-FINAL-20081019.zip" rel="nofollow">here is a download link</a>.</p>&#xA;
+Comment:
+
+Phrase:
+apache.org 
+download CODE0 from apache.org 
+'ve recently download CODE0 from apache.org 
+write these 
+ca n't write these 
+use the classes of CODE0 and CODE1 
+ca n't use the classes of CODE0 and CODE1 
+can only 
+download any other thing 
+to download any other thing 
+forget to download any other thing 
+containing only 
+usually indicates a package containing only 
+is a `` bin '' download available for you 
+see if there is a `` bin '' download available for you 
+to see if there is a `` bin '' download available for you 
+Check to see if there is a `` bin '' download available for you 
+named poi-bin-3 .2 
+is indeed named poi-bin-3 .2 
+is a download link 

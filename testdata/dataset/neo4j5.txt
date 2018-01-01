@@ -1,0 +1,441 @@
+QUESTION:
+HTML:
+<p>I am in the middle of building a new app which will have very similar features to Facebook and although obviously it wont ever have to deal with the likes of 400,000,000 million users it will still be used by a substantial user base and most of them will demand it run very very quickly.</p>&#xA;&#xA;<p>I have extensive experience with MySQL but a social app offers complexities which MySQL is not well suited too. I know Facebook, Twitter etc have moved towards Cassandra for a lot of their data but I am not sure how far to go with it.</p>&#xA;&#xA;<p>For example would you store such things as user data - username, passwords, addresses etc in Cassandra? Would you store e-mails, comments, status updates etc in Cassandra? I have also read alot that something like neo4j is much better for representing the friend relationships used by social apps as it is a graph database. I am only just starting down the NoSQL route so any guidance is greatly appreciated.</p>&#xA;&#xA;<p>Would anyone be able to advise me on this? I hope I am not being too general!</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<blockquote>&#xA;  <p>For example would you store such things as user data - username, passwords, addresses etc in Cassandra? </p>&#xA;</blockquote>&#xA;&#xA;<p>No, since it does not guarantee consistency. Cassandra is <em>eventually consistent</em>. Surely there shouldn't be concurrency on a certain user account's data, but I wouldn't want to bet on it. You might not need consistency on your fulltext search, your message inbox, etc. but you want consistency in anything that is security-related.</p>&#xA;&#xA;<blockquote>&#xA;  <p>I have also read alot that something like neo4j is much better for representing the friend relationships used by social apps as it is a graph database.</p>&#xA;</blockquote>&#xA;&#xA;<p>I'm a big fan of the right tool for the right job. I haven't used neo4j but I've been using db4o (which is an object database) and find it very helpful. It makes development easier to use a tool that natively supports your needs. Since you need graphs and working with graphs in SQL is a pain, I'd recommend to give it a look, and evaluate whether it fits your specific needs. </p>&#xA;&#xA;<p>Mixing databases sounds like a good idea to me as long as the choice is natural (i.e. the respective database is helpful with the specific jobs, a  graph databases for graphs, a table for tables, ACID databases for anything that needs transaction safety, etc...). </p>&#xA;
+Comment:
+I don't see why you wouldn't store all data in Cassandra besides the fact that it's easier to query them in an RDBMS.&#xA;&#xA;Cassandra guarantees consistency if you want it (quorum reads/writes), see http://spyced.blogspot.com/2010/04/cassandra-fact-vs-fiction.html.&#xA;If you are wondering about reliability see http://thread.gmane.org/gmane.comp.db.cassandra.user/3454
+Thanks for the interesting links. I'm not entirely sure about this, but from what I understood you can guarantee consistency across nodes, but 'transactions', i.e. writes on the batch level are not atomic, are they? If that really poses a problem is a second question. I think that kind of data is just what RDBMS were made for, but you got a point there when it comes to availability / partition tolerance, so it might be better to use Cassandra for user data in certain scenarios, too.
+
+ANS:
+HTML:
+<p>Facebook didn't <em>move</em> to Cassandra, they created it. :) To my knowledge, noSQL DBMSes don't require <strike>or even mention</strike> (thanks to mnemosyn for the correction, Facebook uses Oracle and Cassandra) running side by side with a relational database. <a href="http://degizmo.com/2010/03/24/redis-relations-in-a-nosql-world-using-hashes/" rel="nofollow">This</a> is one opposite example (storing user information in a noSQL DB).</p>&#xA;&#xA;<p>I would say that if Cassandra is good enough for Facebook, it's likely to be good enough for your project. It might not hurt to try to abstract the persistence logic so that you have the possibility to switch to something else, if it absolutely comes to that.</p>&#xA;&#xA;<p>Disclaimer: I have not (yet?) had any hands on experience with noSQL databases: what I know comes from reading about it.</p>&#xA;
+Comment:
+It seems you're mixing up concepts here: NoSQL is a very abstract term and contains both ACID databases which have basically the same guarantees as typical RDBMS have (e.g. db4o) as well as databases that scale, but don't offer the same set of guarantees (e.g. cassandra) when it comes to data consistency. These properties should be the guide for decisions. Abstracting this kind of logic is impossible, I believe: There's a significant difference in data you can trust, and data you can't trust. Transactions might not make sense, etc.
+Abstracting what kind of logic? ACID transactions? The DB either supports or does not support them: what I was talking about is basically providing e.g. a thin DAO layer above the database so that the part of the application above the DAO layer can remain more or less intact if the DAO implementation changes (due to a move to a different DB). As for choosing which database, Christopher described the project as having "very similar features to Facebook" so it would be quite peculiar if it turned out that it would be better for Christopher to use a database different than the one Facebook uses.
+Facebook doesn't use one database. They use (at least) Oracle, Cassandra and Hadoop in parallel. Cassandra was developed for searching your inbox on facebook, not for storing payment details. You cannot put the same abstraction on different things, i.e. use one DAO for data store that is consistent and one that is only eventually consistent.
+You're right, they do use Oracle. I will update my answer accordingly, thanks for the correction.
+They use MySQL as their primary data store.  They write about it here: http://www.facebook.com/MySQLatFacebook
+HTML:
+<p>I would suggest doing some testing with MySQL and with Cassandra. When we had to make a choice between PostgreSQL and MongoDB in one of my jobs, we compared query time on millions of records in both and found out that with about 10M records Postgres would provide us with adequate response times. </p>&#xA;&#xA;<p>We knew that we wouldn't get to that number of records for at least a couple of years, and we had experience with Postgres (while MongoDB wasn't very mature at the time), so we went with Postgres.</p>&#xA;&#xA;<p>My point is that you can probably look at MySQL benchmarks, do some performance tests yourself, estimate the size of your dataset and how it's going to grow, and make an informed decision that way.</p>&#xA;&#xA;<p>As for mixing relational and non-relational databases, it's something we considered as well, but decided that it would be too much of a hassle, as that would mean maintaining two kinds of software, and writing quite a bit of glue code to get the data from both. I think Cassandra would be perfectly capable of storing all your data.</p>&#xA;
+Comment:
+HTML:
+<blockquote>&#xA;  <p>For example would you store such things as user data - username, passwords, addresses etc in Cassandra? </p>&#xA;</blockquote>&#xA;&#xA;<p>No, since it does not guarantee consistency. Cassandra is <em>eventually consistent</em>. Surely there shouldn't be concurrency on a certain user account's data, but I wouldn't want to bet on it. You might not need consistency on your fulltext search, your message inbox, etc. but you want consistency in anything that is security-related.</p>&#xA;&#xA;<blockquote>&#xA;  <p>I have also read alot that something like neo4j is much better for representing the friend relationships used by social apps as it is a graph database.</p>&#xA;</blockquote>&#xA;&#xA;<p>I'm a big fan of the right tool for the right job. I haven't used neo4j but I've been using db4o (which is an object database) and find it very helpful. It makes development easier to use a tool that natively supports your needs. Since you need graphs and working with graphs in SQL is a pain, I'd recommend to give it a look, and evaluate whether it fits your specific needs. </p>&#xA;&#xA;<p>Mixing databases sounds like a good idea to me as long as the choice is natural (i.e. the respective database is helpful with the specific jobs, a  graph databases for graphs, a table for tables, ACID databases for anything that needs transaction safety, etc...). </p>&#xA;
+Comment:
+I don't see why you wouldn't store all data in Cassandra besides the fact that it's easier to query them in an RDBMS.&#xA;&#xA;Cassandra guarantees consistency if you want it (quorum reads/writes), see http://spyced.blogspot.com/2010/04/cassandra-fact-vs-fiction.html.&#xA;If you are wondering about reliability see http://thread.gmane.org/gmane.comp.db.cassandra.user/3454
+Thanks for the interesting links. I'm not entirely sure about this, but from what I understood you can guarantee consistency across nodes, but 'transactions', i.e. writes on the batch level are not atomic, are they? If that really poses a problem is a second question. I think that kind of data is just what RDBMS were made for, but you got a point there when it comes to availability / partition tolerance, so it might be better to use Cassandra for user data in certain scenarios, too.
+HTML:
+<p>Cassandra provides a nice distributed solution, and probably better for a Facebook like platform than MySQL (if it will need to scale). But Cassandra is not suitable for data relationships where you'll have a many-to-many relationship challenge. A graph database tied to Cassandra would provide both the bulk volume needs, plus a very fast relationship query capability. &#xA;We are working on something that combines  the two technologies, and always interested in the types of requirements your platform would present. If you have any questions on how to handle certain data related issues I'd love to hear them, maybe we can help figure it out. </p>&#xA;
+Comment:
+I strongly disagree with your assertion that Cassandra isn't good at representing many-to-many relationships. To solve a problem like this in cassandra, you just need to store indexes for every relationship from both directions.&#xA;&#xA;For example, if you needed to store relationships between users such as user A is following user B, you could create column families like Following and Followers. The key for each CF would be a user id, and each row would just have one column per user id in that set.&#xA;&#xA;You can still store these relationships, you just have to store the views ahead of time.
+
+Phrase:
+have very similar features to Facebook 
+will have very similar features to Facebook 
+building a new app which will have very similar features to Facebook 
+used by a substantial user base 
+be used by a substantial user base 
+will still be used by a substantial user base 
+deal with the likes of 400,000,000 million users it will still be used by a substantial user base 
+to deal with the likes of 400,000,000 million users it will still be used by a substantial user base 
+have to deal with the likes of 400,000,000 million users it will still be used by a substantial user base 
+wont ever have to deal with the likes of 400,000,000 million users it will still be used by a substantial user base 
+run very very quickly 
+demand it run very very quickly 
+will demand it run very very quickly 
+am in the middle of building a new app which will have very similar features to Facebook and although obviously it wont ever have to deal with the likes of 400,000,000 million users it will still be used by a substantial user base and most of them will demand it run very very quickly 
+offers complexities 
+suited too 
+is not well suited too 
+have extensive experience with MySQL but a social app offers complexities which MySQL is not well suited too 
+moved towards Cassandra for a lot of their data 
+have moved towards Cassandra for a lot of their data 
+know Facebook , Twitter etc have moved towards Cassandra for a lot of their data 
+go with it 
+to go with it 
+am not sure how far to go with it 
+would 
+store such things as user data 
+addresses etc in Cassandra 
+Would you 
+is a graph database 
+used by social apps as it is a graph database 
+representing the friend relationships used by social apps as it is a graph database 
+is much better for representing the friend relationships used by social apps as it is a graph database 
+read alot that something like neo4j is much better for representing the friend relationships used by social apps as it is a graph database 
+have also read alot that something like neo4j is much better for representing the friend relationships used by social apps as it is a graph database 
+appreciated 
+is greatly appreciated 
+starting down the NoSQL route so any guidance is greatly appreciated 
+am only just starting down the NoSQL route so any guidance is greatly appreciated 
+advise me on this 
+to advise me on this 
+be able to advise me on this 
+being too general 
+am not being too general 
+hope I am not being too general 
+would 
+store such things as user data 
+addresses etc in Cassandra 
+guarantee consistency 
+does not guarantee consistency 
+No , since it does not guarantee consistency 
+is eventually consistent 
+be concurrency on a certain user account 's data 
+should n't be concurrency on a certain user account 's data 
+bet on it 
+to bet on it 
+want to bet on it 
+would n't want to bet on it 
+need consistency on your fulltext search , your message inbox , etc 
+might not need consistency on your fulltext search , your message inbox , etc 
+is security-related 
+want consistency in anything that is security-related 
+is a graph database 
+used by social apps as it is a graph database 
+representing the friend relationships used by social apps as it is a graph database 
+is much better for representing the friend relationships used by social apps as it is a graph database 
+read alot that something like neo4j is much better for representing the friend relationships used by social apps as it is a graph database 
+have also read alot that something like neo4j is much better for representing the friend relationships used by social apps as it is a graph database 
+'m a big fan of the right tool for the right job 
+is an object database 
+using db4o ( which is an object database ) 
+been using db4o ( which is an object database ) 
+'ve been using db4o ( which is an object database ) 
+used neo4j but I 've been using db4o ( which is an object database ) 
+have n't used neo4j but I 've been using db4o ( which is an object database ) 
+find it very helpful 
+have n't used neo4j but I 've been using db4o ( which is an object database ) and find it very helpful 
+supports your needs 
+use a tool that natively supports your needs 
+to use a tool that natively supports your needs 
+makes development easier to use a tool that natively supports your needs 
+is a pain 
+need graphs and working with graphs in SQL is a pain 
+give it a look 
+fits your specific needs 
+evaluate whether it fits your specific needs 
+give it a look , and evaluate whether it fits your specific needs 
+to give it a look , and evaluate whether it fits your specific needs 
+recommend to give it a look , and evaluate whether it fits your specific needs 
+'d recommend to give it a look , and evaluate whether it fits your specific needs 
+is natural ( i.e 
+sounds like a good idea to me as long as the choice is natural ( i.e 
+is helpful with the specific jobs 
+needs transaction safety , etc. . 
+ACID databases for anything that needs transaction safety , etc. . 
+databases for graphs , a table for tables , ACID databases for anything that needs transaction safety , etc. . 
+query them in an RDBMS . & #xA ; & #xA 
+to query them in an RDBMS . & #xA ; & #xA 
+'s easier to query them in an RDBMS . & #xA ; & #xA 
+store all data in Cassandra besides the fact that it 's easier to query them in an RDBMS . & #xA ; & #xA 
+would n't store all data in Cassandra besides the fact that it 's easier to query them in an RDBMS . & #xA ; & #xA 
+see why you would n't store all data in Cassandra besides the fact that it 's easier to query them in an RDBMS . & #xA ; & #xA 
+do n't see why you would n't store all data in Cassandra besides the fact that it 's easier to query them in an RDBMS . & #xA ; & #xA 
+see http://thread.gmane.org/gmane.comp.db.cassandra.user/3454 
+wondering about reliability see http://thread.gmane.org/gmane.comp.db.cassandra.user/3454 
+are wondering about reliability see http://thread.gmane.org/gmane.comp.db.cassandra.user/3454 
+see http://spyced.blogspot.com/2010/04/cassandra-fact-vs-fiction.html.&#xA;If you are wondering about reliability see http://thread.gmane.org/gmane.comp.db.cassandra.user/3454 
+want it ( quorum reads/writes ) , see http://spyced.blogspot.com/2010/04/cassandra-fact-vs-fiction.html.&#xA;If you are wondering about reliability see http://thread.gmane.org/gmane.comp.db.cassandra.user/3454 
+guarantees consistency if you want it ( quorum reads/writes ) , see http://spyced.blogspot.com/2010/04/cassandra-fact-vs-fiction.html.&#xA;If you are wondering about reliability see http://thread.gmane.org/gmane.comp.db.cassandra.user/3454 
+guarantee consistency across nodes , but ` transactions ' , i.e 
+can guarantee consistency across nodes , but ` transactions ' , i.e 
+understood you can guarantee consistency across nodes , but ` transactions ' , i.e 
+'m not entirely sure about this , but from what I understood you can guarantee consistency across nodes , but ` transactions ' , i.e 
+are not atomic 
+writes on the batch level are not atomic 
+are 
+is a second question 
+poses a problem is a second question 
+made for 
+were made for 
+is just what RDBMS were made for 
+think that kind of data is just what RDBMS were made for 
+comes to availability / partition tolerance 
+use Cassandra for user data in certain scenarios 
+to use Cassandra for user data in certain scenarios 
+be better to use Cassandra for user data in certain scenarios , too 
+might be better to use Cassandra for user data in certain scenarios , too 
+got a point there when it comes to availability / partition tolerance , so it might be better to use Cassandra for user data in certain scenarios , too 
+created it 
+move to Cassandra , they created it 
+did n't move to Cassandra , they created it 
+:) To my knowledge 
+require 
+thanks to mnemosyn for the correction , Facebook uses Oracle and Cassandra 
+even mention ( thanks to mnemosyn for the correction , Facebook uses Oracle and Cassandra ) running side by side with a relational database 
+require or even mention ( thanks to mnemosyn for the correction , Facebook uses Oracle and Cassandra ) running side by side with a relational database 
+do n't require or even mention ( thanks to mnemosyn for the correction , Facebook uses Oracle and Cassandra ) running side by side with a relational database 
+storing user information in a noSQL DB 
+is one opposite example ( storing user information in a noSQL DB ) 
+is good enough for Facebook 
+be good enough for your project 
+to be good enough for your project 
+'s likely to be good enough for your project 
+say that if Cassandra is good enough for Facebook , it 's likely to be good enough for your project 
+would say that if Cassandra is good enough for Facebook , it 's likely to be good enough for your project 
+switch to something else 
+to switch to something else 
+comes to that 
+have the possibility to switch to something else , if it absolutely comes to that 
+abstract the persistence logic so that you have the possibility to switch to something else , if it absolutely comes to that 
+to abstract the persistence logic so that you have the possibility to switch to something else , if it absolutely comes to that 
+try to abstract the persistence logic so that you have the possibility to switch to something else , if it absolutely comes to that 
+to try to abstract the persistence logic so that you have the possibility to switch to something else , if it absolutely comes to that 
+hurt to try to abstract the persistence logic so that you have the possibility to switch to something else , if it absolutely comes to that 
+might not hurt to try to abstract the persistence logic so that you have the possibility to switch to something else , if it absolutely comes to that 
+reading about it 
+comes from reading about it 
+know comes from reading about it 
+had any hands on experience with noSQL databases : what I know comes from reading about it 
+have not ( yet ? ) had any hands on experience with noSQL databases : what I know comes from reading about it 
+mixing up concepts here 
+'re mixing up concepts here 
+seems you 're mixing up concepts here 
+is a very abstract term 
+as typical RDBMS have ( e.g 
+have basically the same guarantees as typical RDBMS have ( e.g 
+contains both ACID databases which have basically the same guarantees as typical RDBMS have ( e.g 
+is a very abstract term and contains both ACID databases which have basically the same guarantees as typical RDBMS have ( e.g 
+db4o ) as well as databases 
+of guarantees ( e.g 
+offer the same set of guarantees ( e.g 
+do n't offer the same set of guarantees ( e.g 
+comes 
+cassandra ) when it comes to data consistency 
+be the guide for decisions 
+should be the guide for decisions 
+is impossible 
+Abstracting this kind of logic is impossible 
+believe 
+trust 
+can trust 
+trust 
+ca n't trust 
+'s a significant difference in data you can trust , and data you ca n't trust 
+make sense , etc. 
+might not make sense , etc. 
+Abstracting what kind of logic 
+supports 
+support them 
+does not support them 
+either supports or does not support them 
+talking about 
+was talking about 
+providing e.g 
+is basically providing e.g 
+remain more or less intact if the DAO implementation changes ( due to a move to a different DB ) 
+can remain more or less intact if the DAO implementation changes ( due to a move to a different DB ) 
+choosing which database 
+use a database different than the one Facebook uses 
+to use a database different than the one Facebook uses 
+be better for Christopher to use a database different than the one Facebook uses 
+would be better for Christopher to use a database different than the one Facebook uses 
+turned out that it would be better for Christopher to use a database different than the one Facebook uses 
+be quite peculiar if it turned out that it would be better for Christopher to use a database different than the one Facebook uses 
+would be quite peculiar if it turned out that it would be better for Christopher to use a database different than the one Facebook uses 
+having `` very similar features to Facebook '' so it would be quite peculiar if it turned out that it would be better for Christopher to use a database different than the one Facebook uses 
+described the project as having `` very similar features to Facebook '' so it would be quite peculiar if it turned out that it would be better for Christopher to use a database different than the one Facebook uses 
+use one database 
+does n't use one database 
+( at least ) Oracle , Cassandra and Hadoop in parallel 
+use ( at least ) Oracle , Cassandra and Hadoop in parallel 
+searching your inbox on facebook 
+storing payment details 
+developed for searching your inbox on facebook , not for storing payment details 
+was developed for searching your inbox on facebook , not for storing payment details 
+put the same abstraction on different things , i.e 
+can not put the same abstraction on different things , i.e 
+is consistent 
+is only eventually consistent 
+store that is consistent and one that is only eventually consistent 
+use Oracle 
+do use Oracle 
+'re right , they do use Oracle 
+update my answer accordingly , thanks for the correction 
+will update my answer accordingly , thanks for the correction 
+use MySQL as their primary data store 
+write about it here : http://www.facebook.com/MySQLatFacebook 
+doing some testing with MySQL and with Cassandra 
+suggest doing some testing with MySQL and with Cassandra 
+would suggest doing some testing with MySQL and with Cassandra 
+make a choice between PostgreSQL and MongoDB in one of my jobs 
+to make a choice between PostgreSQL and MongoDB in one of my jobs 
+had to make a choice between PostgreSQL and MongoDB in one of my jobs 
+compared query time on millions of records in both 
+provide us 
+would provide us 
+found out that with about 10M records Postgres would provide us with adequate response times 
+compared query time on millions of records in both and found out that with about 10M records Postgres would provide us with adequate response times 
+get to that number of records for at least a couple of years 
+would n't get to that number of records for at least a couple of years 
+knew that we would n't get to that number of records for at least a couple of years 
+was n't very mature at the time 
+had experience with Postgres ( while MongoDB was n't very mature at the time ) 
+went with Postgres 
+look at MySQL benchmarks 
+do some performance tests yourself 
+grow 
+to grow 
+going to grow 
+'s going to grow 
+estimate the size of your dataset and how it 's going to grow 
+make an informed decision that way 
+look at MySQL benchmarks , do some performance tests yourself , estimate the size of your dataset and how it 's going to grow , and make an informed decision that way 
+can probably look at MySQL benchmarks , do some performance tests yourself , estimate the size of your dataset and how it 's going to grow , and make an informed decision that way 
+is that you can probably look at MySQL benchmarks , do some performance tests yourself , estimate the size of your dataset and how it 's going to grow , and make an informed decision that way 
+mixing relational and non-relational databases 
+considered as well 
+maintaining two kinds of software 
+get the data from both 
+to get the data from both 
+writing quite a bit of glue code to get the data from both 
+maintaining two kinds of software , and writing quite a bit of glue code to get the data from both 
+mean maintaining two kinds of software , and writing quite a bit of glue code to get the data from both 
+would mean maintaining two kinds of software , and writing quite a bit of glue code to get the data from both 
+be too much of a hassle , as that would mean maintaining two kinds of software , and writing quite a bit of glue code to get the data from both 
+would be too much of a hassle , as that would mean maintaining two kinds of software , and writing quite a bit of glue code to get the data from both 
+decided that it would be too much of a hassle , as that would mean maintaining two kinds of software , and writing quite a bit of glue code to get the data from both 
+considered as well , but decided that it would be too much of a hassle , as that would mean maintaining two kinds of software , and writing quite a bit of glue code to get the data from both 
+'s something we considered as well , but decided that it would be too much of a hassle , as that would mean maintaining two kinds of software , and writing quite a bit of glue code to get the data from both 
+storing all your data 
+be perfectly capable of storing all your data 
+would be perfectly capable of storing all your data 
+think Cassandra would be perfectly capable of storing all your data 
+would 
+store such things as user data 
+addresses etc in Cassandra 
+guarantee consistency 
+does not guarantee consistency 
+No , since it does not guarantee consistency 
+is eventually consistent 
+be concurrency on a certain user account 's data 
+should n't be concurrency on a certain user account 's data 
+bet on it 
+to bet on it 
+want to bet on it 
+would n't want to bet on it 
+need consistency on your fulltext search , your message inbox , etc 
+might not need consistency on your fulltext search , your message inbox , etc 
+is security-related 
+want consistency in anything that is security-related 
+is a graph database 
+used by social apps as it is a graph database 
+representing the friend relationships used by social apps as it is a graph database 
+is much better for representing the friend relationships used by social apps as it is a graph database 
+read alot that something like neo4j is much better for representing the friend relationships used by social apps as it is a graph database 
+have also read alot that something like neo4j is much better for representing the friend relationships used by social apps as it is a graph database 
+'m a big fan of the right tool for the right job 
+is an object database 
+using db4o ( which is an object database ) 
+been using db4o ( which is an object database ) 
+'ve been using db4o ( which is an object database ) 
+used neo4j but I 've been using db4o ( which is an object database ) 
+have n't used neo4j but I 've been using db4o ( which is an object database ) 
+find it very helpful 
+have n't used neo4j but I 've been using db4o ( which is an object database ) and find it very helpful 
+supports your needs 
+use a tool that natively supports your needs 
+to use a tool that natively supports your needs 
+makes development easier to use a tool that natively supports your needs 
+is a pain 
+need graphs and working with graphs in SQL is a pain 
+give it a look 
+fits your specific needs 
+evaluate whether it fits your specific needs 
+give it a look , and evaluate whether it fits your specific needs 
+to give it a look , and evaluate whether it fits your specific needs 
+recommend to give it a look , and evaluate whether it fits your specific needs 
+'d recommend to give it a look , and evaluate whether it fits your specific needs 
+is natural ( i.e 
+sounds like a good idea to me as long as the choice is natural ( i.e 
+is helpful with the specific jobs 
+needs transaction safety , etc. . 
+ACID databases for anything that needs transaction safety , etc. . 
+databases for graphs , a table for tables , ACID databases for anything that needs transaction safety , etc. . 
+query them in an RDBMS . & #xA ; & #xA 
+to query them in an RDBMS . & #xA ; & #xA 
+'s easier to query them in an RDBMS . & #xA ; & #xA 
+store all data in Cassandra besides the fact that it 's easier to query them in an RDBMS . & #xA ; & #xA 
+would n't store all data in Cassandra besides the fact that it 's easier to query them in an RDBMS . & #xA ; & #xA 
+see why you would n't store all data in Cassandra besides the fact that it 's easier to query them in an RDBMS . & #xA ; & #xA 
+do n't see why you would n't store all data in Cassandra besides the fact that it 's easier to query them in an RDBMS . & #xA ; & #xA 
+see http://thread.gmane.org/gmane.comp.db.cassandra.user/3454 
+wondering about reliability see http://thread.gmane.org/gmane.comp.db.cassandra.user/3454 
+are wondering about reliability see http://thread.gmane.org/gmane.comp.db.cassandra.user/3454 
+see http://spyced.blogspot.com/2010/04/cassandra-fact-vs-fiction.html.&#xA;If you are wondering about reliability see http://thread.gmane.org/gmane.comp.db.cassandra.user/3454 
+want it ( quorum reads/writes ) , see http://spyced.blogspot.com/2010/04/cassandra-fact-vs-fiction.html.&#xA;If you are wondering about reliability see http://thread.gmane.org/gmane.comp.db.cassandra.user/3454 
+guarantees consistency if you want it ( quorum reads/writes ) , see http://spyced.blogspot.com/2010/04/cassandra-fact-vs-fiction.html.&#xA;If you are wondering about reliability see http://thread.gmane.org/gmane.comp.db.cassandra.user/3454 
+guarantee consistency across nodes , but ` transactions ' , i.e 
+can guarantee consistency across nodes , but ` transactions ' , i.e 
+understood you can guarantee consistency across nodes , but ` transactions ' , i.e 
+'m not entirely sure about this , but from what I understood you can guarantee consistency across nodes , but ` transactions ' , i.e 
+are not atomic 
+writes on the batch level are not atomic 
+are 
+is a second question 
+poses a problem is a second question 
+made for 
+were made for 
+is just what RDBMS were made for 
+think that kind of data is just what RDBMS were made for 
+comes to availability / partition tolerance 
+use Cassandra for user data in certain scenarios 
+to use Cassandra for user data in certain scenarios 
+be better to use Cassandra for user data in certain scenarios , too 
+might be better to use Cassandra for user data in certain scenarios , too 
+got a point there when it comes to availability / partition tolerance , so it might be better to use Cassandra for user data in certain scenarios , too 
+need to scale 
+will need to scale 
+provides a nice distributed solution , and probably better for a Facebook like platform than MySQL ( if it will need to scale ) 
+have a many-to-many relationship challenge 
+'ll have a many-to-many relationship challenge 
+is not suitable for data relationships where you 'll have a many-to-many relationship challenge 
+tied to Cassandra 
+provide both the bulk volume needs , plus a very fast relationship query capability 
+would provide both the bulk volume needs , plus a very fast relationship query capability 
+combines the two technologies 
+present 
+would present 
+always interested in the types of requirements your platform would present 
+combines the two technologies , and always interested in the types of requirements your platform would present 
+working on something that combines the two technologies , and always interested in the types of requirements your platform would present 
+are working on something that combines the two technologies , and always interested in the types of requirements your platform would present 
+hear them 
+to hear them 
+love to hear them 
+'d love to hear them 
+related issues I 'd love to hear them 
+handle certain data related issues I 'd love to hear them 
+to handle certain data related issues I 'd love to hear them 
+have any questions on how to handle certain data related issues I 'd love to hear them 
+figure it out 
+help figure it out 
+can help figure it out 
+representing many-to-many relationships 
+is n't good at representing many-to-many relationships 
+disagree with your assertion that Cassandra is n't good at representing many-to-many relationships 
+solve a problem like this in cassandra 
+To solve a problem like this in cassandra 
+store indexes for every relationship from both directions . & #xA ; & #xA 
+to store indexes for every relationship from both directions . & #xA ; & #xA 
+need to store indexes for every relationship from both directions . & #xA ; & #xA 
+following user B 
+is following user B 
+store relationships between users such as user A is following user B 
+to store relationships between users such as user A is following user B 
+needed to store relationships between users such as user A is following user B 
+create column families like Following and Followers 
+could create column families like Following and Followers 
+be a user id 
+would be a user id 
+have one column per user id in that set . & #xA ; & #xA 
+would just have one column per user id in that set . & #xA ; & #xA 
+store these relationships 
+can still store these relationships 
+store the views ahead of time 
+to store the views ahead of time 
+have to store the views ahead of time 

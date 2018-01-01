@@ -1,0 +1,129 @@
+QUESTION:
+HTML:
+<p>I'd like to traverse my graph using the neo4j traversal API, but I need to be able to specify which relationship type to use at every step, and the relationship type to use needs to be a function of the current node. Is there a way to do this?</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>in the current Traverser API you can't choose the exact relationship to traverse. Instead, you take the more granular approach of node.getRelationships(), chose the one you want and the end onde on it, and so on.&#xA;The algo gets a bit more verbose than using Traverser, but gives you more flexibility. For a tinkering approach, <a href="http://gremlin.tinkerpop.com" rel="nofollow">Gremlin</a> supports the notion of functions for choosing edges to traverse, see <a href="http://wiki.github.com/tinkerpop/gremlin/path-functions#number" rel="nofollow">here</a>. This will soon be implemented using <a href="http://wiki.github.com/tinkerpop/blueprints/pipes-traversal-framework" rel="nofollow">Blueprint Pipes</a> for Java-level performance.</p>&#xA;&#xA;<p>HTH</p>&#xA;&#xA;<p>/peter neubauer</p>&#xA;
+Comment:
+Hi thank you for your response. I could take the granular approach but I read that the node.getRelationships() method of traversal is supposed to be orders of magnitude slower than using the built in traversals.
+@James: Using the granular approach shouldn't be slower than the built in traversals unless you mess up somehow. I'd really like to know where you read that? BTW, a new traverser framework is in the works, which can do the kind of traversal that you describe.
+
+ANS:
+HTML:
+<p>in the current Traverser API you can't choose the exact relationship to traverse. Instead, you take the more granular approach of node.getRelationships(), chose the one you want and the end onde on it, and so on.&#xA;The algo gets a bit more verbose than using Traverser, but gives you more flexibility. For a tinkering approach, <a href="http://gremlin.tinkerpop.com" rel="nofollow">Gremlin</a> supports the notion of functions for choosing edges to traverse, see <a href="http://wiki.github.com/tinkerpop/gremlin/path-functions#number" rel="nofollow">here</a>. This will soon be implemented using <a href="http://wiki.github.com/tinkerpop/blueprints/pipes-traversal-framework" rel="nofollow">Blueprint Pipes</a> for Java-level performance.</p>&#xA;&#xA;<p>HTH</p>&#xA;&#xA;<p>/peter neubauer</p>&#xA;
+Comment:
+Hi thank you for your response. I could take the granular approach but I read that the node.getRelationships() method of traversal is supposed to be orders of magnitude slower than using the built in traversals.
+@James: Using the granular approach shouldn't be slower than the built in traversals unless you mess up somehow. I'd really like to know where you read that? BTW, a new traverser framework is in the works, which can do the kind of traversal that you describe.
+
+Phrase:
+using the neo4j traversal API 
+traverse my graph using the neo4j traversal API 
+to traverse my graph using the neo4j traversal API 
+like to traverse my graph using the neo4j traversal API 
+'d like to traverse my graph using the neo4j traversal API 
+use at every step 
+to use at every step 
+specify which relationship type to use at every step 
+to specify which relationship type to use at every step 
+be able to specify which relationship type to use at every step 
+to be able to specify which relationship type to use at every step 
+need to be able to specify which relationship type to use at every step 
+use 
+to use 
+be a function of the current node 
+to be a function of the current node 
+needs to be a function of the current node 
+do this 
+to do this 
+traverse 
+to traverse 
+choose the exact relationship to traverse 
+ca n't choose the exact relationship to traverse 
+want 
+chose the one you want 
+onde on it , and so on 
+take the more granular approach of node.getRelationships ( ) , chose the one you want and the end onde on it , and so on 
+using Traverser 
+gets a bit more verbose than using Traverser 
+gives you more flexibility 
+gets a bit more verbose than using Traverser , but gives you more flexibility 
+traverse 
+to traverse 
+choosing edges to traverse 
+see here 
+supports the notion of functions for choosing edges to traverse , see here 
+using Blueprint Pipes for Java-level performance 
+implemented using Blueprint Pipes for Java-level performance 
+be implemented using Blueprint Pipes for Java-level performance 
+will soon be implemented using Blueprint Pipes for Java-level performance 
+/ peter neubauer 
+thank you for your response 
+Hi thank you for your response 
+take the granular approach 
+could take the granular approach 
+using the built in traversals 
+be orders of magnitude slower than using the built in traversals 
+to be orders of magnitude slower than using the built in traversals 
+supposed to be orders of magnitude slower than using the built in traversals 
+is supposed to be orders of magnitude slower than using the built in traversals 
+read that the node.getRelationships ( ) method of traversal is supposed to be orders of magnitude slower than using the built in traversals 
+mess up somehow 
+be slower than the built in traversals unless you mess up somehow 
+should n't be slower than the built in traversals unless you mess up somehow 
+Using the granular approach should n't be slower than the built in traversals unless you mess up somehow 
+read that 
+know where you read that 
+to know where you read that 
+like to know where you read that 
+'d really like to know where you read that 
+describe 
+do the kind of traversal that you describe 
+can do the kind of traversal that you describe 
+is in the works , which can do the kind of traversal that you describe 
+traverse 
+to traverse 
+choose the exact relationship to traverse 
+ca n't choose the exact relationship to traverse 
+want 
+chose the one you want 
+onde on it , and so on 
+take the more granular approach of node.getRelationships ( ) , chose the one you want and the end onde on it , and so on 
+using Traverser 
+gets a bit more verbose than using Traverser 
+gives you more flexibility 
+gets a bit more verbose than using Traverser , but gives you more flexibility 
+traverse 
+to traverse 
+choosing edges to traverse 
+see here 
+supports the notion of functions for choosing edges to traverse , see here 
+using Blueprint Pipes for Java-level performance 
+implemented using Blueprint Pipes for Java-level performance 
+be implemented using Blueprint Pipes for Java-level performance 
+will soon be implemented using Blueprint Pipes for Java-level performance 
+/ peter neubauer 
+thank you for your response 
+Hi thank you for your response 
+take the granular approach 
+could take the granular approach 
+using the built in traversals 
+be orders of magnitude slower than using the built in traversals 
+to be orders of magnitude slower than using the built in traversals 
+supposed to be orders of magnitude slower than using the built in traversals 
+is supposed to be orders of magnitude slower than using the built in traversals 
+read that the node.getRelationships ( ) method of traversal is supposed to be orders of magnitude slower than using the built in traversals 
+mess up somehow 
+be slower than the built in traversals unless you mess up somehow 
+should n't be slower than the built in traversals unless you mess up somehow 
+Using the granular approach should n't be slower than the built in traversals unless you mess up somehow 
+read that 
+know where you read that 
+to know where you read that 
+like to know where you read that 
+'d really like to know where you read that 
+describe 
+do the kind of traversal that you describe 
+can do the kind of traversal that you describe 
+is in the works , which can do the kind of traversal that you describe 

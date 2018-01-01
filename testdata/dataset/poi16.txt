@@ -1,0 +1,165 @@
+QUESTION:
+HTML:
+<p>Does anyone know of a means to copy a worksheet from one workbook to another using POI? The Workbook class has a cloneSheet method, but there doesn't seem to be able to insert a cloned sheet into a new workbook?</p>&#xA;&#xA;<p>If there isn't an API to do this easily, does anyone have the code to copy all of the data (styles, column widths, data, etc) from one sheet to another?</p>&#xA;&#xA;<p>The jxls has methods to copy sheets, but they don't work when copying between workbooks.</p>&#xA;
+Comment:
+This [link](http://www.coderanch.com/t/420958/open-source/Copying-sheet-excel-file-another) should be helpful:
+
+ACCEPTED ANS:
+
+ANS:
+HTML:
+<p>How about deleting all the <em>other</em> worksheets in the workbook and then saving the file under a different name? <em>(Disclaimer: my experience with NPOI now totals 1 hour)</em></p>&#xA;&#xA;<p>This still doesn't solve the problem if you want to put the sheet into an existing workbook.</p>&#xA;&#xA;<p>I just spent a few minutes time digging through the source code, and it seems like this could be implemented.</p>&#xA;&#xA;<p>Clearly, the logic is all there to clone a sheet, and in the <code>HSSFWorkbook</code> class there is a private <code>ArrayList</code> that holds all the <code>HSSFSheet</code>s. Could it be so simple as to add this method to the <code>HSSFWorkbook</code> class?</p>&#xA;&#xA;<pre><code>public void AddSheet(HSSFSheet sheet)&#xA;{&#xA;   _sheets.Add(sheet);&#xA;}&#xA;</code></pre>&#xA;&#xA;<p>There must be something huge I'm missing, because otherwise I would expect this to have been implemented long ago.</p>&#xA;&#xA;<p>I might try this out next week and see what can be done. If anyone else has time to try it in the interim, by all means do.</p>&#xA;&#xA;<p>There is a recent question (2 wks ago -- 2010.01.15) about the ability to do this on the NPOI discussions page, but there has been no response as of yet.</p>&#xA;
+Comment:
+Great... just realized that the OP and the only answerer are deactivated accounts. Hello... <echo>Hello</echo>.
+Not only that, but the OP was talking about POI and my response is about NPOI... <sigh/>.
+HTML:
+<p>I created a workitem for NPOI: <a href="http://npoi.codeplex.com/WorkItem/View.aspx?WorkItemId=6057" rel="nofollow">http://npoi.codeplex.com/WorkItem/View.aspx?WorkItemId=6057</a>.</p>&#xA;
+Comment:
+HTML:
+<p>If you are using the Java POI library the best would be to load the Spreadsheet into memory,,, then create a new one and write each one of the records you want to copy... not the best way but acomplishes the copy function...</p>&#xA;
+Comment:
+HTML:
+<p>I put about a week of effort into doing this with POI (using the latest code on coderanch) - be warned that the code is flawed (there's an issue with using TreeSet where you need to replace that with a HashMap), but even after fixing that it crashes on formulas.</p>&#xA;&#xA;<p>While it may be possible to do it's a scary proposition to have to rely on hacked up code.</p>&#xA;&#xA;<p>Depending on your needs/budget you may want to consider biting the bullet and paying for aspose - <a href="http://www.aspose.com/doctest/java-components/aspose.cells-for-java/copy-move-worksheets-within-and-between-workbooks.html" rel="nofollow">http://www.aspose.com/doctest/java-components/aspose.cells-for-java/copy-move-worksheets-within-and-between-workbooks.html</a></p>&#xA;&#xA;<p>It successfully copied sheets including formatting, formulas, &amp; protection rules.  I did 300 sheets in 130 seconds. (300 x 90kb workbooks, compiled into one 15mb workbook).  The demo is free, it just puts an additional sheet into the workbook reminding you to buy a license.</p>&#xA;
+Comment:
+HTML:
+<p>i have implemented some functionality with poi. please see the code for your reference.</p>&#xA;&#xA;<pre><code>import java.io.BufferedInputStream;&#xA;import java.io.BufferedOutputStream;&#xA;import java.io.FileInputStream;&#xA;import java.io.FileOutputStream;&#xA;import java.io.IOException;&#xA;import org.apache.poi.hssf.usermodel.HSSFCell;&#xA;import org.apache.poi.hssf.usermodel.HSSFRow;&#xA;import org.apache.poi.hssf.usermodel.HSSFSheet;&#xA;import org.apache.poi.hssf.usermodel.HSSFWorkbook;&#xA;&#xA;public class ExcelReadAndWrite {&#xA;&#xA;    public static void main(String[] args) throws IOException {&#xA;        ExcelReadAndWrite excel = new ExcelReadAndWrite();&#xA;        excel.process("D:/LNN/My Workspace/POI/src/tables.xls");&#xA;    }&#xA;&#xA;    public void process(String fileName) throws IOException {&#xA;        BufferedInputStream bis = new BufferedInputStream(new FileInputStream(fileName));&#xA;        HSSFWorkbook workbook = new HSSFWorkbook(bis);&#xA;        HSSFWorkbook myWorkBook = new HSSFWorkbook();&#xA;        HSSFSheet sheet = null;&#xA;        HSSFRow row = null;&#xA;        HSSFCell cell = null;&#xA;        HSSFSheet mySheet = null;&#xA;        HSSFRow myRow = null;&#xA;        HSSFCell myCell = null;&#xA;        int sheets = workbook.getNumberOfSheets();&#xA;        int fCell = 0;&#xA;        int lCell = 0;&#xA;        int fRow = 0;&#xA;        int lRow = 0;&#xA;        for (int iSheet = 0; iSheet &lt; sheets; iSheet++) {&#xA;            sheet = workbook.getSheetAt(iSheet);&#xA;            if (sheet != null) {&#xA;                mySheet = myWorkBook.createSheet(sheet.getSheetName());&#xA;                fRow = sheet.getFirstRowNum();&#xA;                lRow = sheet.getLastRowNum();&#xA;                for (int iRow = fRow; iRow &lt;= lRow; iRow++) {&#xA;                    row = sheet.getRow(iRow);&#xA;                    myRow = mySheet.createRow(iRow);&#xA;                    if (row != null) {&#xA;                        fCell = row.getFirstCellNum();&#xA;                        lCell = row.getLastCellNum();&#xA;                        for (int iCell = fCell; iCell &lt; lCell; iCell++) {&#xA;                            cell = row.getCell(iCell);&#xA;                            myCell = myRow.createCell(iCell);&#xA;                            if (cell != null) {&#xA;                                myCell.setCellType(cell.getCellType());&#xA;                                switch (cell.getCellType()) {&#xA;                                case HSSFCell.CELL_TYPE_BLANK:&#xA;                                    myCell.setCellValue("");&#xA;                                    break;&#xA;&#xA;                                case HSSFCell.CELL_TYPE_BOOLEAN:&#xA;                                    myCell.setCellValue(cell.getBooleanCellValue());&#xA;                                    break;&#xA;&#xA;                                case HSSFCell.CELL_TYPE_ERROR:&#xA;                                    myCell.setCellErrorValue(cell.getErrorCellValue());&#xA;                                    break;&#xA;&#xA;                                case HSSFCell.CELL_TYPE_FORMULA:&#xA;                                    myCell.setCellFormula(cell.getCellFormula());&#xA;                                    break;&#xA;&#xA;                                case HSSFCell.CELL_TYPE_NUMERIC:&#xA;                                    myCell.setCellValue(cell.getNumericCellValue());&#xA;                                    break;&#xA;&#xA;                                case HSSFCell.CELL_TYPE_STRING:&#xA;                                    myCell.setCellValue(cell.getStringCellValue());&#xA;                                    break;&#xA;                                default:&#xA;                                    myCell.setCellFormula(cell.getCellFormula());&#xA;                                }&#xA;                            }&#xA;                        }&#xA;                    }&#xA;                }&#xA;            }&#xA;        }&#xA;        bis.close();&#xA;        BufferedOutputStream bos = new BufferedOutputStream(&#xA;                new FileOutputStream("workbook.xls", true));&#xA;        myWorkBook.write(bos);&#xA;        bos.close();&#xA;    }&#xA;}&#xA;</code></pre>&#xA;
+Comment:
+
+Phrase:
+Does 
+know 
+using POI 
+copy a worksheet from one workbook to another using POI 
+to copy a worksheet from one workbook to another using POI 
+has a cloneSheet method 
+insert a cloned sheet into a new workbook 
+to insert a cloned sheet into a new workbook 
+be able to insert a cloned sheet into a new workbook 
+to be able to insert a cloned sheet into a new workbook 
+seem to be able to insert a cloned sheet into a new workbook 
+does n't seem to be able to insert a cloned sheet into a new workbook 
+do this easily 
+to do this easily 
+is n't an API to do this easily 
+copy all of the data ( styles , column widths , data , etc ) from one sheet to another 
+to copy all of the data ( styles , column widths , data , etc ) from one sheet to another 
+have the code to copy all of the data ( styles , column widths , data , etc ) from one sheet to another 
+copy sheets 
+to copy sheets 
+has methods to copy sheets 
+copying between workbooks 
+work when copying between workbooks 
+do n't work when copying between workbooks 
+be helpful 
+should be helpful 
+deleting all the other worksheets in the workbook 
+saving the file under a different name 
+put the sheet into an existing workbook 
+to put the sheet into an existing workbook 
+want to put the sheet into an existing workbook 
+solve the problem if you want to put the sheet into an existing workbook 
+does n't solve the problem if you want to put the sheet into an existing workbook 
+spent a few minutes time digging through the source code 
+implemented 
+be implemented 
+could be implemented 
+seems like this could be implemented 
+clone a sheet 
+to clone a sheet 
+is all there to clone a sheet 
+holds all the CODE2s 
+is a private CODE1 that holds all the CODE2s 
+add this method to the CODE3 class 
+to add this method to the CODE3 class 
+be so simple as to add this method to the CODE3 class 
+'m missing 
+implemented long ago 
+been implemented long ago 
+have been implemented long ago 
+to have been implemented long ago 
+expect this to have been implemented long ago 
+would expect this to have been implemented long ago 
+be something huge I 'm missing , because otherwise I would expect this to have been implemented long ago 
+must be something huge I 'm missing , because otherwise I would expect this to have been implemented long ago 
+try this out next week 
+done 
+be done 
+can be done 
+see what can be done 
+try this out next week and see what can be done 
+might try this out next week and see what can be done 
+try it in the interim 
+to try it in the interim 
+has time to try it in the interim , by all means 
+do 
+do this on the NPOI discussions page 
+to do this on the NPOI discussions page 
+is a recent question ( 2 wks ago -- 2010.01.15 ) about the ability to do this on the NPOI discussions page 
+been no response as of yet 
+has been no response as of yet 
+realized 
+deactivated accounts 
+are deactivated accounts 
+</echo> 
+talking about POI 
+was talking about POI 
+is about NPOI 
+<sigh/> 
+created a workitem for NPOI : http://npoi.codeplex.com/WorkItem/View.aspx?WorkItemId=6057 
+load the Spreadsheet into memory 
+to load the Spreadsheet into memory 
+be to load the Spreadsheet into memory , 
+would be to load the Spreadsheet into memory , 
+using the Java POI library the best would be to load the Spreadsheet into memory , 
+are using the Java POI library the best would be to load the Spreadsheet into memory , 
+create a new one 
+copy 
+to copy 
+want to copy 
+write each one of the records you want to copy . 
+create a new one and write each one of the records you want to copy . 
+acomplishes the copy function 
+but acomplishes the copy function 
+using the latest code on coderanch 
+replace that with a HashMap 
+to replace that with a HashMap 
+need to replace that with a HashMap 
+using TreeSet where you need to replace that with a HashMap 
+'s an issue with using TreeSet where you need to replace that with a HashMap 
+is flawed ( there 's an issue with using TreeSet where you need to replace that with a HashMap ) 
+warned that the code is flawed ( there 's an issue with using TreeSet where you need to replace that with a HashMap ) 
+be warned that the code is flawed ( there 's an issue with using TreeSet where you need to replace that with a HashMap ) 
+doing this with POI ( using the latest code on coderanch ) - be warned that the code is flawed ( there 's an issue with using TreeSet where you need to replace that with a HashMap ) 
+crashes on formulas 
+fixing that it crashes on formulas 
+put about a week of effort into doing this with POI ( using the latest code on coderanch ) - be warned that the code is flawed ( there 's an issue with using TreeSet where you need to replace that with a HashMap ) , but even after fixing that it crashes on formulas 
+do 
+to do 
+be possible to do 
+may be possible to do 
+rely on hacked up code 
+to rely on hacked up code 
+have to rely on hacked up code 
+to have to rely on hacked up code 
+'s a scary proposition to have to rely on hacked up code 
+biting the bullet 
+paying for aspose 
+biting the bullet and paying for aspose 
+consider biting the bullet and paying for aspose 
+to consider biting the bullet and paying for aspose 
+want to consider biting the bullet and paying for aspose 
+may want to consider biting the bullet and paying for aspose 
+http://www.aspose.com/doctest/java-components/aspose.cells-for-java/copy-move-worksheets-within-and-between-workbooks.html 
+successfully copied sheets including formatting 
+successfully copied sheets including formatting , formulas , & protection rules 
+did 300 sheets in 130 seconds 
+compiled into one 15mb 
+workbook 
+is free 
+buy a license 
+to buy a license 
+reminding you to buy a license 
+puts an additional sheet into the workbook reminding you to buy a license 
+implemented some functionality with poi 
+have implemented some functionality with poi 
+see the code for your reference 

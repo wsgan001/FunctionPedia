@@ -1,0 +1,43 @@
+QUESTION:
+HTML:
+<p>Here is what I'm doing :</p>&#xA;&#xA;<ol>&#xA;<li>Create a workbook in memory (book = new HSSFWorkbook(), ...)</li>&#xA;<li>Save it to disk (book.write(...))</li>&#xA;<li>Open in Excel (ok)</li>&#xA;<li>Create another workbook in Excel, which links to the first one (=PoiWorkbook?xls!A1)</li>&#xA;<li>Close Excel</li>&#xA;</ol>&#xA;&#xA;<p>Then everytime I open the second workbook again, all the links are #N/A, unless I also open the POI-generated workbook at the same time.</p>&#xA;&#xA;<p>I never saw this behaviour with standard workbooks created in Excel.&#xA;Anyone has seen this and found a workaround ?</p>&#xA;&#xA;<p>Thanks.</p>&#xA;
+Comment:
+How can you open two workbooks at the same time? Don't you mean opening one after the other?
+
+ACCEPTED ANS:
+
+ANS:
+HTML:
+<p>This issue seems to be solved by newer version of POI (using 3.6 right now).</p>&#xA;
+Comment:
+
+Phrase:
+is 
+doing 
+'m doing 
+= new HSSFWorkbook 
+Create a workbook in memory ( book = new HSSFWorkbook ( ) , ... ) 
+book.write ( ... ) 
+Save it to disk ( book.write ( ... ) ) 
+Open in Excel ( ok ) 
+links to the first one ( = PoiWorkbook?xls!A1 ) 
+Create another workbook in Excel , which links to the first one ( = PoiWorkbook?xls!A1 ) 
+#N / A 
+are #N / A 
+open the POI-generated workbook at the same time 
+open the second workbook again , all the links are #N / A , unless I also open the POI-generated workbook at the same time 
+everytime I open the second workbook again , all the links are #N / A , unless I also open the POI-generated workbook at the same time 
+created in Excel 
+never saw this behaviour with standard workbooks created in Excel 
+seen this 
+has seen this 
+found a workaround 
+has seen this and found a workaround 
+open two workbooks at the same time 
+opening one after the other 
+mean opening one after the other 
+using 3.6 right now 
+solved by newer version of POI ( using 3.6 right now ) 
+be solved by newer version of POI ( using 3.6 right now ) 
+to be solved by newer version of POI ( using 3.6 right now ) 
+seems to be solved by newer version of POI ( using 3.6 right now ) 

@@ -1,0 +1,7 @@
+List<myData> listData = new ArrayList<myData>(); 
+JSONArray jsonArray = new JSONArray("your response json string");
+
+for(int i = 0; i < jsonArray.length(); i++) {
+    JSONObject jsonObj = jsonArray.getJSONObject(i);
+    listData.add(new myData(jsonObj.getString("firstname"),jsonObj.getString("lastname")));
+}

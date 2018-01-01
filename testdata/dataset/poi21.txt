@@ -1,0 +1,303 @@
+QUESTION:
+HTML:
+<p>So I have about 4,000 word docs that I'm attempting to extract the text from and insert into a db table.  This works swimmingly until the processor encounters a document with the *.doc file extension but determines the file is actually an RTF.  Now I know POI doesn't support RTFs which is fine, but I do need a way to determine if a *.doc file is actually an RTF so that I can choose to ignore the file and continue processing.  I've tried several techniques to overcome this, including using ColdFusion's MimeTypeUtils, however, it seems to base its assumption of the mimetype on the file extension and still classifies the RTF as application/msword.  Is there any other way to determine if a *.doc is an RTF?  Any help would be hugely appreciated.</p>&#xA;&#xA;<p>Thanks in advance,&#xA;--Anne</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>With CF8 and compatible: </p>&#xA;&#xA;<pre><code>&lt;cffunction name="IsRtfFile" returntype="Boolean" output="false"&gt;&#xA;    &lt;cfargument name="FileName" type="String" /&gt;&#xA;    &lt;cfreturn Left(FileRead(Arguments.FileName),5) EQ '{\rtf' /&gt;&#xA;&lt;/cffunction&gt;&#xA;</code></pre>&#xA;&#xA;<p><br/></p>&#xA;&#xA;<p>For earlier versions:</p>&#xA;&#xA;<pre><code>&lt;cffunction name="IsRtfFile" returntype="Boolean" output="false"&gt;&#xA;    &lt;cfargument name="FileName" type="String" /&gt;&#xA;    &lt;cfset var FileData = 0 /&gt;&#xA;    &lt;cffile variable="FileData" action="read" file="#Arguments.FileName#" /&gt;&#xA;    &lt;cfreturn Left(FileData,5) EQ '{\rtf' /&gt;&#xA;&lt;/cffunction&gt;&#xA;</code></pre>&#xA;&#xA;<p><br/></p>&#xA;&#xA;<p><strong>Update:</strong> A better CF8/compatible answer. To avoid loading the whole file into memory, you can do the following to load just the first few characters:</p>&#xA;&#xA;<pre><code>&lt;cffunction name="IsRtfFile" returntype="Boolean" output="false"&gt;&#xA;    &lt;cfargument name="FileName" type="String" /&gt;&#xA;    &lt;cfset var FileData = 0 /&gt;&#xA;&#xA;    &lt;cfloop index="FileData" file="#Arguments.FileName#" characters="5"&gt;&#xA;    	&lt;cfbreak/&gt;&#xA;    &lt;/cfloop&gt;&#xA;&#xA;    &lt;cfreturn FileData EQ '{\rtf' /&gt;&#xA;&lt;/cffunction&gt;&#xA;</code></pre>&#xA;&#xA;<p><br/></p>&#xA;&#xA;<p><strong>Based on the comments:</strong><br />&#xA;Here's a very quick way how you might do a generate "what format is this" type of function. Not perfect, but it gives you the idea...</p>&#xA;&#xA;<pre><code>&lt;cffunction name="determineFileFormat" returntype="String" output="false"&#xA;    hint="Determines format of file based on header of the file's data."&#xA;    &gt;&#xA;    &lt;cfargument name="FileName" type="String"/&gt;&#xA;    &lt;cfset var FileData = 0 /&gt;&#xA;    &lt;cfset var CurFormat = 0 /&gt;&#xA;    &lt;cfset var MaxBytes = 8 /&gt;&#xA;    &lt;cfset var Formats =&#xA;    	{ WordNew  : 'D0,CF,11,E0,A1,B1,1A,E1'&#xA;    	, WordBeta : '0E,11,FC,0D,D0,CF,11,E0'&#xA;    	, Rtf      : '7B,5C,72,74,66' &lt;!--- {\rtf ---&gt;&#xA;    	, Jpeg     : 'FF,D8'&#xA;    	}/&gt;&#xA;&#xA;    &lt;cfloop index="FileData" file="#Arguments.FileName#" characters="#MaxBytes#"&gt;&#xA;    	&lt;cfbreak/&gt;&#xA;    &lt;/cfloop&gt;&#xA;&#xA;    &lt;cfloop item="CurFormat" collection="#Formats#"&gt;&#xA;    	&lt;cfif Left( FileData , ListLen(Formats[CurFormat]) ) EQ convertToText(Formats[CurFormat]) &gt;&#xA;    		&lt;cfreturn CurFormat /&gt;&#xA;    	&lt;/cfif&gt;&#xA;    &lt;/cfloop&gt;&#xA;&#xA;    &lt;cfreturn "Unknown"/&gt;&#xA;&lt;/cffunction&gt;&#xA;&#xA;&#xA;&lt;cffunction name="convertToText" returntype="String" output="false"&gt;&#xA;    &lt;cfargument name="HexList" type="String" /&gt;&#xA;    &lt;cfset var Result = "" /&gt;&#xA;    &lt;cfset var CurItem = 0 /&gt;&#xA;&#xA;    &lt;cfloop index="CurItem" list="#Arguments.HexList#"&gt;&#xA;    	&lt;cfset Result &amp;= Chr(InputBaseN(CurItem,16)) /&gt;&#xA;    &lt;/cfloop&gt;&#xA;&#xA;    &lt;cfreturn Result /&gt;&#xA;&lt;/cffunction&gt;&#xA;</code></pre>&#xA;&#xA;<p>Of course, worth pointing out that all this wont work on 'headerless' formats, including many common text-based ones (CFM,CSS,JS,etc).</p>&#xA;
+Comment:
+This is perfect!  Out of curiousity, could this technique potentially be used to detect the version of Word that the document was created with?  I've run across another problem where POI is throwing a fit over a file that it thinks was created with Word 95.  Alternatively, could I potentially just forgo POI altogether and load the data pulled with FileRead() and load it into the db that way?  In the end my purpose is simply to have the text of the doc available for searching but not displaying.
+If you can identify the file marker sequences for the different versions, this technique could be used for multiple formats, since a lot of binary file formats start with upto 8 bytes that identify the format in this way.
+For reading the whole files... well, using FileRead will treat files as text - so I don't know if it might corrupt a Word document.&#xA;If it did, you could try FileReadBinary, but I'm not then sure if it would be searchable as text in your database.
+I tried just the straight up FileRead() and FileReadBinary() and in both cases I was able to get the readable text except is prepended and appended with various junk.  With that in mind, I may just go that route since at least I do get some of the text which would be enough for searching.  Just not entirely ideal.  Nevertheless, thanks for your help.
+
+ANS:
+HTML:
+<p>The first five bytes in any RTF file should be:</p>&#xA;&#xA;<pre><code>{\rtf&#xA;</code></pre>&#xA;&#xA;<p>If they aren't, it's not an RTF file.</p>&#xA;&#xA;<p>The external links section in the <a href="http://en.wikipedia.org/wiki/Rich%5FText%5FFormat" rel="nofollow">Wikipeida article</a> link to the specifications for the various versions of RTF.</p>&#xA;&#xA;<p>Doc files (at least those since Word '97) use something called "Windows Compound Binary Format", documented <a href="http://86/WindowsCompoundBinaryFileFormatSpecification.pdf" rel="nofollow">in a PDF here</a>. According to that, these Doc files start with the following sequence:</p>&#xA;&#xA;<pre><code>0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1&#xA;</code></pre>&#xA;&#xA;<p>Or in older beta files:</p>&#xA;&#xA;<pre><code>0x0e, 0x11, 0xfc, 0x0d, 0xd0, 0xcf, 0x11, 0xe0&#xA;</code></pre>&#xA;&#xA;<p>According to the Wikipedia article on Word, there were at least 5 different formats prior to '97.</p>&#xA;&#xA;<p>Looking for {\rtf should be your best bet.</p>&#xA;&#xA;<p>Good luck, hope this helps.</p>&#xA;
+Comment:
+I did noticed in some of the POI code that a PushbackInputStream is instantiated that pulls a byteArray of the first 6 bytes.  I attempted the same thing on the coldfusion side and was able to successfully get the byteArray, but I've gotten stuck trying to figure out how to convert the byteArray to a string that's readable by CF so I can check for {\rtf.  Instead all I can get are numbers.  Any ideas?
+Can you just do a standard FileRead on it?
+HTML:
+<p>You could try identifying the files with the <a href="http://droid.sourceforge.net" rel="nofollow">Droid</a> tool (Digital Record Object Identification), which provides access to the <a href="http://www.nationalarchives.gov.uk/pronom" rel="nofollow">Pronom technical registry</a>.</p>&#xA;
+Comment:
+HTML:
+<p>With CF8 and compatible: </p>&#xA;&#xA;<pre><code>&lt;cffunction name="IsRtfFile" returntype="Boolean" output="false"&gt;&#xA;    &lt;cfargument name="FileName" type="String" /&gt;&#xA;    &lt;cfreturn Left(FileRead(Arguments.FileName),5) EQ '{\rtf' /&gt;&#xA;&lt;/cffunction&gt;&#xA;</code></pre>&#xA;&#xA;<p><br/></p>&#xA;&#xA;<p>For earlier versions:</p>&#xA;&#xA;<pre><code>&lt;cffunction name="IsRtfFile" returntype="Boolean" output="false"&gt;&#xA;    &lt;cfargument name="FileName" type="String" /&gt;&#xA;    &lt;cfset var FileData = 0 /&gt;&#xA;    &lt;cffile variable="FileData" action="read" file="#Arguments.FileName#" /&gt;&#xA;    &lt;cfreturn Left(FileData,5) EQ '{\rtf' /&gt;&#xA;&lt;/cffunction&gt;&#xA;</code></pre>&#xA;&#xA;<p><br/></p>&#xA;&#xA;<p><strong>Update:</strong> A better CF8/compatible answer. To avoid loading the whole file into memory, you can do the following to load just the first few characters:</p>&#xA;&#xA;<pre><code>&lt;cffunction name="IsRtfFile" returntype="Boolean" output="false"&gt;&#xA;    &lt;cfargument name="FileName" type="String" /&gt;&#xA;    &lt;cfset var FileData = 0 /&gt;&#xA;&#xA;    &lt;cfloop index="FileData" file="#Arguments.FileName#" characters="5"&gt;&#xA;    	&lt;cfbreak/&gt;&#xA;    &lt;/cfloop&gt;&#xA;&#xA;    &lt;cfreturn FileData EQ '{\rtf' /&gt;&#xA;&lt;/cffunction&gt;&#xA;</code></pre>&#xA;&#xA;<p><br/></p>&#xA;&#xA;<p><strong>Based on the comments:</strong><br />&#xA;Here's a very quick way how you might do a generate "what format is this" type of function. Not perfect, but it gives you the idea...</p>&#xA;&#xA;<pre><code>&lt;cffunction name="determineFileFormat" returntype="String" output="false"&#xA;    hint="Determines format of file based on header of the file's data."&#xA;    &gt;&#xA;    &lt;cfargument name="FileName" type="String"/&gt;&#xA;    &lt;cfset var FileData = 0 /&gt;&#xA;    &lt;cfset var CurFormat = 0 /&gt;&#xA;    &lt;cfset var MaxBytes = 8 /&gt;&#xA;    &lt;cfset var Formats =&#xA;    	{ WordNew  : 'D0,CF,11,E0,A1,B1,1A,E1'&#xA;    	, WordBeta : '0E,11,FC,0D,D0,CF,11,E0'&#xA;    	, Rtf      : '7B,5C,72,74,66' &lt;!--- {\rtf ---&gt;&#xA;    	, Jpeg     : 'FF,D8'&#xA;    	}/&gt;&#xA;&#xA;    &lt;cfloop index="FileData" file="#Arguments.FileName#" characters="#MaxBytes#"&gt;&#xA;    	&lt;cfbreak/&gt;&#xA;    &lt;/cfloop&gt;&#xA;&#xA;    &lt;cfloop item="CurFormat" collection="#Formats#"&gt;&#xA;    	&lt;cfif Left( FileData , ListLen(Formats[CurFormat]) ) EQ convertToText(Formats[CurFormat]) &gt;&#xA;    		&lt;cfreturn CurFormat /&gt;&#xA;    	&lt;/cfif&gt;&#xA;    &lt;/cfloop&gt;&#xA;&#xA;    &lt;cfreturn "Unknown"/&gt;&#xA;&lt;/cffunction&gt;&#xA;&#xA;&#xA;&lt;cffunction name="convertToText" returntype="String" output="false"&gt;&#xA;    &lt;cfargument name="HexList" type="String" /&gt;&#xA;    &lt;cfset var Result = "" /&gt;&#xA;    &lt;cfset var CurItem = 0 /&gt;&#xA;&#xA;    &lt;cfloop index="CurItem" list="#Arguments.HexList#"&gt;&#xA;    	&lt;cfset Result &amp;= Chr(InputBaseN(CurItem,16)) /&gt;&#xA;    &lt;/cfloop&gt;&#xA;&#xA;    &lt;cfreturn Result /&gt;&#xA;&lt;/cffunction&gt;&#xA;</code></pre>&#xA;&#xA;<p>Of course, worth pointing out that all this wont work on 'headerless' formats, including many common text-based ones (CFM,CSS,JS,etc).</p>&#xA;
+Comment:
+This is perfect!  Out of curiousity, could this technique potentially be used to detect the version of Word that the document was created with?  I've run across another problem where POI is throwing a fit over a file that it thinks was created with Word 95.  Alternatively, could I potentially just forgo POI altogether and load the data pulled with FileRead() and load it into the db that way?  In the end my purpose is simply to have the text of the doc available for searching but not displaying.
+If you can identify the file marker sequences for the different versions, this technique could be used for multiple formats, since a lot of binary file formats start with upto 8 bytes that identify the format in this way.
+For reading the whole files... well, using FileRead will treat files as text - so I don't know if it might corrupt a Word document.&#xA;If it did, you could try FileReadBinary, but I'm not then sure if it would be searchable as text in your database.
+I tried just the straight up FileRead() and FileReadBinary() and in both cases I was able to get the readable text except is prepended and appended with various junk.  With that in mind, I may just go that route since at least I do get some of the text which would be enough for searching.  Just not entirely ideal.  Nevertheless, thanks for your help.
+HTML:
+<p>You can convert the byteArray to a string</p>&#xA;&#xA;<pre><code>&lt;cfset str = createObject("java", "java.lang.String").init(bytes)&gt;&#xA;</code></pre>&#xA;&#xA;<p>You might also try the hasxxxHeader methods from POI's source. They determine if an input file is something POI can handle: OLE or OOXML.  But I believe someone else suggested using a simple try/catch to skip problem files.  Is there a reason you do not wish to do that? It would seem the simpler option. </p>&#xA;&#xA;<p><strong>Update:</strong>&#xA;Peter's suggestion of using CF 8's function would also work</p>&#xA;&#xA;<pre><code>&lt;cfset input = FileOpen(pathToYourFile)&gt;&#xA;&lt;cfset bytes = FileRead(input , 8)&gt;&#xA;&lt;cfdump var="#bytes#"&gt;&#xA;&lt;cfset FileClose(input)&gt;&#xA;</code></pre>&#xA;
+Comment:
+Ah, even better than the loop method. Should probably have an explicit FileClose(input) in there also though?
+Yes, it should definitely have an explicit FileClose(..). I forgot to copy that line.
+
+Phrase:
+extract the text from 
+insert into a db table 
+extract the text from and insert into a db table 
+to extract the text from and insert into a db table 
+attempting to extract the text from and insert into a db table 
+'m attempting to extract the text from and insert into a db table 
+have about 4,000 word docs that I 'm attempting to extract the text from and insert into a db table 
+encounters a document with the * . doc file extension 
+is actually an RTF 
+determines the file is actually an RTF 
+encounters a document with the * . doc file extension but determines the file is actually an RTF 
+works swimmingly until the processor encounters a document with the * . doc file extension but determines the file is actually an RTF 
+is fine 
+support RTFs which is fine 
+does n't support RTFs which is fine 
+know POI does n't support RTFs which is fine 
+ignore the file 
+continue processing 
+ignore the file and continue processing 
+to ignore the file and continue processing 
+choose to ignore the file and continue processing 
+can choose to ignore the file and continue processing 
+is actually an RTF so that I can choose to ignore the file and continue processing 
+determine if a * . doc file is actually an RTF so that I can choose to ignore the file and continue processing 
+to determine if a * . doc file is actually an RTF so that I can choose to ignore the file and continue processing 
+need a way to determine if a * . doc file is actually an RTF so that I can choose to ignore the file and continue processing 
+do need a way to determine if a * . doc file is actually an RTF so that I can choose to ignore the file and continue processing 
+using ColdFusion 's MimeTypeUtils 
+base its assumption of the mimetype on the file extension 
+to base its assumption of the mimetype on the file extension 
+seems to base its assumption of the mimetype on the file extension 
+still classifies the RTF as application/msword 
+seems to base its assumption of the mimetype on the file extension and still classifies the RTF as application/msword 
+overcome this , including using ColdFusion 's MimeTypeUtils , however , it seems to base its assumption of the mimetype on the file extension and still classifies the RTF as application/msword 
+to overcome this , including using ColdFusion 's MimeTypeUtils , however , it seems to base its assumption of the mimetype on the file extension and still classifies the RTF as application/msword 
+tried several techniques to overcome this , including using ColdFusion 's MimeTypeUtils , however , it seems to base its assumption of the mimetype on the file extension and still classifies the RTF as application/msword 
+'ve tried several techniques to overcome this , including using ColdFusion 's MimeTypeUtils , however , it seems to base its assumption of the mimetype on the file extension and still classifies the RTF as application/msword 
+is 
+determine if a * . doc is 
+to determine if a * . doc is 
+Is there any other way to determine if a * . doc is 
+be hugely appreciated 
+would be hugely appreciated 
+loading the whole file into memory 
+avoid loading the whole file into memory 
+To avoid loading the whole file into memory 
+load just the first few characters 
+to load just the first few characters 
+do the following to load just the first few characters 
+can do the following to load just the first few characters 
+'s 
+is this 
+do a generate `` what format is this '' type of function 
+might do a generate `` what format is this '' type of function 
+gives you the idea 
+work on ` headerless ' formats , including many common text-based ones ( CFM , CSS , JS , etc ) 
+pointing out that all this wont work on ` headerless ' formats , including many common text-based ones ( CFM , CSS , JS , etc ) 
+is perfect 
+created with 
+was created with 
+detect the version of Word that the document was created with 
+to detect the version of Word that the document was created with 
+used to detect the version of Word that the document was created with 
+be used to detect the version of Word that the document was created with 
+could this technique potentially be used to detect the version of Word that the document was created with 
+created with Word 95 
+was created with Word 95 
+thinks was created with Word 95 
+throwing a fit over a file that it thinks was created with Word 95 
+is throwing a fit over a file that it thinks was created with Word 95 
+run across another problem where POI is throwing a fit over a file that it thinks was created with Word 95 
+'ve run across another problem where POI is throwing a fit over a file that it thinks was created with Word 95 
+forgo POI altogether 
+pulled with FileRead ( 
+load the data pulled with FileRead ( ) and load it into the db 
+forgo POI altogether and load the data pulled with FileRead ( ) and load it into the db 
+could I potentially just forgo POI altogether and load the data pulled with FileRead ( ) and load it into the db 
+searching 
+displaying 
+searching but not displaying 
+have the text of the doc available for searching but not displaying 
+to have the text of the doc available for searching but not displaying 
+is simply to have the text of the doc available for searching but not displaying 
+identify the file marker sequences for the different versions 
+can identify the file marker sequences for the different versions 
+identify the format in this way 
+start with upto 8 bytes that identify the format in this way 
+used for multiple formats , since a lot of binary file formats start with upto 8 bytes that identify the format in this way 
+be used for multiple formats , since a lot of binary file formats start with upto 8 bytes that identify the format in this way 
+could be used for multiple formats , since a lot of binary file formats start with upto 8 bytes that identify the format in this way 
+files 
+corrupt a Word document 
+might corrupt a Word document 
+know if it might corrupt a Word document 
+do n't know if it might corrupt a Word document 
+treat files as text - so I do n't know if it might corrupt a Word document . 
+will treat files as text - so I do n't know if it might corrupt a Word document . 
+using FileRead will treat files as text - so I do n't know if it might corrupt a Word document . 
+#xA 
+did 
+try FileReadBinary 
+could try FileReadBinary 
+be searchable as text in your database 
+would be searchable as text in your database 
+'m not then sure if it would be searchable as text in your database 
+prepended and appended with various junk 
+is prepended and appended with various junk 
+get the readable text except is prepended and appended with various junk 
+to get the readable text except is prepended and appended with various junk 
+was able to get the readable text except is prepended and appended with various junk 
+tried just the straight up FileRead ( ) and FileReadBinary ( ) and in both cases I was able to get the readable text except is prepended and appended with various junk 
+searching 
+be enough for searching 
+would be enough for searching 
+get some of the text which would be enough for searching 
+do get some of the text which would be enough for searching 
+go that route since at least I do get some of the text which would be enough for searching 
+may just go that route since at least I do get some of the text which would be enough for searching 
+be 
+should be 
+are n't 
+'s not an RTF file 
+link to the specifications for the various versions of RTF 
+called `` Windows Compound Binary Format '' 
+documented in a PDF here 
+use something called `` Windows Compound Binary Format '' , documented in a PDF here 
+start with the following sequence 
+were at least 5 different formats prior to ' 97 
+be your best bet 
+should be your best bet 
+Looking for -LCB- \ rtf should be your best bet 
+helps 
+hope this helps 
+pulls a byteArray of the first 6 bytes 
+instantiated that pulls a byteArray of the first 6 bytes 
+is instantiated that pulls a byteArray of the first 6 bytes 
+did noticed in some of the POI code that a PushbackInputStream is instantiated that pulls a byteArray of the first 6 bytes 
+attempted the same thing on the coldfusion side 
+successfully get the byteArray 
+to successfully get the byteArray 
+was able to successfully get the byteArray 
+attempted the same thing on the coldfusion side and was able to successfully get the byteArray 
+rtf 
+check for -LCB- \ rtf 
+can check for -LCB- \ rtf 
+'s readable by CF so I can check for -LCB- \ rtf 
+convert the byteArray to a string that 's readable by CF so I can check for -LCB- \ rtf 
+to convert the byteArray to a string that 's readable by CF so I can check for -LCB- \ rtf 
+figure out how to convert the byteArray to a string that 's readable by CF so I can check for -LCB- \ rtf 
+to figure out how to convert the byteArray to a string that 's readable by CF so I can check for -LCB- \ rtf 
+trying to figure out how to convert the byteArray to a string that 's readable by CF so I can check for -LCB- \ rtf 
+stuck trying to figure out how to convert the byteArray to a string that 's readable by CF so I can check for -LCB- \ rtf 
+gotten stuck trying to figure out how to convert the byteArray to a string that 's readable by CF so I can check for -LCB- \ rtf 
+'ve gotten stuck trying to figure out how to convert the byteArray to a string that 's readable by CF so I can check for -LCB- \ rtf 
+are numbers 
+get are numbers 
+can get are numbers 
+do a standard FileRead on it 
+provides access to the Pronom technical registry 
+identifying the files with the Droid tool ( Digital Record Object Identification ) , which provides access to the Pronom technical registry 
+try identifying the files with the Droid tool ( Digital Record Object Identification ) , which provides access to the Pronom technical registry 
+could try identifying the files with the Droid tool ( Digital Record Object Identification ) , which provides access to the Pronom technical registry 
+loading the whole file into memory 
+avoid loading the whole file into memory 
+To avoid loading the whole file into memory 
+load just the first few characters 
+to load just the first few characters 
+do the following to load just the first few characters 
+can do the following to load just the first few characters 
+'s 
+is this 
+do a generate `` what format is this '' type of function 
+might do a generate `` what format is this '' type of function 
+gives you the idea 
+work on ` headerless ' formats , including many common text-based ones ( CFM , CSS , JS , etc ) 
+pointing out that all this wont work on ` headerless ' formats , including many common text-based ones ( CFM , CSS , JS , etc ) 
+is perfect 
+created with 
+was created with 
+detect the version of Word that the document was created with 
+to detect the version of Word that the document was created with 
+used to detect the version of Word that the document was created with 
+be used to detect the version of Word that the document was created with 
+could this technique potentially be used to detect the version of Word that the document was created with 
+created with Word 95 
+was created with Word 95 
+thinks was created with Word 95 
+throwing a fit over a file that it thinks was created with Word 95 
+is throwing a fit over a file that it thinks was created with Word 95 
+run across another problem where POI is throwing a fit over a file that it thinks was created with Word 95 
+'ve run across another problem where POI is throwing a fit over a file that it thinks was created with Word 95 
+forgo POI altogether 
+pulled with FileRead ( 
+load the data pulled with FileRead ( ) and load it into the db 
+forgo POI altogether and load the data pulled with FileRead ( ) and load it into the db 
+could I potentially just forgo POI altogether and load the data pulled with FileRead ( ) and load it into the db 
+searching 
+displaying 
+searching but not displaying 
+have the text of the doc available for searching but not displaying 
+to have the text of the doc available for searching but not displaying 
+is simply to have the text of the doc available for searching but not displaying 
+identify the file marker sequences for the different versions 
+can identify the file marker sequences for the different versions 
+identify the format in this way 
+start with upto 8 bytes that identify the format in this way 
+used for multiple formats , since a lot of binary file formats start with upto 8 bytes that identify the format in this way 
+be used for multiple formats , since a lot of binary file formats start with upto 8 bytes that identify the format in this way 
+could be used for multiple formats , since a lot of binary file formats start with upto 8 bytes that identify the format in this way 
+files 
+corrupt a Word document 
+might corrupt a Word document 
+know if it might corrupt a Word document 
+do n't know if it might corrupt a Word document 
+treat files as text - so I do n't know if it might corrupt a Word document . 
+will treat files as text - so I do n't know if it might corrupt a Word document . 
+using FileRead will treat files as text - so I do n't know if it might corrupt a Word document . 
+#xA 
+did 
+try FileReadBinary 
+could try FileReadBinary 
+be searchable as text in your database 
+would be searchable as text in your database 
+'m not then sure if it would be searchable as text in your database 
+prepended and appended with various junk 
+is prepended and appended with various junk 
+get the readable text except is prepended and appended with various junk 
+to get the readable text except is prepended and appended with various junk 
+was able to get the readable text except is prepended and appended with various junk 
+tried just the straight up FileRead ( ) and FileReadBinary ( ) and in both cases I was able to get the readable text except is prepended and appended with various junk 
+searching 
+be enough for searching 
+would be enough for searching 
+get some of the text which would be enough for searching 
+do get some of the text which would be enough for searching 
+go that route since at least I do get some of the text which would be enough for searching 
+may just go that route since at least I do get some of the text which would be enough for searching 
+convert the byteArray to a string 
+can convert the byteArray to a string 
+try the hasxxxHeader methods from POI 's source 
+might also try the hasxxxHeader methods from POI 's source 
+handle : OLE or OOXML 
+can handle : OLE or OOXML 
+is something POI can handle : OLE or OOXML 
+determine if an input file is something POI can handle : OLE or OOXML 
+skip problem files 
+to skip problem files 
+using a simple try/catch to skip problem files 
+suggested using a simple try/catch to skip problem files 
+believe someone else suggested using a simple try/catch to skip problem files 
+Is there 
+do that 
+to do that 
+wish to do that 
+do not wish to do that 
+seem the simpler option 
+would seem the simpler option 
+using CF 8 's function 
+work 
+would also work 
+have an explicit FileClose ( input ) in there also though 
+have an explicit FileClose ( 
+should definitely have an explicit FileClose ( 
+copy that line 
+to copy that line 
+forgot to copy that line 

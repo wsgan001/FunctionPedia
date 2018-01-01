@@ -1,0 +1,40 @@
+QUESTION:
+HTML:
+<p>I have a ms-word document (MS-Office 2003; non-xml). Within this&#xA;document there is a string associated with a bookmark. Furthermore,&#xA;the word document contains word-macros. My goal is to read the&#xA;document with java, replace the string associated with the bookmark,&#xA;and save the document back to word format.</p>&#xA;&#xA;<p>My first approach was using Apache POI HWPF:</p>&#xA;&#xA;<pre><code>HWPFDocument doc = new HWPFDocument(new FileInputStream("Test.doc"));&#xA;doc.write(new FileOutputStream("Test_generated.doc"));&#xA;</code></pre>&#xA;&#xA;<p>The problem with this solution is that the generated file does not&#xA;contain the macro anymore (File size of the original document: 32k;&#xA;file size of the generated document 19k).</p>&#xA;&#xA;<p>Does anybody now if it's possible to retain all the original info&#xA;using POI/HWPF?</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+
+ANS:
+HTML:
+<p>never found a solution. The customer had to pay an Aspose-license (expensive) or refrain from using macros.</p>&#xA;
+Comment:
+
+Phrase:
+have a ms-word document ( MS-Office 2003 ; non-xml ) 
+associated with a bookmark 
+is a string associated with a bookmark 
+contains word-macros 
+read the document with java 
+associated with the bookmark 
+replace the string associated with the bookmark 
+save the document back to word format 
+read the document with java , replace the string associated with the bookmark , and save the document back to word format 
+to read the document with java , replace the string associated with the bookmark , and save the document back to word format 
+is to read the document with java , replace the string associated with the bookmark , and save the document back to word format 
+using Apache POI HWPF 
+was using Apache POI HWPF 
+contain the macro anymore ( File size of the original document : 32k ; file size of the generated document 19k ) 
+does not contain the macro anymore ( File size of the original document : 32k ; file size of the generated document 19k ) 
+is that the generated file does not contain the macro anymore ( File size of the original document : 32k ; file size of the generated document 19k ) 
+using POI/HWPF 
+retain all the original info using POI/HWPF 
+to retain all the original info using POI/HWPF 
+'s possible to retain all the original info using POI/HWPF 
+found 
+pay an Aspose-license ( expensive ) 
+using macros 
+refrain from using macros 
+pay an Aspose-license ( expensive ) or refrain from using macros 
+to pay an Aspose-license ( expensive ) or refrain from using macros 
+had to pay an Aspose-license ( expensive ) or refrain from using macros 

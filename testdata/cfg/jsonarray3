@@ -1,0 +1,25 @@
+JSONObject menuobj = this.getJSONObject("responseData");
+Log.e("XXX", menuobj.toString());
+JSONArray array = menuobj.getJSONArray("countries");
+TreeMap<String, Integer> map = new TreeMap<String, Integer>();
+for (int i = 0; i < array.length(); i++)
+{
+    JSONObject obj = new JSONObject();
+    obj = array.getJSONObject(i);
+    if (obj.getString("name").equals(country))
+    {
+        Log.e("XXX2", obj.toString());
+        JSONArray arr = obj.getJSONArray("channels");
+        Log.e("XXX3", String.valueOf(arr.length()));
+        for (int j = 0; j < arr.length(); j++)
+        {
+            JSONObject obj2 = new JSONObject();
+            obj2 = arr.getJSONObject(i);
+            map.put(obj2.getString("name"), obj2.getInt("id"));
+        }
+        Log.e("XXX4", String.valueOf(map.size()));
+        return map;
+    }
+
+
+}

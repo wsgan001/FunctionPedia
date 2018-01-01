@@ -1,0 +1,59 @@
+QUESTION:
+HTML:
+<p>I use Apache POI to write excel sheets. I'm very happy with it, but I have the following problem: my program is multi-currency and internationalized. In the excel sheet I write, I want my currency cells to be properly formatted. For that, </p>&#xA;&#xA;<p>I need a routine that would build the right Excel currency format (eg: "[$$-409]#,##0.00;-[$$-409]#,##0.00") from java.util.Currency and java..util.Locale parameters.</p>&#xA;&#xA;<p>Something like: <code>public String getExcelCurrencyFormat(Currency currency, Locale locale);</code></p>&#xA;&#xA;<p>Is anyone aware of such a library?</p>&#xA;
+Comment:
+This question may be of some help:&#xA;http://stackoverflow.com/questions/319438/basic-excel-currency-format-with-apache-poi
+
+ACCEPTED ANS:
+
+ANS:
+HTML:
+<p>Couldn't you just flag the field as being a currency field, and let Excel figure out the right format to use? Or does Excel require you to specify the format to produce the relevant 'type'?</p>&#xA;&#xA;<p>I would have suggested using java.text.NumberFormat.getCurrencyInstance() but there appears to be no way to get the actual format used by the instance from the object itself (unless tostring() returns it).</p>&#xA;&#xA;<p>Off the top of my head I can't think of anything else sorry.</p>&#xA;
+Comment:
+
+Phrase:
+write excel sheets 
+to write excel sheets 
+use Apache POI to write excel sheets 
+'m very happy with it 
+have the following problem 
+is multi-currency and internationalized 
+write 
+properly formatted 
+be properly formatted 
+to be properly formatted 
+want my currency cells to be properly formatted 
+build the right Excel currency format ( eg : '' -LSB- $ $ -409 -RSB- # , ## 0.00 ;-[ $ $ -409 -RSB- # , ## 0.00 '' 
+would build the right Excel currency format ( eg : '' -LSB- $ $ -409 -RSB- # , ## 0.00 ;-[ $ $ -409 -RSB- # , ## 0.00 '' 
+util.Locale parameters 
+need a routine that would build the right Excel currency format ( eg : '' -LSB- $ $ -409 -RSB- # , ## 0.00 ;-[ $ $ -409 -RSB- # , ## 0.00 '' ) from java.util.Currency and java . . util.Locale parameters 
+be of some help : & #xA ; http://stackoverflow.com/questions/319438/basic-excel-currency-format-with-apache-poi 
+may be of some help : & #xA ; http://stackoverflow.com/questions/319438/basic-excel-currency-format-with-apache-poi 
+Could n't 
+being a currency field 
+flag the field as being a currency field 
+use 
+to use 
+figure out the right format to use 
+let Excel figure out the right format to use 
+flag the field as being a currency field , and let Excel figure out the right format to use 
+produce the relevant ` type ' 
+to produce the relevant ` type ' 
+specify the format to produce the relevant ` type ' 
+to specify the format to produce the relevant ` type ' 
+require you to specify the format to produce the relevant ` type ' 
+tostring ( 
+returns it 
+used by the instance from the object itself ( unless tostring ( ) returns it 
+get the actual format used by the instance from the object itself ( unless tostring ( ) returns it 
+to get the actual format used by the instance from the object itself ( unless tostring ( ) returns it 
+be no way to get the actual format used by the instance from the object itself ( unless tostring ( ) returns it 
+to be no way to get the actual format used by the instance from the object itself ( unless tostring ( ) returns it 
+appears to be no way to get the actual format used by the instance from the object itself ( unless tostring ( ) returns it 
+) but there appears to be no way to get the actual format used by the instance from the object itself ( unless tostring ( ) returns it 
+using java.text.NumberFormat.getCurrencyInstance ( ) but there appears to be no way to get the actual format used by the instance from the object itself ( unless tostring ( ) returns it ) 
+suggested using java.text.NumberFormat.getCurrencyInstance ( ) but there appears to be no way to get the actual format used by the instance from the object itself ( unless tostring ( ) returns it ) 
+have suggested using java.text.NumberFormat.getCurrencyInstance ( ) but there appears to be no way to get the actual format used by the instance from the object itself ( unless tostring ( ) returns it ) 
+would have suggested using java.text.NumberFormat.getCurrencyInstance ( ) but there appears to be no way to get the actual format used by the instance from the object itself ( unless tostring ( ) returns it ) 
+think of anything else sorry 
+ca n't think of anything else sorry 

@@ -1,0 +1,152 @@
+QUESTION:
+HTML:
+<p>I know its possible to get the top terms within a Lucene Index, but is there a way to get the top terms based on a subset of a Lucene index?</p>&#xA;&#xA;<p>I.e. What are the top terms in the Index for documents within a certain date range?</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+
+ANS:
+HTML:
+<p>Ideally there'd be a utility somewhere to do this, but I'm not aware of one.  However, it's not too hard to do this "by hand" in a reasonably efficient way.  I'll assume that you already have a <code>Query</code> and/or <code>Filter</code> object that you can use to define the subset of interest.</p>&#xA;&#xA;<p>First, build a list in memory of all of the document IDs in your index subset.  You can use <code>IndexSearcher.search(Query, Filter, HitCollector)</code> to do this very quickly; the <code>HitCollector</code> <a href="http://lucene.apache.org/java/2_4_0/api/org/apache/lucene/search/HitCollector.html">documentation</a> includes an example that seems like it ought to work, or you can use some other container to store your doc IDs.</p>&#xA;&#xA;<p>Next, initialize an empty HashMap (or whatever) to map terms to total frequency, and populate the map by invoking one of the <code>IndexReader.getTermFreqVector</code> methods for every document and field of interest.  The three-argument form seems simpler, but either should be just fine.  For the three-argument form, you'd make a <code>TermVectorMapper</code> whose <code>map</code> method checks if <code>term</code> is in the map, associates it with <code>frequency</code> if not, or adds <code>frequency</code> to the existing value if so.  Be sure to use the same <code>TermVectorMapper</code> object across all of the calls to <code>getTermFreqVector</code> in this pass, rather than instantiating a new one for each document in the loop.  You can also speed things up quite a bit by overriding <code>isIgnoringPositions()</code> and <code>isIgnoringOffsets()</code>; your object should return <code>true</code> for both of those.  It looks like your <code>TermVectorMapper</code> might also be forced to define a <code>setExpectations</code> method, but that one doesn't need to do anything.</p>&#xA;&#xA;<p>Once you've built your map, just sort the map items by descending frequency and read off however many top terms you like.  If you know in advance how many terms you want, you might prefer to do some kind of fancy heap-based algorithm to find the top <em>k</em> items in linear time instead of using an O(<em>n</em> log <em>n</em>) sort.  I imagine the plain old sort will be plenty fast in practice.  But it's up to you.</p>&#xA;&#xA;<p>If you prefer, you can combine the first two stages by having your <code>HitCollector</code> invoke <code>getTermFreqVector</code> directly.  This should certainly produce equally correct results, and intuitively seems like it would be simpler and better, but the docs seem to warn that doing so is likely to be quite a bit slower than the two-pass approach (on same page as the HitCollector example above).  Or I could be misinterpreting their warning.  If you're feeling ambitious you could try it both ways, compare, and let us know.</p>&#xA;
+Comment:
+Wont this be really slow especially if there are lots of hits?
+HTML:
+<p>Counting up the TermVectors will work, but will be slow if there are a lot of documents to iterate.  Also note if you mean docFreq by top terms, then don't use the count in the TermFreqVector just count the terms as binary.</p>&#xA;&#xA;<p>Alternatively, you could iterate the terms like facet counts.  Use a <a href="http://lucene.apache.org/java/3_4_0/api/core/org/apache/lucene/search/CachingWrapperFilter.html" rel="nofollow">cached filter</a> for every term; their <a href="http://lucene.apache.org/java/3_4_0/api/core/org/apache/lucene/search/DocIdSet.html" rel="nofollow">BitSets</a> can be used for a fast intersection count.</p>&#xA;
+Comment:
+
+Phrase:
+get the top terms within a Lucene Index 
+to get the top terms within a Lucene Index 
+know its possible to get the top terms within a Lucene Index 
+get the top terms based on a subset of a Lucene index 
+to get the top terms based on a subset of a Lucene index 
+do this 
+to do this 
+be a utility somewhere to do this 
+'d be a utility somewhere to do this 
+'m not aware of one 
+do this `` by hand '' 
+to do this `` by hand '' 
+'s not too hard to do this `` by hand '' in a reasonably efficient way 
+define the subset of interest 
+to define the subset of interest 
+use to define the subset of interest 
+can use to define the subset of interest 
+object that you can use to define the subset of interest 
+have a CODE0 and/or CODE1 object that you can use to define the subset of interest 
+assume that you already have a CODE0 and/or CODE1 object that you can use to define the subset of interest 
+'ll assume that you already have a CODE0 and/or CODE1 object that you can use to define the subset of interest 
+build a list in memory of all of the document 
+do this very quickly 
+to do this very quickly 
+use CODE0 to do this very quickly 
+can use CODE0 to do this very quickly 
+work 
+to work 
+ought to work 
+seems like it ought to work 
+includes an example that seems like it ought to work 
+store your doc IDs 
+to store your doc IDs 
+use some other container to store your doc IDs 
+can use some other container to store your doc IDs 
+Next , initialize an empty HashMap ( or whatever ) to map terms to total frequency 
+invoking one of the CODE0 methods for every document and field of interest 
+populate the map by invoking one of the CODE0 methods for every document and field of interest 
+Next , initialize an empty HashMap ( or whatever ) to map terms to total frequency , and populate the map by invoking one of the CODE0 methods for every document and field of interest 
+seems simpler 
+be just fine 
+either should be just fine 
+seems simpler , but either should be just fine 
+is in the map , associates it with CODE4 
+checks if CODE3 is in the map , associates it with CODE4 
+make a CODE1 whose CODE2 method checks if CODE3 is in the map , associates it with CODE4 if not 
+'d make a CODE1 whose CODE2 method checks if CODE3 is in the map , associates it with CODE4 if not 
+adds CODE5 to the existing value if so 
+'d make a CODE1 whose CODE2 method checks if CODE3 is in the map , associates it with CODE4 if not , or adds CODE5 to the existing value if so 
+instantiating a new one for each document in the loop 
+use the same CODE6 object across all of the calls to CODE7 in this pass , rather than instantiating a new one for each document in the loop 
+to use the same CODE6 object across all of the calls to CODE7 in this pass , rather than instantiating a new one for each document in the loop 
+Be sure to use the same CODE6 object across all of the calls to CODE7 in this pass , rather than instantiating a new one for each document in the loop 
+speed things up quite a bit by overriding CODE8 and CODE9 
+can also speed things up quite a bit by overriding CODE8 and CODE9 
+return CODE10 for both of those 
+should return CODE10 for both of those 
+define a CODE12 method 
+to define a CODE12 method 
+forced to define a CODE12 method 
+be forced to define a CODE12 method 
+might also be forced to define a CODE12 method 
+do anything 
+to do anything 
+need to do anything 
+does n't need to do anything 
+looks like your CODE11 might also be forced to define a CODE12 method , but that one does n't need to do anything 
+built your map 
+'ve built your map 
+just sort the map items by descending frequency 
+like 
+read off however many top terms you like 
+just sort the map items by descending frequency and read off however many top terms you like 
+want 
+know in advance how many terms you want 
+using an O ( n log n ) sort 
+find the top k items in linear time instead of using an O ( n log n ) sort 
+to find the top k items in linear time instead of using an O ( n log n ) sort 
+do some kind of fancy heap-based algorithm to find the top k items in linear time instead of using an O ( n log n ) sort 
+to do some kind of fancy heap-based algorithm to find the top k items in linear time instead of using an O ( n log n ) sort 
+prefer to do some kind of fancy heap-based algorithm to find the top k items in linear time instead of using an O ( n log n ) sort 
+might prefer to do some kind of fancy heap-based algorithm to find the top k items in linear time instead of using an O ( n log n ) sort 
+be plenty fast in practice 
+will be plenty fast in practice 
+imagine the plain old sort will be plenty fast in practice 
+'s up to you 
+prefer 
+invoke CODE1 directly 
+having your CODE0 invoke CODE1 directly 
+combine the first two stages by having your CODE0 invoke CODE1 directly 
+can combine the first two stages by having your CODE0 invoke CODE1 directly 
+produce equally correct results 
+should certainly produce equally correct results 
+be simpler and better 
+would be simpler and better 
+seems like it would be simpler and better 
+doing so 
+be quite a bit slower than the two-pass approach ( on same page as the HitCollector example above ) 
+to be quite a bit slower than the two-pass approach ( on same page as the HitCollector example above ) 
+is likely to be quite a bit slower than the two-pass approach ( on same page as the HitCollector example above ) 
+warn that doing so is likely to be quite a bit slower than the two-pass approach ( on same page as the HitCollector example above ) 
+to warn that doing so is likely to be quite a bit slower than the two-pass approach ( on same page as the HitCollector example above ) 
+seem to warn that doing so is likely to be quite a bit slower than the two-pass approach ( on same page as the HitCollector example above ) 
+misinterpreting their warning 
+be misinterpreting their warning 
+could be misinterpreting their warning 
+feeling ambitious 
+'re feeling ambitious 
+try it both ways 
+compare 
+know 
+let us know 
+try it both ways , compare , and let us know 
+could try it both ways , compare , and let us know 
+are lots of hits 
+be really slow especially if there are lots of hits ? 
+Wont this be really slow especially if there are lots of hits ? 
+Counting up the TermVectors 
+work 
+will work 
+iterate 
+to iterate 
+are a lot of documents to iterate 
+be slow if there are a lot of documents to iterate 
+docFreq by top terms , then 
+use the count in the TermFreqVector just count 
+do n't use the count in the TermFreqVector just count 
+mean docFreq by top terms , then do n't use the count in the TermFreqVector just count 
+note if you mean docFreq by top terms , then do n't use the count in the TermFreqVector just count 
+iterate the terms like facet counts 
+could iterate the terms like facet counts 
+Use a cached filter for every term 
+used for a fast intersection count 
+be used for a fast intersection count 
+can be used for a fast intersection count 

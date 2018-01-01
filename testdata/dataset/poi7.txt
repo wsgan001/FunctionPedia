@@ -1,0 +1,382 @@
+QUESTION:
+HTML:
+<ol>&#xA;<li><p>I have excel file with such contents: </p>&#xA;&#xA;<ul>&#xA;<li><p>A1: SomeString</p></li>&#xA;<li><p>A2: 2</p></li>&#xA;</ul>&#xA;&#xA;<p>All fields are set to String format.</p></li>&#xA;<li><p>When I read the file in java using POI, it tells that A2 is in numeric cell format.</p></li>&#xA;<li>The problem is that the value in A2 can be 2 or 2.0 (and I want to be able to distinguish them) so I can't just use .toString().</li>&#xA;</ol>&#xA;&#xA;<p>What can I do to read the value as string?</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>I had same problem. I did <code>cell.setCellType(Cell.CELL_TYPE_STRING);</code> before reading the string value, which solved the problem regardless of how the user formatted the cell.</p>&#xA;
+Comment:
+Thanks a lot that worked like a charm!
+Thanks a lot, it is very useful for me.
+It can not work on poi-3.1-FINAL
+I use poi-3.8-beta4, and its working as expected! Why don't TS accept this as the answer?
+works in 3.8 final. Thanks
+Be aware that POI numeric to String conversion doesn't take into a consideration the system locale, it always uses the dot as a decimal separator. For example, if your system uses ",", and in Excel numbers look like "1,9", POI will return "1.9" instead.
+works great, no problem
+Thanks a lot, really helpful.
+
+ANS:
+HTML:
+<p>Can you prepend an apostrophe to the strings in Excel?  They won't display on the worksheet, but force the cell format to text and can be identified and stripped/coerced during your import.</p>&#xA;
+Comment:
+I'm no the one who make this .xls files... Users pass them to my programm, and they won't bother to do that.
+HTML:
+<p>cast to an int then do a .toString(). It is ugly but it works.</p>&#xA;
+Comment:
+The problem is that if there is 2.0 in A2 I need to get string "2.0", and if 2 then string "2".
+HTML:
+<p>We had the same problem and forced our users to format the cells as 'text' <strong>before</strong> entering the value. That way Excel correctly stores even numbers as text.&#xA;If the format is changed afterwards Excel only changes the way the value is displayed but does not change the way the value is stored unless the value is entered again (e.g. by pressing return when in the cell).</p>&#xA;&#xA;<p>Whether or not Excel correctly stored the value as text is indicated by the little green triangle that Excel displays in the left upper corner of the cell if it thinks the cell contains a number but is formated as text. </p>&#xA;
+Comment:
+Have also had the problem
+HTML:
+<p>Do you control the excel worksheet in anyway? Is there a template the users have for giving you the input? If so, you can have code format the input cells for you.</p>&#xA;
+Comment:
+No. That's impossible... Thay create xls themselves...
+HTML:
+<p>I had same problem. I did <code>cell.setCellType(Cell.CELL_TYPE_STRING);</code> before reading the string value, which solved the problem regardless of how the user formatted the cell.</p>&#xA;
+Comment:
+Thanks a lot that worked like a charm!
+Thanks a lot, it is very useful for me.
+It can not work on poi-3.1-FINAL
+I use poi-3.8-beta4, and its working as expected! Why don't TS accept this as the answer?
+works in 3.8 final. Thanks
+Be aware that POI numeric to String conversion doesn't take into a consideration the system locale, it always uses the dot as a decimal separator. For example, if your system uses ",", and in Excel numbers look like "1,9", POI will return "1.9" instead.
+works great, no problem
+Thanks a lot, really helpful.
+HTML:
+<p>It looks like this can't be done in the current version of POI, based on the fact that this bug:</p>&#xA;&#xA;<p><a href="https://issues.apache.org/bugzilla/show_bug.cgi?id=46136" rel="nofollow">https://issues.apache.org/bugzilla/show_bug.cgi?id=46136</a></p>&#xA;&#xA;<p>is still outstanding.</p>&#xA;
+Comment:
+HTML:
+<p>When we read the MS Excel's numeric cell value using Apache POI library, it read it as numeric. But sometime we want it to read as string (e.g. phone numbers, etc.). This is how I did it:</p>&#xA;&#xA;<ol>&#xA;<li><p>Insert a new column with first cell =CONCATENATE("!",D2). I assume D2 is cell id of your phone-number column. Drag new cell up to end.</p></li>&#xA;<li><p>Now if you read the cell using POI, it will read the formula instead of calculated value. Now do following:</p></li>&#xA;<li><p>Add another column</p></li>&#xA;<li><p>Select complete column created in step 1. and choose Edit->COPY</p></li>&#xA;<li><p>Go to top cell of column created in step 3. and Select Edit->Paste Special</p></li>&#xA;<li><p>In the opened window, Select "Values" radio button</p></li>&#xA;<li><p>Select "OK"</p></li>&#xA;<li><p>Now read using POI API ... after reading in Java ... just remove the first character i.e. "!"</p></li>&#xA;</ol>&#xA;
+Comment:
+Your solution seems to be not usable if one doesn't produce the excel files oneself, is it? (Also, could you put an extract into your answer? It is not that long.)
+Yes, it can't be used when one isn't producing excel file oneself.
+HTML:
+<p>Try:</p>&#xA;&#xA;<pre><code>new java.text.DecimalFormat("0").format( cell.getNumericCellValue() )&#xA;</code></pre>&#xA;&#xA;<p>Should format the number correctly.</p>&#xA;
+Comment:
+As I understand, the asker wants to be able to distinguish between `2` and `2.0`. Your solution wouldn't do this.  (But still, welcome to Stack Overflow!)
+HTML:
+<p>I don't think we had this class back when you asked the question, but today there is an easy answer.</p>&#xA;&#xA;<p>What you want to do is use the <a href="http://poi.apache.org/apidocs/org/apache/poi/ss/usermodel/DataFormatter.html">DataFormatter class</a>. You pass this a cell, and it does its best to return you a string containing what Excel would show you for that cell. If you pass it a string cell, you'll get the string back. If you pass it a numeric cell with formatting rules applied, it will format the number based on them and give you the string back.</p>&#xA;&#xA;<p>For your case, I'd assume that the numeric cells have an integer formatting rule applied to them. If you ask DataFormatter to format those cells, it'll give you back a string with the integer string in it.</p>&#xA;
+Comment:
+HTML:
+<p>I also have had a similar issue on a data set of thousands of numbers and I think that I have found a simple way to solve. I needed to get the apostrophe inserted before a number so that a separate DB import always sees the numbers as text. Before this the number 8 would be imported as 8.0.</p>&#xA;&#xA;<p>Solution:</p>&#xA;&#xA;<ul>&#xA;<li>Keep all the formatting as General.</li>&#xA;<li>Here I am assuming numbers are stored in Column A starting at Row 1.    </li>&#xA;<li>Put in the ' in Column B and copy down as many rows as needed. Nothing appears in the worksheet but clicking on the cell you can see the apostophe in the Formula bar.    </li>&#xA;<li>In Column C: =B1&amp;A1.    </li>&#xA;<li>Select all the Cells in Column C and do a Paste Special into Column D using the Values option.</li>&#xA;</ul>&#xA;&#xA;<p>Hey Presto all the numbers but stored as Text.</p>&#xA;
+Comment:
+HTML:
+<p>As long as the cell is in text format before the user types in the number, POI will allow you to obtain the value as a string. One key is that if there is a small green triangle in the upper left-hand corner of cell that is formatted as Text, you will be able to retrieve its value as a string (the green triangle appears whenever something that appears to be a number is coerced into a text format). If you have Text formatted cells that contain numbers, but POI will not let you fetch those values as strings, there are a few things you can do to the Spreadsheet data to allow that: </p>&#xA;&#xA;<ul>&#xA;<li>Double click on the cell so that the editing cursor is present inside the cell, then click on Enter (which can be done only one cell at a time).</li>&#xA;<li>Use the Excel 2007 text conversion function (which can be done on multiple cells at once).</li>&#xA;<li>Cut out the offending values to another location, reformat the spreadsheet cells as text, then repaste the previously cut out values as <em>Unformatted Values</em> back into the proper area.</li>&#xA;</ul>&#xA;&#xA;<p>One final thing that you can do is that if you are using POI to obtain data from an Excel 2007 spreadsheet, you can the Cell class 'getRawValue()' method. This does not care what the format is. It will simply return a string with the raw data.</p>&#xA;
+Comment:
+
+Phrase:
+file with such contents : A1 : SomeString A2 
+excel file with such contents : A1 : SomeString A2 
+have excel file with such contents : A1 : SomeString A2 
+set to String format 
+are set to String format 
+using POI 
+read the file in java using POI 
+is in numeric cell format 
+tells that A2 is in numeric cell format 
+be 2 or 2.0 
+can be 2 or 2.0 
+is that the value in A2 can be 2 or 2.0 
+distinguish them 
+to distinguish them 
+be able to distinguish them 
+to be able to distinguish them 
+want to be able to distinguish them 
+use . toString ( ) 
+ca n't just use . toString ( ) 
+read the value as string 
+to read the value as string 
+do to read the value as string 
+had same problem 
+formatted the cell 
+solved the problem regardless of how the user formatted the cell 
+reading the string value , which solved the problem regardless of how the user formatted the cell 
+did CODE0 before reading the string value , which solved the problem regardless of how the user formatted the cell 
+worked like a charm 
+is very useful for me 
+work on poi-3 .1 - FINAL 
+can not work on poi-3 .1 - FINAL 
+use poi-3 .8 - beta4 , and its working as expected 
+accept this as the answer 
+uses the dot as a decimal separator 
+take into a consideration the system locale , it always uses the dot as a decimal separator 
+does n't take into a consideration the system locale , it always uses the dot as a decimal separator 
+Be aware that POI numeric to String conversion does n't take into a consideration the system locale , it always uses the dot as a decimal separator 
+uses '' 
+look like `` 1,9 '' 
+return `` 1.9 '' instead 
+will return `` 1.9 '' instead 
+works 
+prepend an apostrophe to the strings in Excel 
+Can you prepend an apostrophe to the strings in Excel 
+display on the worksheet 
+force the cell format to text 
+display on the worksheet , but force the cell format to text 
+wo n't display on the worksheet , but force the cell format to text 
+identified and stripped/coerced during your import 
+be identified and stripped/coerced during your import 
+can be identified and stripped/coerced during your import 
+wo n't display on the worksheet , but force the cell format to text and can be identified and stripped/coerced during your import 
+xls 
+files 
+make this . xls files 
+'m no the one who make this . xls files . 
+pass them to my programm 
+do that 
+to do that 
+bother to do that 
+wo n't bother to do that 
+do a . toString ( 
+is ugly 
+works 
+2.0 in A2 
+is 2.0 in A2 
+get string `` 2.0 '' 
+then string `` 2 '' 
+get string `` 2.0 '' , and if 2 then string `` 2 '' 
+to get string `` 2.0 '' , and if 2 then string `` 2 '' 
+need to get string `` 2.0 '' , and if 2 then string `` 2 '' 
+is that if there is 2.0 in A2 I need to get string `` 2.0 '' , and if 2 then string `` 2 '' 
+had the same problem 
+forced our users to format 
+entering the value 
+had the same problem and forced our users to format the cells as ` text ' before entering the value 
+changed afterwards 
+is changed afterwards 
+displayed 
+is displayed 
+only changes the way the value is displayed 
+change the way the value 
+does not change the way the value 
+only changes the way the value is displayed but does not change the way the value 
+entered again 
+is entered again 
+stored unless the value is entered again 
+is stored unless the value is entered again 
+pressing return when in the cell ) 
+contains a number 
+formated as text 
+is formated as text 
+contains a number but is formated as text 
+thinks the cell contains a number but is formated as text 
+displays in the left upper corner of the cell if it thinks the cell contains a number but is formated as text 
+indicated by the little green triangle that Excel displays in the left upper corner of the cell if it thinks the cell contains a number but is formated as text 
+is indicated by the little green triangle that Excel displays in the left upper corner of the cell if it thinks the cell contains a number but is formated as text 
+stored the value as text is indicated by the little green triangle that Excel displays in the left upper corner of the cell if it thinks the cell contains a number but is formated as text 
+had the problem 
+Have also had the problem 
+control the excel worksheet in anyway 
+Do you control the excel worksheet in anyway 
+Is there 
+have 
+giving you the input 
+have code format the input cells for you 
+can have code format the input cells for you 
+'s impossible 
+create xls 
+had same problem 
+formatted the cell 
+solved the problem regardless of how the user formatted the cell 
+reading the string value , which solved the problem regardless of how the user formatted the cell 
+did CODE0 before reading the string value , which solved the problem regardless of how the user formatted the cell 
+worked like a charm 
+is very useful for me 
+work on poi-3 .1 - FINAL 
+can not work on poi-3 .1 - FINAL 
+use poi-3 .8 - beta4 , and its working as expected 
+accept this as the answer 
+uses the dot as a decimal separator 
+take into a consideration the system locale , it always uses the dot as a decimal separator 
+does n't take into a consideration the system locale , it always uses the dot as a decimal separator 
+Be aware that POI numeric to String conversion does n't take into a consideration the system locale , it always uses the dot as a decimal separator 
+uses '' 
+look like `` 1,9 '' 
+return `` 1.9 '' instead 
+will return `` 1.9 '' instead 
+works 
+done in the current version of POI , based on the fact that this bug 
+be done in the current version of POI , based on the fact that this bug 
+ca n't be done in the current version of POI , based on the fact that this bug 
+looks like this ca n't be done in the current version of POI , based on the fact that this bug 
+is still outstanding 
+using Apache POI library 
+read the MS Excel 's numeric cell value using Apache POI library 
+read it as numeric 
+as string ( e.g 
+read as string ( e.g 
+to read as string ( e.g 
+want it to read as string ( e.g 
+did it 
+is how I did it 
+Insert a new column with first cell = CONCATENATE ( '' ! '' , D2 ) 
+is cell id of your phone-number column 
+assume D2 is cell id of your phone-number column 
+Drag new cell up to end 
+using POI 
+read the cell using POI 
+read the formula instead of calculated value 
+will read the formula instead of calculated value 
+do 
+Add another column 
+created in step 1 
+created in step 3 
+Go to top cell of column created in step 3 
+radio button 
+using POI API 
+read using POI API 
+reading in Java 
+remove the first character i.e 
+produce the excel files oneself 
+does n't produce the excel files oneself 
+be not usable if one does n't produce the excel files oneself 
+to be not usable if one does n't produce the excel files oneself 
+seems to be not usable if one does n't produce the excel files oneself 
+is 
+put an extract into 
+could you put an extract into 
+( Also , could you put an extract into your answer 
+is not that long 
+file oneself 
+producing excel file oneself 
+is n't producing excel file oneself 
+used when one is n't producing excel file oneself 
+be used when one is n't producing excel file oneself 
+ca n't be used when one is n't producing excel file oneself 
+format the number correctly 
+Should format the number correctly 
+distinguish between ` 2 ` and ` 2.0 
+to distinguish between ` 2 ` and ` 2.0 
+be able to distinguish between ` 2 ` and ` 2.0 
+to be able to distinguish between ` 2 ` and ` 2.0 
+wants to be able to distinguish between ` 2 ` and ` 2.0 
+understand , the asker wants to be able to distinguish between ` 2 ` and ` 2.0 ` 
+do this 
+would n't do this 
+asked the question 
+had this class back when you asked the question 
+think we had this class back when you asked the question 
+do n't think we had this class back when you asked the question 
+is an easy answer 
+use the DataFormatter class 
+is use the DataFormatter class 
+do is use the DataFormatter class 
+to do is use the DataFormatter class 
+want to do is use the DataFormatter class 
+pass this a cell 
+show you for that cell 
+would show you for that cell 
+containing what Excel would show you for that cell 
+return you a string containing what Excel would show you for that cell 
+to return you a string containing what Excel would show you for that cell 
+does its best to return you a string containing what Excel would show you for that cell 
+pass it a string cell 
+get the string back 
+'ll get the string back 
+applied 
+pass it a numeric cell with formatting rules applied 
+format the number based on them 
+give you the string back 
+format the number based on them and give you the string back 
+will format the number based on them and give you the string back 
+applied to them 
+have an integer formatting rule applied to them 
+assume that the numeric cells have an integer formatting rule applied to them 
+'d assume that the numeric cells have an integer formatting rule applied to them 
+format those cells 
+to format those cells 
+ask DataFormatter to format those cells 
+give you back a string with the integer string in it 
+'ll give you back a string with the integer string in it 
+set of thousands of numbers 
+had a similar issue on a data set of thousands of numbers 
+have had a similar issue on a data set of thousands of numbers 
+solve 
+to solve 
+found a simple way to solve 
+have found a simple way to solve 
+think that I have found a simple way to solve 
+sees the numbers as text 
+inserted before a number so that a separate DB import always sees the numbers as text 
+get the apostrophe inserted before a number so that a separate DB import always sees the numbers as text 
+to get the apostrophe inserted before a number so that a separate DB import always sees the numbers as text 
+needed to get the apostrophe inserted before a number so that a separate DB import always sees the numbers as text 
+imported as 8.0 
+be imported as 8.0 
+would be imported as 8.0 
+Keep all the formatting as General 
+assuming numbers 
+am assuming numbers 
+stored in Column A starting at Row 1 
+are stored in Column A starting at Row 1 
+Put in the ' in Column B 
+copy down as many rows as needed 
+Put in the ' in Column B and copy down as many rows as needed 
+appears in the worksheet 
+see the apostophe in the Formula bar 
+can see the apostophe in the Formula bar 
+clicking on the cell you can see the apostophe in the Formula bar 
+Select all the Cells in Column C 
+using the Values option 
+do a Paste Special into Column D using the Values option 
+Select all the Cells in Column C and do a Paste Special into Column D using the Values option 
+stored as Text 
+but stored as Text 
+is in text format before the user types in the number 
+obtain the value as a string 
+to obtain the value as a string 
+allow you to obtain the value as a string 
+will allow you to obtain the value as a string 
+formatted as Text 
+is formatted as Text 
+is a small green triangle in the upper left-hand corner of cell that is formatted as Text 
+be a number 
+to be a number 
+appears to be a number 
+coerced into a text format 
+is coerced into a text format 
+appears whenever something that appears to be a number is coerced into a text format 
+retrieve its value as a string ( the green triangle appears whenever something that appears to be a number is coerced into a text format ) 
+to retrieve its value as a string ( the green triangle appears whenever something that appears to be a number is coerced into a text format ) 
+be able to retrieve its value as a string ( the green triangle appears whenever something that appears to be a number is coerced into a text format ) 
+will be able to retrieve its value as a string ( the green triangle appears whenever something that appears to be a number is coerced into a text format ) 
+is that if there is a small green triangle in the upper left-hand corner of cell that is formatted as Text , you will be able to retrieve its value as a string ( the green triangle appears whenever something that appears to be a number is coerced into a text format ) 
+contain numbers 
+Text formatted cells that contain numbers 
+have Text formatted cells that contain numbers 
+fetch those values as strings 
+let you fetch those values as strings 
+will not let you fetch those values as strings 
+allow that 
+to allow that 
+do to the Spreadsheet data to allow that 
+can do to the Spreadsheet data to allow that 
+are a few things you can do to the Spreadsheet data to allow that 
+is present inside the cell 
+done only one cell at a time 
+be done only one cell at a time 
+can be done only one cell at a time 
+click on Enter ( which can be done only one cell at a time ) 
+click on the cell so that the editing cursor is present inside the cell , then click on Enter ( which can be done only one cell at a time ) 
+done on multiple cells at once 
+be done on multiple cells at once 
+can be done on multiple cells at once 
+Use the Excel 2007 text conversion function ( which can be done on multiple cells at once ) 
+reformat the spreadsheet cells as text 
+cut out values as Unformatted Values back into the proper area 
+repaste the previously cut out values as Unformatted Values back into the proper area 
+do 
+can do 
+obtain data from an Excel 2007 spreadsheet 
+to obtain data from an Excel 2007 spreadsheet 
+using POI to obtain data from an Excel 2007 spreadsheet 
+are using POI to obtain data from an Excel 2007 spreadsheet 
+the Cell class ` getRawValue ( ) ' method 
+can the Cell class ` getRawValue ( ) ' method 
+is that if you are using POI to obtain data from an Excel 2007 spreadsheet , you can the Cell class ` getRawValue ( ) ' method 
+is 
+care what the format is 
+does not care what the format is 
+return a string with the raw data 
+will simply return a string with the raw data 

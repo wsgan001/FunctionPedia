@@ -1,0 +1,59 @@
+QUESTION:
+HTML:
+<p>Using POI version 3.2</p>&#xA;&#xA;<p>Issue: Not able to resize an image to its original height and width.&#xA;I am able to add an image to the excel file.</p>&#xA;&#xA;<p>After adding image I call picture.resize(); method.</p>&#xA;&#xA;<p>Later I resize the columns of the excel file by calling &#xA;sheet.setColumnWidth(columnindex, columnwidth)&#xA;the image losses its original height/width.</p>&#xA;&#xA;<p>Please help.</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+
+ANS:
+HTML:
+<p>Shouldn't you just hold onto the picture object and call resize() very last, after your setcolumnwidth()s are done?</p>&#xA;
+Comment:
+HTML:
+<p>I found that you must NOT call <code>picture.resize()</code> until after <code>sheet.autoSizeColumn(i)</code> even if you are not calling <code>autoSizeColumn(i)</code> on the column to which the picture is anchored.</p>&#xA;
+Comment:
+HTML:
+<p>On a HSSFWorkbook with a custom font I did the following to get a logo to be displayed in the right dimensions:</p>&#xA;&#xA;<pre><code>CreationHelper helper = wb.getCreationHelper();&#xA;Drawing drawing = sheet.createDrawingPatriarch();&#xA;ClientAnchor anchor = helper.createClientAnchor();&#xA;anchor.setDx1(LOGO_MARGIN * XSSFShape.EMU_PER_PIXEL);&#xA;anchor.setDx2(LOGO_WIDTH_IN_FUNNY_POI_FORMAT * XSSFShape.EMU_PER_PIXEL);&#xA;anchor.setDy1(LOGO_MARGIN * XSSFShape.EMU_PER_PIXEL);&#xA;anchor.setDy2(LOGO_HEIGHT_IN_FUNNY_POI_FORMAT * XSSFShape.EMU_PER_PIXEL);&#xA;drawing.createPicture(anchor, pictureIndex);&#xA;</code></pre>&#xA;&#xA;<p>Where I set LOGO_HEIGHT... and LOGO_WIDTH.. to the wanted pixel size of the image.</p>&#xA;&#xA;<p>The resulting image was not at its original ratio and not the expected pixel size. &#xA;So I used the expected size / current size ratio and adjusted LOGO_WIDTH.. and LOGO_HEIGHT.. accordingly. Not beautiful, but it works :/</p>&#xA;&#xA;<p>And don't call <code>Picture.resize()</code> afterwards.</p>&#xA;&#xA;<p>See <a href="https://issues.apache.org/bugzilla/show_bug.cgi?id=52504" rel="nofollow">Apache POIU Bug 52504</a> or <a href="http://apache-poi.1045710.n5.nabble.com/Bug-of-HSSFPicture-resize-td2300077.html" rel="nofollow">this newsgroup discussion about poi <code>Picture.resize()</code></a> and <a href="http://poi.apache.org/spreadsheet/quick-guide.html#Images" rel="nofollow">POI quick guide for inserting pictures</a>.</p>&#xA;
+Comment:
+
+Phrase:
+Using POI version 3.2 
+resize an image to its original height and width 
+to resize an image to its original height and width 
+add an image to the excel file 
+to add an image to the excel file 
+am able to add an image to the excel file 
+adding image 
+call picture.resize ( ) ; method 
+calling sheet.setColumnWidth ( columnindex , columnwidth ) the image losses its original height/width 
+resize the columns of the excel file by calling sheet.setColumnWidth ( columnindex , columnwidth ) the image losses its original height/width 
+help 
+hold onto the picture object 
+) very last , after your setcolumnwidth ( 
+done 
+are done 
+call resize ( ) very last , after your setcolumnwidth ( ) s are done 
+hold onto the picture object and call resize ( ) very last , after your setcolumnwidth ( ) s are done 
+anchored 
+is anchored 
+calling CODE2 on the column to which the picture is anchored 
+are not calling CODE2 on the column to which the picture is anchored 
+call CODE0 until after CODE1 even if you are not calling CODE2 on the column to which the picture is anchored 
+must NOT call CODE0 until after CODE1 even if you are not calling CODE2 on the column to which the picture is anchored 
+found that you must NOT call CODE0 until after CODE1 even if you are not calling CODE2 on the column to which the picture is anchored 
+displayed in the right dimensions : 
+be displayed in the right dimensions : 
+to be displayed in the right dimensions : 
+get a logo to be displayed in the right dimensions : 
+to get a logo to be displayed in the right dimensions : 
+did the following to get a logo to be displayed in the right dimensions : 
+set LOGO_HEIGHT 
+LOGO_WIDTH 
+to the wanted pixel size of the image 
+was not at its original ratio and not the expected pixel size 
+used the expected size / current size ratio and adjusted LOGO_WIDTH 
+LOGO_HEIGHT 
+call CODE0 afterwards 
+do n't call CODE0 afterwards 
+inserting pictures 
+POIU Bug 52504 or this newsgroup discussion about poi CODE0 and POI quick guide for inserting pictures 

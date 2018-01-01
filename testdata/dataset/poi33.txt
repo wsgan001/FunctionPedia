@@ -1,0 +1,71 @@
+QUESTION:
+HTML:
+<p>I'm able to get cells to format as Dates, but I've been unable to get cells to format as currency... Anyone have an example of how to create a style to get this to work?  My code below show the styles I'm creating... the styleDateFormat works like a champ while styleCurrencyFormat has no affect on the cell.</p>&#xA;&#xA;<pre><code>private HSSFWorkbook wb;&#xA;private HSSFCellStyle styleDateFormat = null;&#xA;private HSSFCellStyle styleCurrencyFormat = null;&#xA;</code></pre>&#xA;&#xA;<p>......</p>&#xA;&#xA;<pre><code>public CouponicsReportBean(){&#xA;	wb = new HSSFWorkbook();&#xA;	InitializeFonts();&#xA;&#xA;}&#xA;&#xA;public void InitializeFonts()&#xA;{&#xA;	styleDateFormat = wb.createCellStyle();&#xA;	styleDateFormat.setDataFormat(HSSFDataFormat.getBuiltinFormat("m/d/yy"));&#xA;&#xA;&#xA;    styleCurrencyFormat = wb.createCellStyle();&#xA;    styleCurrencyFormat.setDataFormat(HSSFDataFormat.getBuiltinFormat("$#,##0.00"));&#xA;&#xA;}&#xA;</code></pre>&#xA;
+Comment:
+It'll be cool if you can accept your own answer sometime. ;)
+
+ACCEPTED ANS:
+HTML:
+<p>After digging through the documentation a bit more, I found the answer:</p>&#xA;&#xA;<p><a href="http://poi.apache.org/apidocs/org/apache/poi/hssf/usermodel/HSSFDataFormat.html">http://poi.apache.org/apidocs/org/apache/poi/hssf/usermodel/HSSFDataFormat.html</a></p>&#xA;&#xA;<p>Just need to find an appropriate pre-set format and supply the code.</p>&#xA;&#xA;<pre><code>	styleCurrencyFormat.setDataFormat((short)8); //8 = "($#,##0.00_);[Red]($#,##0.00)"&#xA;</code></pre>&#xA;&#xA;<p>Here are more examples:&#xA;<a href="http://www.roseindia.net/java/poi/setDataFormat.shtml">http://www.roseindia.net/java/poi/setDataFormat.shtml</a></p>&#xA;
+Comment:
+Thanks for posting this!
+
+ANS:
+HTML:
+<p>After digging through the documentation a bit more, I found the answer:</p>&#xA;&#xA;<p><a href="http://poi.apache.org/apidocs/org/apache/poi/hssf/usermodel/HSSFDataFormat.html">http://poi.apache.org/apidocs/org/apache/poi/hssf/usermodel/HSSFDataFormat.html</a></p>&#xA;&#xA;<p>Just need to find an appropriate pre-set format and supply the code.</p>&#xA;&#xA;<pre><code>	styleCurrencyFormat.setDataFormat((short)8); //8 = "($#,##0.00_);[Red]($#,##0.00)"&#xA;</code></pre>&#xA;&#xA;<p>Here are more examples:&#xA;<a href="http://www.roseindia.net/java/poi/setDataFormat.shtml">http://www.roseindia.net/java/poi/setDataFormat.shtml</a></p>&#xA;
+Comment:
+Thanks for posting this!
+HTML:
+<p>Just an update to above reply. short '8' doesn't work for me but the '7' does.</p>&#xA;&#xA;<pre><code>cell.setCellValue(416.17);      &#xA;cellStyle.setDataFormat((short)7);&#xA;cell.setCellStyle(cellStyle);&#xA;</code></pre>&#xA;&#xA;<p>O/P is $416.00</p>&#xA;
+Comment:
+You are correct.&#xA;7 = $xxx.xx&#xA;6 = $xxx
+
+Phrase:
+get cells to format as Dates 
+to get cells to format as Dates 
+'m able to get cells to format as Dates 
+get cells to format 
+to get cells to format 
+been unable to get cells to format as currency 
+'ve been unable to get cells to format as currency 
+work 
+to work 
+get this to work 
+to get this to work 
+create a style to get this to work 
+to create a style to get this to work 
+have an example of how to create a style to get this to work 
+creating 
+'m creating 
+show the styles I 'm creating . 
+has no affect on the cell 
+works like a champ while styleCurrencyFormat has no affect on the cell 
+accept your own answer sometime 
+can accept your own answer sometime 
+be cool if you can accept your own answer sometime 
+'ll be cool if you can accept your own answer sometime 
+found the answer 
+find an appropriate pre-set format 
+to find an appropriate pre-set format 
+need to find an appropriate pre-set format 
+supply the code 
+need to find an appropriate pre-set format and supply the code 
+are more examples : http://www.roseindia.net/java/poi/setDataFormat.shtml 
+posting this 
+found the answer 
+find an appropriate pre-set format 
+to find an appropriate pre-set format 
+need to find an appropriate pre-set format 
+supply the code 
+need to find an appropriate pre-set format and supply the code 
+are more examples : http://www.roseindia.net/java/poi/setDataFormat.shtml 
+posting this 
+above reply 
+to above reply 
+work for me but the ' 7 ' 
+' does n't work for me but the ' 7 ' 
+does 
+is $ 416.00 
+= $ xxx.xx 
+= $ xxx 
+are correct . & #xA ; 7 = $ xxx.xx & #xA ; 6 = $ xxx 

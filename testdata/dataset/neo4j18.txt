@@ -1,0 +1,98 @@
+QUESTION:
+HTML:
+<p>I have been reading through the <a href="http://neo4j.org/doc/" rel="nofollow">documentation</a> for <a href="http://neo4j.org/" rel="nofollow">neo4j</a> and it's <a href="http://components.neo4j.org/" rel="nofollow">components</a> and have yet to come across functionality that lets me query the total number of primitives (nodes, relationships, and properties) in the graph. Does this functionality exist somewhere or am I going to have to write code that traverses the entire graph counting as it goes?</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>Thanks for the question! I'm on the Neo4j team, and we currently have commercial tools which report this kind of information. However, an extension of the API is scheduled for the next open source version. For the time being you can use the following non-official API:</p>&#xA;&#xA;<pre><code>EmbeddedNeo.getConfig().getNeoModule().getNodeManager().getNumberOfIdsInUse(Class)&#xA;</code></pre>&#xA;&#xA;<p>where the class would be <code>Node.class</code>, <code>Relationship.class</code> or <code>PropertyStore.class</code>.</p>&#xA;
+Comment:
+Thanks, was very helpful, but shouldn't getNodeModule() be getNeoModule()
+Oops, thanks for pointing that out! I updated the code sample.
+This is now documented in the Neo4j FAQ: http://wiki.neo4j.org/content/FAQ#How_can_I_get_the_total_number_of_nodes_and_relationships_currently_in_Neo4j.3F
+...which has just been updated, because this API tells you the number of IDs allocated, which is not necessarily the same as the number of primitives in use (because IDs need not be contiguous)
+
+ANS:
+HTML:
+<p>Thanks for the question! I'm on the Neo4j team, and we currently have commercial tools which report this kind of information. However, an extension of the API is scheduled for the next open source version. For the time being you can use the following non-official API:</p>&#xA;&#xA;<pre><code>EmbeddedNeo.getConfig().getNeoModule().getNodeManager().getNumberOfIdsInUse(Class)&#xA;</code></pre>&#xA;&#xA;<p>where the class would be <code>Node.class</code>, <code>Relationship.class</code> or <code>PropertyStore.class</code>.</p>&#xA;
+Comment:
+Thanks, was very helpful, but shouldn't getNodeModule() be getNeoModule()
+Oops, thanks for pointing that out! I updated the code sample.
+This is now documented in the Neo4j FAQ: http://wiki.neo4j.org/content/FAQ#How_can_I_get_the_total_number_of_nodes_and_relationships_currently_in_Neo4j.3F
+...which has just been updated, because this API tells you the number of IDs allocated, which is not necessarily the same as the number of primitives in use (because IDs need not be contiguous)
+HTML:
+<p>This worked for me:</p>&#xA;&#xA;<pre><code>import org.neo4j.kernel.impl.nioneo.store.PropertyStore&#xA;&#xA;graph.getConfig().getGraphDbModule().getNodeManager().getNumberOfIdsInUse(Node.class);&#xA;graph.getConfig().getGraphDbModule().getNodeManager().getNumberOfIdsInUse(Relationship.class);&#xA;graph.getConfig().getGraphDbModule().getNodeManager().getNumberOfIdsInUse(PropertyStore.class)&#xA;</code></pre>&#xA;
+Comment:
+
+Phrase:
+reading through the documentation for neo4j and it 's components 
+been reading through the documentation for neo4j and it 's components 
+query the total number of primitives ( nodes , relationships , and properties ) in the graph 
+lets me query the total number of primitives ( nodes , relationships , and properties ) in the graph 
+come across functionality that lets me query the total number of primitives ( nodes , relationships , and properties ) in the graph 
+to come across functionality that lets me query the total number of primitives ( nodes , relationships , and properties ) in the graph 
+have yet to come across functionality that lets me query the total number of primitives ( nodes , relationships , and properties ) in the graph 
+been reading through the documentation for neo4j and it 's components and have yet to come across functionality that lets me query the total number of primitives ( nodes , relationships , and properties ) in the graph 
+have been reading through the documentation for neo4j and it 's components and have yet to come across functionality that lets me query the total number of primitives ( nodes , relationships , and properties ) in the graph 
+goes 
+counting as it goes 
+traverses the entire graph counting as it goes 
+write code that traverses the entire graph counting as it goes 
+to write code that traverses the entire graph counting as it goes 
+have to write code that traverses the entire graph counting as it goes 
+to have to write code that traverses the entire graph counting as it goes 
+going to have to write code that traverses the entire graph counting as it goes 
+exist somewhere or am I going to have to write code that traverses the entire graph counting as it goes 
+'m on the Neo4j team 
+report this kind of information 
+have commercial tools which report this kind of information 
+scheduled for the next open source version 
+is scheduled for the next open source version 
+use the following non-official API 
+can use the following non-official API 
+be CODE0 , CODE1 or CODE2 
+would be CODE0 , CODE1 or CODE2 
+was very helpful 
+be getNeoModule ( 
+) be getNeoModule ( 
+getNodeModule ( ) be getNeoModule ( ) 
+should n't getNodeModule ( ) be getNeoModule ( ) 
+was very helpful , but should n't getNodeModule ( ) be getNeoModule ( ) 
+pointing that out 
+updated the code sample 
+documented in the Neo4j FAQ : http://wiki.neo4j.org/content/FAQ#How_can_I_get_the_total_number_of_nodes_and_relationships_currently_in_Neo4j.3F 
+is now documented in the Neo4j FAQ : http://wiki.neo4j.org/content/FAQ#How_can_I_get_the_total_number_of_nodes_and_relationships_currently_in_Neo4j.3F 
+allocated 
+tells you the number of IDs allocated 
+been updated , because this API tells you the number of IDs allocated 
+has just been updated , because this API tells you the number of IDs allocated 
+be contiguous 
+need not be contiguous 
+is not necessarily the same as the number of primitives in use ( because IDs need not be contiguous ) 
+'m on the Neo4j team 
+report this kind of information 
+have commercial tools which report this kind of information 
+scheduled for the next open source version 
+is scheduled for the next open source version 
+use the following non-official API 
+can use the following non-official API 
+be CODE0 , CODE1 or CODE2 
+would be CODE0 , CODE1 or CODE2 
+was very helpful 
+be getNeoModule ( 
+) be getNeoModule ( 
+getNodeModule ( ) be getNeoModule ( ) 
+should n't getNodeModule ( ) be getNeoModule ( ) 
+was very helpful , but should n't getNodeModule ( ) be getNeoModule ( ) 
+pointing that out 
+updated the code sample 
+documented in the Neo4j FAQ : http://wiki.neo4j.org/content/FAQ#How_can_I_get_the_total_number_of_nodes_and_relationships_currently_in_Neo4j.3F 
+is now documented in the Neo4j FAQ : http://wiki.neo4j.org/content/FAQ#How_can_I_get_the_total_number_of_nodes_and_relationships_currently_in_Neo4j.3F 
+allocated 
+tells you the number of IDs allocated 
+been updated , because this API tells you the number of IDs allocated 
+has just been updated , because this API tells you the number of IDs allocated 
+be contiguous 
+need not be contiguous 
+is not necessarily the same as the number of primitives in use ( because IDs need not be contiguous ) 
+worked for me 

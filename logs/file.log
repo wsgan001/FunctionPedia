@@ -1,0 +1,284 @@
+[Dragon]INFO  2017-08-29 10:14:09,797 - annotated corpus loaded from: D:/APITasks/thesis/corpus/training\annotatedCorpusMap.dat
+[Dragon]INFO  2017-08-29 10:14:09,813 - finished preparing data
+[Dragon]INFO  2017-08-29 10:14:10,864 - written train & test data for training: [stanford-nlp]
+[Dragon]INFO  2017-08-29 10:14:11,382 - written train & test data for training: [weka]
+[Dragon]INFO  2017-08-29 10:14:11,887 - written train & test data for training: [lucene]
+[Dragon]INFO  2017-08-29 10:14:12,685 - written train & test data for training: [javafx]
+[Dragon]INFO  2017-08-29 10:14:13,657 - written train & test data for training: [Leave-One-Out][stanford-nlp]
+[Dragon]INFO  2017-08-29 10:14:14,515 - written train & test data for training: [Leave-One-Out][weka]
+[Dragon]INFO  2017-08-29 10:14:15,427 - written train & test data for training: [Leave-One-Out][lucene]
+[Dragon]INFO  2017-08-29 10:14:16,376 - written train & test data for training: [Leave-One-Out][javafx]
+[Dragon]INFO  2017-08-29 10:14:17,071 - written train & test data for training: [K-Fold]1
+[Dragon]INFO  2017-08-29 10:14:17,987 - written train & test data for training: [K-Fold]2
+[Dragon]INFO  2017-08-29 10:14:19,762 - written train & test data for training: [K-Fold]3
+[Dragon]INFO  2017-08-29 10:14:20,546 - written train & test data for training: [K-Fold]4
+[Dragon]INFO  2017-08-29 10:14:21,186 - written train & test data for training: [K-Fold]5
+[Dragon]INFO  2017-08-29 10:14:22,135 - written train & test data for training: [K-Fold]6
+[Dragon]INFO  2017-08-29 10:14:22,967 - written train & test data for training: [K-Fold]7
+[Dragon]INFO  2017-08-29 10:14:23,772 - written train & test data for training: [K-Fold]8
+[Dragon]INFO  2017-08-29 10:14:24,580 - written train & test data for training: [K-Fold]9
+[Dragon]INFO  2017-08-29 10:14:25,504 - written train & test data for training: [K-Fold]10
+[Dragon]INFO  2017-08-29 10:14:26,899 - written train & test data for training: [full]
+[Dragon]INFO  2017-08-29 10:14:27,119 - written training set list to file...
+[Dragon]INFO  2017-08-29 10:14:27,404 - loaded training sets from file.
+[Dragon]INFO  2017-08-29 10:14:27,406 - Training: [stanford-nlp]
+[Dragon]INFO  2017-08-29 10:14:27,413 - start training: [Logistic] training data set: [stanford-nlp] feature selector: ShortSelector
+[Dragon]INFO  2017-08-29 10:14:27,413 - read training data from file: D:/APITasks/thesis/scorer/training\[stanford-nlp]\training[stanford-nlp][nominal][range-2][ShortSelector].dat
+[Dragon]INFO  2017-08-29 10:14:27,452 - training with cross validation... 799 instances... [Logistic]
+[Dragon]INFO  2017-08-29 10:14:28,449 - 0.48685858
+[Dragon]INFO  2017-08-29 10:14:28,449 - 0.2554972
+[Dragon]INFO  2017-08-29 10:14:28,449 - 0.33575165
+[Dragon]INFO  2017-08-29 10:14:28,476 - finished training, output to: D:/APITasks/thesis/scorer/training\[stanford-nlp]\[Logistic]\
+[Dragon]INFO  2017-08-29 10:14:28,476 - start training: [Logistic] training data set: [stanford-nlp] feature selector: MediumSelector
+[Dragon]INFO  2017-08-29 10:14:28,476 - read training data from file: D:/APITasks/thesis/scorer/training\[stanford-nlp]\training[stanford-nlp][nominal][range-2][MediumSelector].dat
+[Dragon]INFO  2017-08-29 10:14:28,502 - training with cross validation... 799 instances... [Logistic]
+[Dragon]INFO  2017-08-29 10:14:28,971 - 0.4893617
+[Dragon]INFO  2017-08-29 10:14:28,971 - 0.2481233
+[Dragon]INFO  2017-08-29 10:14:28,971 - 0.3343761
+[Dragon]INFO  2017-08-29 10:14:28,988 - finished training, output to: D:/APITasks/thesis/scorer/training\[stanford-nlp]\[Logistic]\
+[Dragon]INFO  2017-08-29 10:14:28,988 - start training: [Logistic] training data set: [stanford-nlp] feature selector: LongSelector
+[Dragon]INFO  2017-08-29 10:14:28,988 - read training data from file: D:/APITasks/thesis/scorer/training\[stanford-nlp]\training[stanford-nlp][nominal][range-2][LongSelector].dat
+[Dragon]INFO  2017-08-29 10:14:29,012 - training with cross validation... 799 instances... [Logistic]
+[Dragon]INFO  2017-08-29 10:14:29,900 - 0.5093867
+[Dragon]INFO  2017-08-29 10:14:29,900 - 0.23390739
+[Dragon]INFO  2017-08-29 10:14:29,900 - 0.33105493
+[Dragon]INFO  2017-08-29 10:14:29,923 - finished training, output to: D:/APITasks/thesis/scorer/training\[stanford-nlp]\[Logistic]\
+[Dragon]INFO  2017-08-29 10:14:29,923 - start training: [Logistic] training data set: [stanford-nlp] feature selector: TFBaselineSelector
+[Dragon]INFO  2017-08-29 10:14:29,923 - read training data from file: D:/APITasks/thesis/scorer/training\[stanford-nlp]\training[stanford-nlp][nominal][range-2][TFBaselineSelector].dat
+[Dragon]INFO  2017-08-29 10:14:29,925 - training with cross validation... 799 instances... [Logistic]
+[Dragon]INFO  2017-08-29 10:14:30,022 - 0.30413017
+[Dragon]INFO  2017-08-29 10:14:30,022 - 0.33601823
+[Dragon]INFO  2017-08-29 10:14:30,022 - 0.34875172
+[Dragon]INFO  2017-08-29 10:14:30,033 - finished training, output to: D:/APITasks/thesis/scorer/training\[stanford-nlp]\[Logistic]\
+[Dragon]INFO  2017-08-29 10:14:30,033 - Training: [weka]
+[Dragon]INFO  2017-08-29 10:14:30,033 - start training: [Logistic] training data set: [weka] feature selector: ShortSelector
+[Dragon]INFO  2017-08-29 10:14:30,033 - read training data from file: D:/APITasks/thesis/scorer/training\[weka]\training[weka][nominal][range-2][ShortSelector].dat
+[Dragon]INFO  2017-08-29 10:14:30,038 - training with cross validation... 475 instances... [Logistic]
+[Dragon]INFO  2017-08-29 10:14:30,170 - 0.45052633
+[Dragon]INFO  2017-08-29 10:14:30,171 - 0.27805927
+[Dragon]INFO  2017-08-29 10:14:30,171 - 0.45409396
+[Dragon]INFO  2017-08-29 10:14:30,182 - finished training, output to: D:/APITasks/thesis/scorer/training\[weka]\[Logistic]\
+[Dragon]INFO  2017-08-29 10:14:30,182 - start training: [Logistic] training data set: [weka] feature selector: MediumSelector
+[Dragon]INFO  2017-08-29 10:14:30,182 - read training data from file: D:/APITasks/thesis/scorer/training\[weka]\training[weka][nominal][range-2][MediumSelector].dat
+[Dragon]INFO  2017-08-29 10:14:30,187 - training with cross validation... 475 instances... [Logistic]
+[Dragon]INFO  2017-08-29 10:14:30,410 - 0.49894738
+[Dragon]INFO  2017-08-29 10:14:30,410 - 0.26396522
+[Dragon]INFO  2017-08-29 10:14:30,410 - 0.4523835
+[Dragon]INFO  2017-08-29 10:14:30,432 - finished training, output to: D:/APITasks/thesis/scorer/training\[weka]\[Logistic]\
+[Dragon]INFO  2017-08-29 10:14:30,432 - start training: [Logistic] training data set: [weka] feature selector: LongSelector
+[Dragon]INFO  2017-08-29 10:14:30,432 - read training data from file: D:/APITasks/thesis/scorer/training\[weka]\training[weka][nominal][range-2][LongSelector].dat
+[Dragon]INFO  2017-08-29 10:14:30,440 - training with cross validation... 475 instances... [Logistic]
+[Dragon]INFO  2017-08-29 10:14:30,974 - 0.5136842
+[Dragon]INFO  2017-08-29 10:14:30,974 - 0.24356659
+[Dragon]INFO  2017-08-29 10:14:30,974 - 0.4490135
+[Dragon]INFO  2017-08-29 10:14:30,992 - finished training, output to: D:/APITasks/thesis/scorer/training\[weka]\[Logistic]\
+[Dragon]INFO  2017-08-29 10:14:30,992 - start training: [Logistic] training data set: [weka] feature selector: TFBaselineSelector
+[Dragon]INFO  2017-08-29 10:14:30,992 - read training data from file: D:/APITasks/thesis/scorer/training\[weka]\training[weka][nominal][range-2][TFBaselineSelector].dat
+[Dragon]INFO  2017-08-29 10:14:30,993 - training with cross validation... 475 instances... [Logistic]
+[Dragon]INFO  2017-08-29 10:14:31,044 - 0.2631579
+[Dragon]INFO  2017-08-29 10:14:31,044 - 0.3569386
+[Dragon]INFO  2017-08-29 10:14:31,044 - 0.46482223
+[Dragon]INFO  2017-08-29 10:14:31,055 - finished training, output to: D:/APITasks/thesis/scorer/training\[weka]\[Logistic]\
+[Dragon]INFO  2017-08-29 10:14:31,055 - Training: [lucene]
+[Dragon]INFO  2017-08-29 10:14:31,055 - start training: [Logistic] training data set: [lucene] feature selector: ShortSelector
+[Dragon]INFO  2017-08-29 10:14:31,055 - read training data from file: D:/APITasks/thesis/scorer/training\[lucene]\training[lucene][nominal][range-2][ShortSelector].dat
+[Dragon]INFO  2017-08-29 10:14:31,058 - training with cross validation... 581 instances... [Logistic]
+[Dragon]INFO  2017-08-29 10:14:31,214 - 0.36144578
+[Dragon]INFO  2017-08-29 10:14:31,215 - 0.2752299
+[Dragon]INFO  2017-08-29 10:14:31,215 - 0.4106556
+[Dragon]INFO  2017-08-29 10:14:31,233 - finished training, output to: D:/APITasks/thesis/scorer/training\[lucene]\[Logistic]\
+[Dragon]INFO  2017-08-29 10:14:31,233 - start training: [Logistic] training data set: [lucene] feature selector: MediumSelector
+[Dragon]INFO  2017-08-29 10:14:31,233 - read training data from file: D:/APITasks/thesis/scorer/training\[lucene]\training[lucene][nominal][range-2][MediumSelector].dat
+[Dragon]INFO  2017-08-29 10:14:31,239 - training with cross validation... 581 instances... [Logistic]
+[Dragon]INFO  2017-08-29 10:14:31,512 - 0.3786575
+[Dragon]INFO  2017-08-29 10:14:31,512 - 0.2585898
+[Dragon]INFO  2017-08-29 10:14:31,512 - 0.40786797
+[Dragon]INFO  2017-08-29 10:14:31,530 - finished training, output to: D:/APITasks/thesis/scorer/training\[lucene]\[Logistic]\
+[Dragon]INFO  2017-08-29 10:14:31,530 - start training: [Logistic] training data set: [lucene] feature selector: LongSelector
+[Dragon]INFO  2017-08-29 10:14:31,530 - read training data from file: D:/APITasks/thesis/scorer/training\[lucene]\training[lucene][nominal][range-2][LongSelector].dat
+[Dragon]INFO  2017-08-29 10:14:31,539 - training with cross validation... 581 instances... [Logistic]
+[Dragon]INFO  2017-08-29 10:14:32,282 - 0.39931154
+[Dragon]INFO  2017-08-29 10:14:32,282 - 0.2449686
+[Dragon]INFO  2017-08-29 10:14:32,282 - 0.40396363
+[Dragon]INFO  2017-08-29 10:14:32,338 - finished training, output to: D:/APITasks/thesis/scorer/training\[lucene]\[Logistic]\
+[Dragon]INFO  2017-08-29 10:14:32,339 - start training: [Logistic] training data set: [lucene] feature selector: TFBaselineSelector
+[Dragon]INFO  2017-08-29 10:14:32,339 - read training data from file: D:/APITasks/thesis/scorer/training\[lucene]\training[lucene][nominal][range-2][TFBaselineSelector].dat
+[Dragon]INFO  2017-08-29 10:14:32,340 - training with cross validation... 581 instances... [Logistic]
+[Dragon]INFO  2017-08-29 10:14:32,419 - 0.3080895
+[Dragon]INFO  2017-08-29 10:14:32,419 - 0.31447524
+[Dragon]INFO  2017-08-29 10:14:32,419 - 0.4163826
+[Dragon]INFO  2017-08-29 10:14:32,429 - finished training, output to: D:/APITasks/thesis/scorer/training\[lucene]\[Logistic]\
+[Dragon]INFO  2017-08-29 10:14:32,429 - Training: [javafx]
+[Dragon]INFO  2017-08-29 10:14:32,429 - start training: [Logistic] training data set: [javafx] feature selector: ShortSelector
+[Dragon]INFO  2017-08-29 10:14:32,429 - read training data from file: D:/APITasks/thesis/scorer/training\[javafx]\training[javafx][nominal][range-2][ShortSelector].dat
+[Dragon]INFO  2017-08-29 10:14:32,439 - training with cross validation... 939 instances... [Logistic]
+[Dragon]INFO  2017-08-29 10:14:32,726 - 0.5633653
+[Dragon]INFO  2017-08-29 10:14:32,727 - 0.24754184
+[Dragon]INFO  2017-08-29 10:14:32,727 - 0.38992673
+[Dragon]INFO  2017-08-29 10:14:32,741 - finished training, output to: D:/APITasks/thesis/scorer/training\[javafx]\[Logistic]\
+[Dragon]INFO  2017-08-29 10:14:32,742 - start training: [Logistic] training data set: [javafx] feature selector: MediumSelector
+[Dragon]INFO  2017-08-29 10:14:32,742 - read training data from file: D:/APITasks/thesis/scorer/training\[javafx]\training[javafx][nominal][range-2][MediumSelector].dat
+[Dragon]INFO  2017-08-29 10:14:32,756 - training with cross validation... 939 instances... [Logistic]
+[Dragon]INFO  2017-08-29 10:14:33,209 - 0.63258785
+[Dragon]INFO  2017-08-29 10:14:33,209 - 0.21144542
+[Dragon]INFO  2017-08-29 10:14:33,209 - 0.38597935
+[Dragon]INFO  2017-08-29 10:14:33,222 - finished training, output to: D:/APITasks/thesis/scorer/training\[javafx]\[Logistic]\
+[Dragon]INFO  2017-08-29 10:14:33,222 - start training: [Logistic] training data set: [javafx] feature selector: LongSelector
+[Dragon]INFO  2017-08-29 10:14:33,222 - read training data from file: D:/APITasks/thesis/scorer/training\[javafx]\training[javafx][nominal][range-2][LongSelector].dat
+[Dragon]INFO  2017-08-29 10:14:33,240 - training with cross validation... 939 instances... [Logistic]
+[Dragon]INFO  2017-08-29 10:14:34,366 - 0.65601707
+[Dragon]INFO  2017-08-29 10:14:34,367 - 0.17643042
+[Dragon]INFO  2017-08-29 10:14:34,367 - 0.38176975
+[Dragon]INFO  2017-08-29 10:14:34,392 - finished training, output to: D:/APITasks/thesis/scorer/training\[javafx]\[Logistic]\
+[Dragon]INFO  2017-08-29 10:14:34,393 - start training: [Logistic] training data set: [javafx] feature selector: TFBaselineSelector
+[Dragon]INFO  2017-08-29 10:14:34,393 - read training data from file: D:/APITasks/thesis/scorer/training\[javafx]\training[javafx][nominal][range-2][TFBaselineSelector].dat
+[Dragon]INFO  2017-08-29 10:14:34,400 - training with cross validation... 939 instances... [Logistic]
+[Dragon]INFO  2017-08-29 10:14:34,505 - 0.3599574
+[Dragon]INFO  2017-08-29 10:14:34,506 - 0.3664565
+[Dragon]INFO  2017-08-29 10:14:34,506 - 0.40312228
+[Dragon]INFO  2017-08-29 10:14:34,528 - finished training, output to: D:/APITasks/thesis/scorer/training\[javafx]\[Logistic]\
+[Dragon]INFO  2017-08-29 10:14:34,528 - Training: [Leave-One-Out][stanford-nlp]
+[Dragon]INFO  2017-08-29 10:14:34,528 - start training: [Logistic] training data set: [Leave-One-Out][stanford-nlp] feature selector: ShortSelector
+[Dragon]INFO  2017-08-29 10:14:34,529 - read training data from file: D:/APITasks/thesis/scorer/training\[Leave-One-Out][stanford-nlp]\training[Leave-One-Out][stanford-nlp][nominal][range-2][ShortSelector].dat
+[Dragon]INFO  2017-08-29 10:14:34,542 - training... 1995 instances... [Logistic]
+[Dragon]INFO  2017-08-29 10:14:34,628 - 0.5031289
+[Dragon]INFO  2017-08-29 10:14:34,629 - 0.25499865
+[Dragon]INFO  2017-08-29 10:14:34,629 - 0.33819354
+[Dragon]INFO  2017-08-29 10:14:34,654 - finished training, output to: D:/APITasks/thesis/scorer/training\[Leave-One-Out][stanford-nlp]\[Logistic]\
+[Dragon]INFO  2017-08-29 10:14:34,654 - start training: [Logistic] training data set: [Leave-One-Out][stanford-nlp] feature selector: MediumSelector
+[Dragon]INFO  2017-08-29 10:14:34,654 - read training data from file: D:/APITasks/thesis/scorer/training\[Leave-One-Out][stanford-nlp]\training[Leave-One-Out][stanford-nlp][nominal][range-2][MediumSelector].dat
+[Dragon]INFO  2017-08-29 10:14:34,677 - training... 1995 instances... [Logistic]
+[Dragon]INFO  2017-08-29 10:14:34,812 - 0.50438046
+[Dragon]INFO  2017-08-29 10:14:34,812 - 0.25421566
+[Dragon]INFO  2017-08-29 10:14:34,812 - 0.33753744
+[Dragon]INFO  2017-08-29 10:14:34,837 - finished training, output to: D:/APITasks/thesis/scorer/training\[Leave-One-Out][stanford-nlp]\[Logistic]\
+[Dragon]INFO  2017-08-29 10:14:34,837 - start training: [Logistic] training data set: [Leave-One-Out][stanford-nlp] feature selector: LongSelector
+[Dragon]INFO  2017-08-29 10:14:34,837 - read training data from file: D:/APITasks/thesis/scorer/training\[Leave-One-Out][stanford-nlp]\training[Leave-One-Out][stanford-nlp][nominal][range-2][LongSelector].dat
+[Dragon]INFO  2017-08-29 10:14:34,885 - training... 1995 instances... [Logistic]
+[Dragon]INFO  2017-08-29 10:14:35,095 - 0.5006258
+[Dragon]INFO  2017-08-29 10:14:35,095 - 0.26063114
+[Dragon]INFO  2017-08-29 10:14:35,095 - 0.33776206
+[Dragon]INFO  2017-08-29 10:14:35,118 - finished training, output to: D:/APITasks/thesis/scorer/training\[Leave-One-Out][stanford-nlp]\[Logistic]\
+[Dragon]INFO  2017-08-29 10:14:35,118 - start training: [Logistic] training data set: [Leave-One-Out][stanford-nlp] feature selector: TFBaselineSelector
+[Dragon]INFO  2017-08-29 10:14:35,119 - read training data from file: D:/APITasks/thesis/scorer/training\[Leave-One-Out][stanford-nlp]\training[Leave-One-Out][stanford-nlp][nominal][range-2][TFBaselineSelector].dat
+[Dragon]INFO  2017-08-29 10:14:35,120 - training... 1995 instances... [Logistic]
+[Dragon]INFO  2017-08-29 10:14:35,140 - 0.35043806
+[Dragon]INFO  2017-08-29 10:14:35,140 - 0.32756242
+[Dragon]INFO  2017-08-29 10:14:35,140 - 0.34849647
+[Dragon]INFO  2017-08-29 10:14:35,151 - finished training, output to: D:/APITasks/thesis/scorer/training\[Leave-One-Out][stanford-nlp]\[Logistic]\
+[Dragon]INFO  2017-08-29 10:14:35,151 - Training: [Leave-One-Out][weka]
+[Dragon]INFO  2017-08-29 10:14:35,151 - start training: [Logistic] training data set: [Leave-One-Out][weka] feature selector: ShortSelector
+[Dragon]INFO  2017-08-29 10:14:35,151 - read training data from file: D:/APITasks/thesis/scorer/training\[Leave-One-Out][weka]\training[Leave-One-Out][weka][nominal][range-2][ShortSelector].dat
+[Dragon]INFO  2017-08-29 10:14:35,160 - training... 2319 instances... [Logistic]
+[Dragon]INFO  2017-08-29 10:14:35,231 - 0.40842104
+[Dragon]INFO  2017-08-29 10:14:35,231 - 0.30522817
+[Dragon]INFO  2017-08-29 10:14:35,232 - 0.45772192
+[Dragon]INFO  2017-08-29 10:14:35,248 - finished training, output to: D:/APITasks/thesis/scorer/training\[Leave-One-Out][weka]\[Logistic]\
+[Dragon]INFO  2017-08-29 10:14:35,248 - start training: [Logistic] training data set: [Leave-One-Out][weka] feature selector: MediumSelector
+[Dragon]INFO  2017-08-29 10:14:35,248 - read training data from file: D:/APITasks/thesis/scorer/training\[Leave-One-Out][weka]\training[Leave-One-Out][weka][nominal][range-2][MediumSelector].dat
+[Dragon]INFO  2017-08-29 10:14:35,270 - training... 2319 instances... [Logistic]
+[Dragon]INFO  2017-08-29 10:14:35,387 - 0.40421054
+[Dragon]INFO  2017-08-29 10:14:35,388 - 0.29582322
+[Dragon]INFO  2017-08-29 10:14:35,388 - 0.4570989
+[Dragon]INFO  2017-08-29 10:14:35,406 - finished training, output to: D:/APITasks/thesis/scorer/training\[Leave-One-Out][weka]\[Logistic]\
+[Dragon]INFO  2017-08-29 10:14:35,407 - start training: [Logistic] training data set: [Leave-One-Out][weka] feature selector: LongSelector
+[Dragon]INFO  2017-08-29 10:14:35,407 - read training data from file: D:/APITasks/thesis/scorer/training\[Leave-One-Out][weka]\training[Leave-One-Out][weka][nominal][range-2][LongSelector].dat
+[Dragon]INFO  2017-08-29 10:14:35,439 - training... 2319 instances... [Logistic]
+[Dragon]INFO  2017-08-29 10:14:35,698 - 0.42105263
+[Dragon]INFO  2017-08-29 10:14:35,698 - 0.29553416
+[Dragon]INFO  2017-08-29 10:14:35,698 - 0.456193
+[Dragon]INFO  2017-08-29 10:14:35,723 - finished training, output to: D:/APITasks/thesis/scorer/training\[Leave-One-Out][weka]\[Logistic]\
+[Dragon]INFO  2017-08-29 10:14:35,723 - start training: [Logistic] training data set: [Leave-One-Out][weka] feature selector: TFBaselineSelector
+[Dragon]INFO  2017-08-29 10:14:35,723 - read training data from file: D:/APITasks/thesis/scorer/training\[Leave-One-Out][weka]\training[Leave-One-Out][weka][nominal][range-2][TFBaselineSelector].dat
+[Dragon]INFO  2017-08-29 10:14:35,725 - training... 2319 instances... [Logistic]
+[Dragon]INFO  2017-08-29 10:14:35,749 - 0.2736842
+[Dragon]INFO  2017-08-29 10:14:35,749 - 0.36092752
+[Dragon]INFO  2017-08-29 10:14:35,749 - 0.46584612
+[Dragon]INFO  2017-08-29 10:14:35,760 - finished training, output to: D:/APITasks/thesis/scorer/training\[Leave-One-Out][weka]\[Logistic]\
+[Dragon]INFO  2017-08-29 10:14:35,760 - Training: [Leave-One-Out][lucene]
+[Dragon]INFO  2017-08-29 10:14:35,760 - start training: [Logistic] training data set: [Leave-One-Out][lucene] feature selector: ShortSelector
+[Dragon]INFO  2017-08-29 10:14:35,760 - read training data from file: D:/APITasks/thesis/scorer/training\[Leave-One-Out][lucene]\training[Leave-One-Out][lucene][nominal][range-2][ShortSelector].dat
+[Dragon]INFO  2017-08-29 10:14:35,768 - training... 2213 instances... [Logistic]
+[Dragon]INFO  2017-08-29 10:14:35,839 - 0.46299484
+[Dragon]INFO  2017-08-29 10:14:35,839 - 0.26452628
+[Dragon]INFO  2017-08-29 10:14:35,839 - 0.41405293
+[Dragon]INFO  2017-08-29 10:14:35,854 - finished training, output to: D:/APITasks/thesis/scorer/training\[Leave-One-Out][lucene]\[Logistic]\
+[Dragon]INFO  2017-08-29 10:14:35,854 - start training: [Logistic] training data set: [Leave-One-Out][lucene] feature selector: MediumSelector
+[Dragon]INFO  2017-08-29 10:14:35,854 - read training data from file: D:/APITasks/thesis/scorer/training\[Leave-One-Out][lucene]\training[Leave-One-Out][lucene][nominal][range-2][MediumSelector].dat
+[Dragon]INFO  2017-08-29 10:14:35,868 - training... 2213 instances... [Logistic]
+[Dragon]INFO  2017-08-29 10:14:35,980 - 0.48364887
+[Dragon]INFO  2017-08-29 10:14:35,980 - 0.25723755
+[Dragon]INFO  2017-08-29 10:14:35,980 - 0.41353074
+[Dragon]INFO  2017-08-29 10:14:36,000 - finished training, output to: D:/APITasks/thesis/scorer/training\[Leave-One-Out][lucene]\[Logistic]\
+[Dragon]INFO  2017-08-29 10:14:36,000 - start training: [Logistic] training data set: [Leave-One-Out][lucene] feature selector: LongSelector
+[Dragon]INFO  2017-08-29 10:14:36,000 - read training data from file: D:/APITasks/thesis/scorer/training\[Leave-One-Out][lucene]\training[Leave-One-Out][lucene][nominal][range-2][LongSelector].dat
+[Dragon]INFO  2017-08-29 10:14:36,033 - training... 2213 instances... [Logistic]
+[Dragon]INFO  2017-08-29 10:14:36,264 - 0.43889844
+[Dragon]INFO  2017-08-29 10:14:36,264 - 0.26108837
+[Dragon]INFO  2017-08-29 10:14:36,264 - 0.4134679
+[Dragon]INFO  2017-08-29 10:14:36,284 - finished training, output to: D:/APITasks/thesis/scorer/training\[Leave-One-Out][lucene]\[Logistic]\
+[Dragon]INFO  2017-08-29 10:14:36,285 - start training: [Logistic] training data set: [Leave-One-Out][lucene] feature selector: TFBaselineSelector
+[Dragon]INFO  2017-08-29 10:14:36,285 - read training data from file: D:/APITasks/thesis/scorer/training\[Leave-One-Out][lucene]\training[Leave-One-Out][lucene][nominal][range-2][TFBaselineSelector].dat
+[Dragon]INFO  2017-08-29 10:14:36,288 - training... 2213 instances... [Logistic]
+[Dragon]INFO  2017-08-29 10:14:36,306 - 0.35800344
+[Dragon]INFO  2017-08-29 10:14:36,307 - 0.30150703
+[Dragon]INFO  2017-08-29 10:14:36,307 - 0.4183158
+[Dragon]INFO  2017-08-29 10:14:36,316 - finished training, output to: D:/APITasks/thesis/scorer/training\[Leave-One-Out][lucene]\[Logistic]\
+[Dragon]INFO  2017-08-29 10:14:36,316 - Training: [Leave-One-Out][javafx]
+[Dragon]INFO  2017-08-29 10:14:36,316 - start training: [Logistic] training data set: [Leave-One-Out][javafx] feature selector: ShortSelector
+[Dragon]INFO  2017-08-29 10:14:36,316 - read training data from file: D:/APITasks/thesis/scorer/training\[Leave-One-Out][javafx]\training[Leave-One-Out][javafx][nominal][range-2][ShortSelector].dat
+[Dragon]INFO  2017-08-29 10:14:36,327 - training... 1855 instances... [Logistic]
+[Dragon]INFO  2017-08-29 10:14:36,379 - 0.4515442
+[Dragon]INFO  2017-08-29 10:14:36,379 - 0.30838645
+[Dragon]INFO  2017-08-29 10:14:36,379 - 0.3948029
+[Dragon]INFO  2017-08-29 10:14:36,393 - finished training, output to: D:/APITasks/thesis/scorer/training\[Leave-One-Out][javafx]\[Logistic]\
+[Dragon]INFO  2017-08-29 10:14:36,393 - start training: [Logistic] training data set: [Leave-One-Out][javafx] feature selector: MediumSelector
+[Dragon]INFO  2017-08-29 10:14:36,393 - read training data from file: D:/APITasks/thesis/scorer/training\[Leave-One-Out][javafx]\training[Leave-One-Out][javafx][nominal][range-2][MediumSelector].dat
+[Dragon]INFO  2017-08-29 10:14:36,407 - training... 1855 instances... [Logistic]
+[Dragon]INFO  2017-08-29 10:14:36,502 - 0.48668796
+[Dragon]INFO  2017-08-29 10:14:36,502 - 0.29410928
+[Dragon]INFO  2017-08-29 10:14:36,502 - 0.39359757
+[Dragon]INFO  2017-08-29 10:14:36,522 - finished training, output to: D:/APITasks/thesis/scorer/training\[Leave-One-Out][javafx]\[Logistic]\
+[Dragon]INFO  2017-08-29 10:14:36,522 - start training: [Logistic] training data set: [Leave-One-Out][javafx] feature selector: LongSelector
+[Dragon]INFO  2017-08-29 10:14:36,522 - read training data from file: D:/APITasks/thesis/scorer/training\[Leave-One-Out][javafx]\training[Leave-One-Out][javafx][nominal][range-2][LongSelector].dat
+[Dragon]INFO  2017-08-29 10:14:36,550 - training... 1855 instances... [Logistic]
+[Dragon]INFO  2017-08-29 10:14:36,737 - 0.54206604
+[Dragon]INFO  2017-08-29 10:14:36,738 - 0.27865306
+[Dragon]INFO  2017-08-29 10:14:36,738 - 0.3921854
+[Dragon]INFO  2017-08-29 10:14:36,759 - finished training, output to: D:/APITasks/thesis/scorer/training\[Leave-One-Out][javafx]\[Logistic]\
+[Dragon]INFO  2017-08-29 10:14:36,759 - start training: [Logistic] training data set: [Leave-One-Out][javafx] feature selector: TFBaselineSelector
+[Dragon]INFO  2017-08-29 10:14:36,760 - read training data from file: D:/APITasks/thesis/scorer/training\[Leave-One-Out][javafx]\training[Leave-One-Out][javafx][nominal][range-2][TFBaselineSelector].dat
+[Dragon]INFO  2017-08-29 10:14:36,761 - training... 1855 instances... [Logistic]
+[Dragon]INFO  2017-08-29 10:14:36,776 - 0.23855165
+[Dragon]INFO  2017-08-29 10:14:36,776 - 0.3892566
+[Dragon]INFO  2017-08-29 10:14:36,776 - 0.40468273
+[Dragon]INFO  2017-08-29 10:14:36,784 - finished training, output to: D:/APITasks/thesis/scorer/training\[Leave-One-Out][javafx]\[Logistic]\
+[Dragon]INFO  2017-08-29 10:14:36,785 - Training: [full]
+[Dragon]INFO  2017-08-29 10:14:36,785 - start training: [Logistic] training data set: [full] feature selector: ShortSelector
+[Dragon]INFO  2017-08-29 10:14:36,785 - read training data from file: D:/APITasks/thesis/scorer/training\[full]\training[full][nominal][range-2][ShortSelector].dat
+[Dragon]INFO  2017-08-29 10:14:36,804 - training with cross validation... 2794 instances... [Logistic]
+[Dragon]INFO  2017-08-29 10:14:37,627 - 0.46170366
+[Dragon]INFO  2017-08-29 10:14:37,627 - 0.2754206
+[Dragon]INFO  2017-08-29 10:14:37,627 - 0.39242923
+[Dragon]INFO  2017-08-29 10:14:37,641 - finished training, output to: D:/APITasks/thesis/scorer/training\[full]\[Logistic]\
+[Dragon]INFO  2017-08-29 10:14:37,641 - start training: [Logistic] training data set: [full] feature selector: MediumSelector
+[Dragon]INFO  2017-08-29 10:14:37,641 - read training data from file: D:/APITasks/thesis/scorer/training\[full]\training[full][nominal][range-2][MediumSelector].dat
+[Dragon]INFO  2017-08-29 10:14:37,663 - training with cross validation... 2794 instances... [Logistic]
+[Dragon]INFO  2017-08-29 10:14:39,090 - 0.48818898
+[Dragon]INFO  2017-08-29 10:14:39,090 - 0.26291046
+[Dragon]INFO  2017-08-29 10:14:39,090 - 0.39118147
+[Dragon]INFO  2017-08-29 10:14:39,120 - finished training, output to: D:/APITasks/thesis/scorer/training\[full]\[Logistic]\
+[Dragon]INFO  2017-08-29 10:14:39,120 - start training: [Logistic] training data set: [full] feature selector: LongSelector
+[Dragon]INFO  2017-08-29 10:14:39,120 - read training data from file: D:/APITasks/thesis/scorer/training\[full]\training[full][nominal][range-2][LongSelector].dat
+[Dragon]INFO  2017-08-29 10:14:39,185 - training with cross validation... 2794 instances... [Logistic]
+[Dragon]INFO  2017-08-29 10:14:42,123 - 0.50214744
+[Dragon]INFO  2017-08-29 10:14:42,124 - 0.25441134
+[Dragon]INFO  2017-08-29 10:14:42,124 - 0.38999423
+[Dragon]INFO  2017-08-29 10:14:42,141 - finished training, output to: D:/APITasks/thesis/scorer/training\[full]\[Logistic]\
+[Dragon]INFO  2017-08-29 10:14:42,141 - start training: [Logistic] training data set: [full] feature selector: TFBaselineSelector
+[Dragon]INFO  2017-08-29 10:14:42,141 - read training data from file: D:/APITasks/thesis/scorer/training\[full]\training[full][nominal][range-2][TFBaselineSelector].dat
+[Dragon]INFO  2017-08-29 10:14:42,145 - training with cross validation... 2794 instances... [Logistic]
+[Dragon]INFO  2017-08-29 10:14:42,380 - 0.3024338
+[Dragon]INFO  2017-08-29 10:14:42,381 - 0.34682548
+[Dragon]INFO  2017-08-29 10:14:42,381 - 0.40161172
+[Dragon]INFO  2017-08-29 10:14:42,388 - finished training, output to: D:/APITasks/thesis/scorer/training\[full]\[Logistic]\

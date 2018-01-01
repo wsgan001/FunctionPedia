@@ -1,0 +1,47 @@
+QUESTION:
+HTML:
+<p>I've been Googling for quite awhile and haven't found a definitive answer.  Is it possible to output a table using Apache POI?  It looks like it hasn't been implemented, since the main developer stopped working on it like 5 years ago.</p>&#xA;&#xA;<p>Is there an open source alternative to POI that can do this?</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+
+ANS:
+HTML:
+<p>I think you're right in that Apache POI is dead in the water. Clearly it wasn't glamourous enough.</p>&#xA;&#xA;<p>The only alternative that I'm aware of is <a href="http://itextdocs.lowagie.com/tutorial/rtf/index.php" rel="nofollow">iText</a>, which can generate RTF documents, which MS Word (and every other similar application) can read. It includes full table support.</p>&#xA;&#xA;<p>And, of course, iText can generate PDF also.</p>&#xA;
+Comment:
+HTML:
+<p>If docx and java are both ok for you, try <a href="http://dev.plutext.org" rel="nofollow">docx4j</a></p>&#xA;
+Comment:
+
+Phrase:
+Googling for quite awhile 
+been Googling for quite awhile 
+'ve been Googling for quite awhile 
+found a definitive answer 
+have n't found a definitive answer 
+'ve been Googling for quite awhile and have n't found a definitive answer 
+Is it 
+using Apache POI 
+working on it like 5 years ago 
+stopped working on it like 5 years ago 
+implemented , since the main developer stopped working on it like 5 years ago 
+been implemented , since the main developer stopped working on it like 5 years ago 
+has n't been implemented , since the main developer stopped working on it like 5 years ago 
+looks like it has n't been implemented , since the main developer stopped working on it like 5 years ago 
+do this 
+can do this 
+is dead in the water 
+'re right in that Apache POI is dead in the water 
+think you 're right in that Apache POI is dead in the water 
+was n't glamourous enough 
+'m aware of 
+read 
+can read 
+generate RTF documents , which MS Word ( and every other similar application ) can read 
+can generate RTF documents , which MS Word ( and every other similar application ) can read 
+is iText , which can generate RTF documents , which MS Word ( and every other similar application ) can read 
+includes full table support 
+generate PDF also 
+can generate PDF also 
+are both ok for you 
+try docx4j 

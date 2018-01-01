@@ -1,0 +1,188 @@
+QUESTION:
+HTML:
+<p>I am trying to use Lucene Java 2.3.2 to implement search on a catalog of products. Apart from the regular fields for a product, there is field called 'Category'. A product can fall in multiple categories. Currently, I use FilteredQuery to search for the same search term with every Category to get the number of results per category.</p>&#xA;&#xA;<p>This results in 20-30 internal search calls per query to display the results. This is slowing down the search considerably. Is there a faster way of achieving the same result using Lucene?</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+
+ANS:
+HTML:
+<p>You may want to consider looking through all the documents that match categories using a <a href="http://lucene.apache.org/java/2_3_2/api/core/org/apache/lucene/index/TermDocs.html" rel="nofollow">TermDocs iterator</a>.</p>&#xA;&#xA;<p>This example code goes through each "Category" term, and then counts the number of documents that match that term.</p>&#xA;&#xA;<pre><code>public static void countDocumentsInCategories(IndexReader reader) throws IOException {&#xA;    TermEnum terms = null;&#xA;    TermDocs td = null;&#xA;&#xA;&#xA;    try {&#xA;        terms = reader.terms(new Term("Category", ""));&#xA;        td = reader.termDocs();&#xA;        do {&#xA;            Term currentTerm = terms.term();&#xA;&#xA;            if (!currentTerm.field().equals("Category")) {&#xA;                break;&#xA;            }&#xA;&#xA;            int numDocs = 0;&#xA;            td.seek(terms);&#xA;            while (td.next()) {&#xA;                numDocs++;&#xA;            }&#xA;&#xA;            System.out.println(currentTerm.field() + " : " + currentTerm.text() + " --&gt; " + numDocs);&#xA;        } while (terms.next());&#xA;    } finally {&#xA;        if (td != null) td.close();&#xA;        if (terms != null) terms.close();&#xA;    }&#xA;}&#xA;</code></pre>&#xA;&#xA;<p>This code should run reasonably fast even for large indexes.</p>&#xA;&#xA;<p>Here is some code that tests that method:</p>&#xA;&#xA;<pre><code>public static void main(String[] args) throws Exception {&#xA;    RAMDirectory store = new RAMDirectory();&#xA;&#xA;    IndexWriter w = new IndexWriter(store, new StandardAnalyzer());&#xA;    addDocument(w, 1, "Apple", "fruit", "computer");&#xA;    addDocument(w, 2, "Orange", "fruit", "colour");&#xA;    addDocument(w, 3, "Dell", "computer");&#xA;    addDocument(w, 4, "Cumquat", "fruit");&#xA;    w.close();&#xA;&#xA;    IndexReader r = IndexReader.open(store);&#xA;    countDocumentsInCategories(r);&#xA;    r.close();&#xA;}&#xA;&#xA;private static void addDocument(IndexWriter w, int id, String name, String... categories) throws IOException {&#xA;    Document d = new Document();&#xA;    d.add(new Field("ID", String.valueOf(id), Field.Store.YES, Field.Index.UN_TOKENIZED));&#xA;    d.add(new Field("Name", name, Field.Store.NO, Field.Index.UN_TOKENIZED));&#xA;&#xA;    for (String category : categories) {&#xA;        d.add(new Field("Category", category, Field.Store.NO, Field.Index.UN_TOKENIZED));&#xA;    }&#xA;&#xA;    w.addDocument(d);&#xA;}&#xA;</code></pre>&#xA;
+Comment:
+This just counts the documents tagged by each term in the Category field, which you could do much faster with terms.docFreq(). What's missing is the intersection with the hits from the user's search criteria.
+HTML:
+<p>I don't have enough reputation to comment (!) but in Matt Quail's answer I'm pretty sure you could replace this:</p>&#xA;&#xA;<pre><code>int numDocs = 0;&#xA;td.seek(terms);&#xA;while (td.next()) {&#xA;    numDocs++;&#xA;}&#xA;</code></pre>&#xA;&#xA;<p>with this:</p>&#xA;&#xA;<pre><code>int numDocs = terms.docFreq()&#xA;</code></pre>&#xA;&#xA;<p>and then get rid of the td variable altogether.  This should make it even faster.</p>&#xA;
+Comment:
+you'll be there in no time (commenting)
+I did that but it gives count from all documents, in my case I want to count category from a result set. for example if user search for "apple" then I want to show number of matches found in electronics and fruits category. but your's and matt suggestion gives count for all documents. I think I need to search against my searcher rather than reader but searcher does not have TermDocs.
+HTML:
+<p>So let me see if I understand the question correctly:  Given a query from the user, you want to show how many matches there are for the query in each category.  Correct?</p>&#xA;&#xA;<p>Think of it like this: your query is actually <code>originalQuery AND (category1 OR category2 or ...)</code> except as well an overall score you want to get a number for each of the categories.  Unfortunately the interface for collecting hits in Lucene is very narrow, only giving you an overall score for a query.  But you could implement a custom Scorer/Collector.</p>&#xA;&#xA;<p>Have a look at the source for org.apache.lucene.search.DisjunctionSumScorer.  You could copy some of that to write a custom scorer that iterates through category matches while your main search is going on.  And you could keep a <code>Map&lt;String,Long&gt;</code> to keep track of matches in each category.</p>&#xA;
+Comment:
+HTML:
+<p>Here's what I did, though it's a bit heavy on memory:</p>&#xA;&#xA;<p>What you need is to create in advance a bunch of <a href="http://java.sun.com/javase/6/docs/api/java/util/BitSet.html"><code>BitSet</code></a>s, one for each category, containing the doc id of all the documents in a category. Now, on search time you use a <a href="http://hudson.zones.apache.org/hudson/job/Lucene-trunk/javadoc//org/apache/lucene/search/HitCollector.html">HitCollector</a> and check the doc ids against the BitSets.</p>&#xA;&#xA;<p>Here's the code to create the bit sets:</p>&#xA;&#xA;<pre><code>public BitSet[] getBitSets(IndexSearcher indexSearcher, &#xA;                           Category[] categories) {&#xA;    BitSet[] bitSets = new BitSet[categories.length];&#xA;    for(int i=0; i&lt;categories.length; i++)&#xA;    {&#xA;        Query query = categories[i].getQuery();&#xA;        final BitSet bitset = new BitSet()&#xA;        indexSearcher.search(query, new HitCollector() {&#xA;            public void collect(int doc, float score) {&#xA;                bitSet.set(doc);&#xA;            }&#xA;        });&#xA;        bitSets[i] = bitSet;&#xA;    }&#xA;    return bitSets;&#xA;}&#xA;</code></pre>&#xA;&#xA;<p>This is just one way to do this. You could probably use <a href="http://hudson.zones.apache.org/hudson/job/Lucene-trunk/javadoc/org/apache/lucene/index/TermDocs.html">TermDocs</a> instead of running a full search if your categories are simple enough, but this should only run once when you load the index anyway.</p>&#xA;&#xA;<p>Now, when it's time to count categories of search results you do this:</p>&#xA;&#xA;<pre><code>public int[] getCategroryCount(IndexSearcher indexSearcher, &#xA;                               Query query, &#xA;                               final BitSet[] bitSets) {&#xA;    final int[] count = new int[bitSets.length];&#xA;    indexSearcher.search(query, new HitCollector() {&#xA;        public void collect(int doc, float score) {&#xA;            for(int i=0; i&lt;bitSets.length; i++) {&#xA;                if(bitSets[i].get(doc)) count[i]++;&#xA;            }&#xA;        }&#xA;    });&#xA;    return count;&#xA;}&#xA;</code></pre>&#xA;&#xA;<p>What you end up with is an array containing the count of every category within the search results. If you also need the search results, you should add a TopDocCollector to your hit collector (yo dawg...). Or, you could just run the search again. 2 searches are better than 30.</p>&#xA;
+Comment:
+Other implementation for the getCategoryCount part: You could actually get a BitSet from your search (using a collector) and then intersect that resultsBitSet with whatever categoryBitSet you're interested in. Intersection should be faster than checking each doc, and you can also intersect multiple categories before intersecting with the results BitSet.
+HTML:
+<p>Sachin, I believe you want <a href="http://en.wikipedia.org/wiki/Faceted%5Fbrowser" rel="nofollow">faceted search</a>. It does not come out of the box with Lucene. I suggest you try using <a href="http://lucene.apache.org/solr/" rel="nofollow">SOLR</a>, that has <a href="http://www.lucidimagination.com/Community/Hear-from-the-Experts/Articles/Faceted-Search-Solr" rel="nofollow">faceting</a> as a major and convenient feature.</p>&#xA;
+Comment:
+
+Phrase:
+implement search on a catalog of products 
+to implement search on a catalog of products 
+use Lucene Java 2.3.2 to implement search on a catalog of products 
+to use Lucene Java 2.3.2 to implement search on a catalog of products 
+trying to use Lucene Java 2.3.2 to implement search on a catalog of products 
+am trying to use Lucene Java 2.3.2 to implement search on a catalog of products 
+called ` Category ' 
+is field called ` Category ' 
+fall in multiple categories 
+can fall in multiple categories 
+get the number of results per category 
+to get the number of results per category 
+search for the same search term with every Category to get the number of results per category 
+to search for the same search term with every Category to get the number of results per category 
+use FilteredQuery to search for the same search term with every Category to get the number of results per category 
+display the results 
+to display the results 
+results in 20-30 internal search calls per query to display the results 
+slowing down the search considerably 
+is slowing down the search considerably 
+using Lucene 
+achieving the same result using Lucene 
+using a TermDocs iterator 
+match categories using a TermDocs iterator 
+looking through all the documents that match categories using a TermDocs iterator 
+consider looking through all the documents that match categories using a TermDocs iterator 
+to consider looking through all the documents that match categories using a TermDocs iterator 
+want to consider looking through all the documents that match categories using a TermDocs iterator 
+may want to consider looking through all the documents that match categories using a TermDocs iterator 
+goes through each `` Category '' term 
+match that term 
+then counts the number of documents that match that term 
+goes through each `` Category '' term , and then counts the number of documents that match that term 
+run reasonably fast even for large indexes 
+should run reasonably fast even for large indexes 
+is 
+tests that method 
+tagged by each term in the Category field 
+do much faster with terms.docFreq ( ) 
+could do much faster with terms.docFreq ( ) 
+just counts the documents tagged by each term in the Category field , which you could do much faster with terms.docFreq ( ) 
+'s missing 
+is the intersection with the hits from the user 's search criteria 
+have enough reputation to comment ( ! ) but in Matt Quail 's answer 
+do n't have enough reputation to comment ( ! ) but in Matt Quail 's answer 
+replace this 
+could replace this 
+'m pretty sure you could replace this 
+get rid of the td variable altogether 
+make it even faster 
+should make it even faster 
+be there in no time ( commenting ) 
+'ll be there in no time ( commenting ) 
+gives count from all documents 
+count category from a result set 
+to count category from a result set 
+want to count category from a result set 
+did that but it gives count from all documents , in my case I want to count category from a result set 
+show number of matches 
+to show number of matches 
+want to show number of matches 
+found in electronics and fruits category 
+gives count for all documents 
+search against my searcher rather than reader 
+to search against my searcher rather than reader 
+need to search against my searcher rather than reader 
+think I need to search against my searcher rather than reader 
+have TermDocs 
+does not have TermDocs 
+understand the question correctly 
+show 
+to show 
+want to show 
+see if I understand the question correctly : Given a query from the user , you want to show 
+let me see if I understand the question correctly : Given a query from the user , you want to show 
+are for the query in each category 
+matches there are for the query in each category 
+Correct 
+CODE0 except 
+is actually CODE0 except 
+get a number for each of the categories 
+to get a number for each of the categories 
+want to get a number for each of the categories 
+Think of it like this : your query is actually CODE0 except as well an overall score you want to get a number for each of the categories 
+is very narrow 
+collecting hits in Lucene is very narrow 
+giving you an overall score for a query 
+implement a custom Scorer/Collector 
+could implement a custom Scorer/Collector 
+Have a look at the source for org.apache.lucene.search.DisjunctionSumScorer 
+going on 
+is going on 
+matches while your main search is going on 
+write a custom scorer that iterates through category matches while your main search is going on 
+to write a custom scorer that iterates through category matches while your main search is going on 
+copy some of that to write a custom scorer that iterates through category matches while your main search is going on 
+could copy some of that to write a custom scorer that iterates through category matches while your main search is going on 
+keep track of matches in each category 
+to keep track of matches in each category 
+keep a CODE0 to keep track of matches in each category 
+could keep a CODE0 to keep track of matches in each category 
+'s 
+'s a bit heavy on memory 
+did , though it 's a bit heavy on memory 
+containing the doc id of all the documents in a category 
+create in advance a bunch of CODE0s , one for each category , containing the doc id of all the documents in a category 
+to create in advance a bunch of CODE0s , one for each category , containing the doc id of all the documents in a category 
+is to create in advance a bunch of CODE0s , one for each category , containing the doc id of all the documents in a category 
+need is to create in advance a bunch of CODE0s , one for each category , containing the doc id of all the documents in a category 
+use a HitCollector 
+check the doc ids against the BitSets 
+use a HitCollector and check the doc ids against the BitSets 
+'s 
+create the bit sets 
+to create the bit sets 
+do this 
+to do this 
+is just one way to do this 
+are simple enough 
+running a full search if your categories are simple enough 
+use TermDocs instead of running a full search if your categories are simple enough 
+could probably use TermDocs instead of running a full search if your categories are simple enough 
+load the index anyway 
+run once when you load the index anyway 
+should only run once when you load the index anyway 
+do this 
+count categories of search results you do this 
+to count categories of search results you do this 
+'s time to count categories of search results you do this 
+containing the count of every category within the search results 
+is an array containing the count of every category within the search results 
+end up with is an array containing the count of every category within the search results 
+need the search results 
+add a TopDocCollector to your hit collector ( yo dawg ... ) 
+should add a TopDocCollector to your hit collector ( yo dawg ... ) 
+run the search again 
+could just run the search again 
+are better than 30 
+using a collector 
+get a BitSet from your search ( using a collector ) 
+could actually get a BitSet from your search ( using a collector ) 
+'re interested in 
+categoryBitSet you 're interested in 
+checking each doc 
+be faster than checking each doc 
+should be faster than checking each doc 
+intersecting with the results BitSet 
+intersect multiple categories before intersecting with the results BitSet 
+can also intersect multiple categories before intersecting with the results BitSet 
+Sachin 
+want faceted search 
+believe you want faceted search 
+come out of the box with Lucene 
+does not come out of the box with Lucene 
+faceting as a major and convenient feature 
+has faceting as a major and convenient feature 
+using SOLR , that has faceting as a major and convenient feature 
+try using SOLR , that has faceting as a major and convenient feature 
+suggest you try using SOLR , that has faceting as a major and convenient feature 

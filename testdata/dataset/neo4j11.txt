@@ -1,0 +1,121 @@
+QUESTION:
+HTML:
+<p>Can I convert Neo4J Database files to XML?</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+
+ANS:
+HTML:
+<p>I don't believe anything exists out there for this, not as of few months ago when messing with it.  From what I saw, there are 2 main roadblocks:</p>&#xA;&#xA;<ol>&#xA;<li>XML is hierarchical, you can't represent graph data readily in this format.</li>&#xA;<li>Lack of explicit IDs for nodes.  Even though implicit IDs exist it'd be like using ROWID in oracle for import/export...not guaranteed to be the same.</li>&#xA;</ol>&#xA;&#xA;<p>Some people have suggested that <a href="http://graphml.graphdrawing.org/" rel="nofollow">GraphML</a> would be the proper format for this, I'm inclined to agree.  If you don't have graphical structures and you would be fine represented in an XML/hierarchical format...well then that's just bad luck.  Since the majority of users who would tackle this sort of enhancement task are using data that wouldn't store that way, I don't see an XML solution coming out...more likely to see a format supporting all uses first.</p>&#xA;
+Comment:
+I don't quite follow your point. XML is a metalanguage. GraphML is simply one instance of an XML markup language, specifically one used to represent graph data. So is RDF and XML Topic Maps (XTM). There is no limitation in XML per se in representing graphs, i.e., any SGML or XML markup language that contains links already does so. For example, DocBook **looks** like a hierarchical document format but given it contains links it can also represent a graph, just as can XHTML.
+(Got caught by the 5 minute edit rule.) As for explicit or implicit node IDs, that's an implementation issue. Most graph markup languages already have IDs on top level elements, and it's possible to add xml:id to any markup. Exporting from Neo4j to any markup shouldn't be a problem, it's just a serialisation, as indicated by Peter Neubauer above.
+HTML:
+<p>I agree, GraphML is the way to go, if you don't have problems with the verbosity of XML. A simple way to do it is to open the Neo4j graph from <a href="http://gremlin.tinkerpop.com">Gremlin</a>, where GraphML is the default import/export format, something like</p>&#xA;&#xA;<pre>&#xA;peters: ./gremlin.sh&#xA;&#xA;gremlin> $_g := neo4j:open('/tmp/neo4j')&#xA;==>neograph[/tmp/neo4j, vertices:2, edges:1]&#xA;gremlin> g:save('graphml-export.xml')&#xA;</pre>&#xA;&#xA;<p>As described <a href="http://wiki.github.com/tinkerpop/gremlin/graphml-reader-and-writer-library">here</a></p>&#xA;&#xA;<p>Does that solve your problem?</p>&#xA;
+Comment:
+your link is linking me to a blank github wiki page. perhaps you meant this page?  http://github.com/tinkerpop/gremlin/wiki/Neo4j-Graph-Database
+The current information on loading/saving to/from Gremlin is now located here: https://github.com/tinkerpop/gremlin/wiki/Gremlin-Methods
+HTML:
+<p>With <a href="http://blueprints.tinkerpop.com">Blueprints</a>, simply do:</p>&#xA;&#xA;<pre><code>Graph graph = new Neo4jGraph("/tmp/mygraph");&#xA;GraphMLWriter.outputGraph(graph, new FileOutputStream("mygraph.xml"));&#xA;</code></pre>&#xA;&#xA;<p>Or, with <a href="http://gremlin.tinkerpop.com">Gremlin</a> (which does the same thing in the back):</p>&#xA;&#xA;<pre><code>g = new Neo4jGraph('/tmp/mygraph');&#xA;g.saveGraphML('mygraph.xml');&#xA;</code></pre>&#xA;&#xA;<p>Finally, to the constructor for Neo4jGraph, you can also pass in a GraphDatabaseService instance.</p>&#xA;
+Comment:
+
+Phrase:
+convert Neo4J Database files to XML 
+messing with it 
+exists out there for this , not as of few months ago when messing with it 
+believe anything exists out there for this , not as of few months ago when messing with it 
+do n't believe anything exists out there for this , not as of few months ago when messing with it 
+saw 
+are 2 main roadblocks 
+is hierarchical 
+represent graph data readily in this format 
+ca n't represent graph data readily in this format 
+exist 
+using ROWID in oracle for import/export 
+be like using ROWID in oracle for import/export 
+'d be like using ROWID in oracle for import/export 
+be the same 
+to be the same 
+guaranteed to be the same 
+be the proper format for this 
+would be the proper format for this 
+agree 
+to agree 
+'m inclined to agree 
+suggested that GraphML would be the proper format for this , I 'm inclined to agree 
+have suggested that GraphML would be the proper format for this , I 'm inclined to agree 
+have graphical structures 
+do n't have graphical structures 
+represented in an XML/hierarchical format 
+be fine represented in an XML/hierarchical format 
+would be fine represented in an XML/hierarchical format 
+'s just bad luck 
+tackle this sort of enhancement task 
+would tackle this sort of enhancement task 
+store that way 
+would n't store that way 
+using data that would n't store that way 
+are using data that would n't store that way 
+coming out 
+see an XML solution coming out 
+do n't see an XML solution coming out 
+supporting all uses first 
+see a format supporting all uses first 
+to see a format supporting all uses first 
+follow your point 
+do n't quite follow your point 
+is a metalanguage 
+represent graph data 
+to represent graph data 
+used to represent graph data 
+is simply one instance of an XML markup language , specifically one used to represent graph data 
+is RDF and XML 
+representing graphs , i.e. , any SGML or XML markup 
+does so 
+contains links already does so 
+is no limitation in XML per se in representing graphs , i.e. , any SGML or XML markup language that contains links already does so 
+given 
+but given 
+represent a graph 
+can also represent a graph 
+XHTML 
+can XHTML 
+contains links it can also represent a graph , just as can XHTML 
+looks ** like a hierarchical document format but given it contains links it can also represent a graph , just as can XHTML 
+caught by the 5 minute edit rule . ) As for explicit 
+'s an implementation issue 
+IDs on top level elements 
+have IDs on top level elements 
+add xml : id to any markup 
+to add xml : id to any markup 
+'s possible to add xml : id to any markup 
+'s just a serialisation 
+indicated by Peter Neubauer above 
+be a problem , it 's just a serialisation , as indicated by Peter Neubauer above 
+should n't be a problem , it 's just a serialisation , as indicated by Peter Neubauer above 
+go 
+to go 
+is the way to go 
+have problems with the verbosity of XML 
+do n't have problems with the verbosity of XML 
+agree , GraphML is the way to go , if you do n't have problems with the verbosity of XML 
+open the Neo4j graph from Gremlin 
+to open the Neo4j graph from Gremlin 
+is to open the Neo4j graph from Gremlin 
+is the default import/export format 
+like 
+do it is to open the Neo4j graph from Gremlin , where GraphML is the default import/export format , something like 
+to do it is to open the Neo4j graph from Gremlin , where GraphML is the default import/export format , something like 
+described here 
+solve your problem 
+linking me to a blank github wiki page 
+is linking me to a blank github wiki page 
+meant this page 
+loading/saving to/from Gremlin 
+located here : https://github.com/tinkerpop/gremlin/wiki/Gremlin-Methods 
+is now located here : https://github.com/tinkerpop/gremlin/wiki/Gremlin-Methods 
+do 
+does the same thing in the back 
+pass in a GraphDatabaseService instance 
+can also pass in a GraphDatabaseService instance 

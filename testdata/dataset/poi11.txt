@@ -1,0 +1,387 @@
+QUESTION:
+HTML:
+<p>I have an InputStream of a file and i use apache poi components to read from it like this:</p>&#xA;&#xA;<pre><code>POIFSFileSystem fileSystem = new POIFSFileSystem(inputStream);&#xA;</code></pre>&#xA;&#xA;<p>The problem is that i need to use the same stream multiple times and the POIFSFileSystem closes the stream after use.</p>&#xA;&#xA;<p>What is the best way to cache the data from the input stream and then serve more input streams to different POIFSFileSystem ?</p>&#xA;&#xA;<p>EDIT 1:</p>&#xA;&#xA;<p>By cache i meant store for later use, not as a way to speedup the application. Also is it better to just read up the input stream into an array or string and then create input streams for each use ?</p>&#xA;&#xA;<p>EDIT 2:</p>&#xA;&#xA;<p>Sorry to reopen the question, but the conditions are somewhat different when working inside desktop and web application. &#xA;First of all, the InputStream i get from the org.apache.commons.fileupload.FileItem in my tomcat web app doesn't support markings thus cannot reset. </p>&#xA;&#xA;<p>Second, I'd like to be able to keep the file in memory for faster acces and less io problems when dealing with files.</p>&#xA;
+Comment:
+see my "Edit 2" in my post; I'm hoping that it works
+
+ACCEPTED ANS:
+HTML:
+<p>you can decorate InputStream being passed to <em>POIFSFileSystem</em> with a version that when close() is called it respond with reset():</p>&#xA;&#xA;<pre><code>class ResetOnCloseInputStream extends InputStream {&#xA;&#xA;    private final InputStream decorated;&#xA;&#xA;    public ResetOnCloseInputStream(InputStream anInputStream) {&#xA;        if (!anInputStream.markSupported()) {&#xA;            throw new IllegalArgumentException("marking not supported");&#xA;        }&#xA;&#xA;        anInputStream.mark( 1 &lt;&lt; 24); // magic constant: BEWARE&#xA;        decorated = anInputStream;&#xA;    }&#xA;&#xA;    @Override&#xA;    public void close() throws IOException {&#xA;        decorated.reset();&#xA;    }&#xA;&#xA;    @Override&#xA;    public int read() throws IOException {&#xA;        return decorated.read();&#xA;    }&#xA;}&#xA;</code></pre>&#xA;&#xA;<h2>testcase</h2>&#xA;&#xA;<pre><code>static void closeAfterInputStreamIsConsumed(InputStream is)&#xA;        throws IOException {&#xA;    int r;&#xA;&#xA;    while ((r = is.read()) != -1) {&#xA;        System.out.println(r);&#xA;    }&#xA;&#xA;    is.close();&#xA;    System.out.println("=========");&#xA;&#xA;}&#xA;&#xA;public static void main(String[] args) throws IOException {&#xA;    InputStream is = new ByteArrayInputStream("sample".getBytes());&#xA;    ResetOnCloseInputStream decoratedIs = new ResetOnCloseInputStream(is);&#xA;    closeAfterInputStreamIsConsumed(decoratedIs);&#xA;    closeAfterInputStreamIsConsumed(decoratedIs);&#xA;    closeAfterInputStreamIsConsumed(is);&#xA;}&#xA;</code></pre>&#xA;&#xA;<h2>EDIT 2</h2>&#xA;&#xA;<p>you can read the entire file in a byte[] (slurp mode) then passing it to a ByteArrayInputStream</p>&#xA;
+Comment:
+How big files does it handle while using the magic constant in&#xA;anInputStream.mark( 1 << 24) ?
+forget about it, you can make it a parameter
+I just put Integer.MAX_VALUE , anyway thanks it worked like a charm.
+
+ANS:
+HTML:
+<p>If the file is not that big, read it into a <code>byte[]</code> array and give POI a <code>ByteArrayInputStream</code> created from that array.</p>&#xA;&#xA;<p>If the file is big, then you shouldn't care, since the OS will do the caching for you as best as it can.</p>&#xA;&#xA;<p>[EDIT] Use <a href="http://commons.apache.org/io/" rel="nofollow">Apache commons-io</a> to read the File into a byte array in an efficient way. Do not use <code>int read()</code> since it reads the file byte by byte which is <em>very</em> slow!</p>&#xA;&#xA;<p>If you want to do it yourself, use a <code>File</code> object to get the length, create the array and the a loop which reads bytes from the file. You must loop since <code>read(byte[], int offset, int len)</code> can read less than <code>len</code> bytes (and usually does).</p>&#xA;
+Comment:
+the Read() method returns int, how do i split the bytes: little or big endian ?
+read returns always 0-255 or -1. Check first for -1(end of stream) and then you can cast it safety to byte.
+HTML:
+<p>What exactly do you mean with "cache"? Do you want the different POIFSFileSystem to start at the beginning of the stream? If so, there's absolutely no point caching anything in your Java code; it will be done by the OS, just open a new stream.</p>&#xA;&#xA;<p>Or do you wan to continue reading at the point where the first POIFSFileSystem stopped? That's not caching, and it's very difficult to do. The only way I can think of if you can't avoid the stream getting closed would be to write a thin wrapper that counts how many bytes have been read and then open a new stream and skip that many bytes. But that could fail when POIFSFileSystem internally uses something like a BufferedInputStream.</p>&#xA;
+Comment:
+Not very wise to presume that the input stream is resetable indeed.
+HTML:
+<p>you can decorate InputStream being passed to <em>POIFSFileSystem</em> with a version that when close() is called it respond with reset():</p>&#xA;&#xA;<pre><code>class ResetOnCloseInputStream extends InputStream {&#xA;&#xA;    private final InputStream decorated;&#xA;&#xA;    public ResetOnCloseInputStream(InputStream anInputStream) {&#xA;        if (!anInputStream.markSupported()) {&#xA;            throw new IllegalArgumentException("marking not supported");&#xA;        }&#xA;&#xA;        anInputStream.mark( 1 &lt;&lt; 24); // magic constant: BEWARE&#xA;        decorated = anInputStream;&#xA;    }&#xA;&#xA;    @Override&#xA;    public void close() throws IOException {&#xA;        decorated.reset();&#xA;    }&#xA;&#xA;    @Override&#xA;    public int read() throws IOException {&#xA;        return decorated.read();&#xA;    }&#xA;}&#xA;</code></pre>&#xA;&#xA;<h2>testcase</h2>&#xA;&#xA;<pre><code>static void closeAfterInputStreamIsConsumed(InputStream is)&#xA;        throws IOException {&#xA;    int r;&#xA;&#xA;    while ((r = is.read()) != -1) {&#xA;        System.out.println(r);&#xA;    }&#xA;&#xA;    is.close();&#xA;    System.out.println("=========");&#xA;&#xA;}&#xA;&#xA;public static void main(String[] args) throws IOException {&#xA;    InputStream is = new ByteArrayInputStream("sample".getBytes());&#xA;    ResetOnCloseInputStream decoratedIs = new ResetOnCloseInputStream(is);&#xA;    closeAfterInputStreamIsConsumed(decoratedIs);&#xA;    closeAfterInputStreamIsConsumed(decoratedIs);&#xA;    closeAfterInputStreamIsConsumed(is);&#xA;}&#xA;</code></pre>&#xA;&#xA;<h2>EDIT 2</h2>&#xA;&#xA;<p>you can read the entire file in a byte[] (slurp mode) then passing it to a ByteArrayInputStream</p>&#xA;
+Comment:
+How big files does it handle while using the magic constant in&#xA;anInputStream.mark( 1 << 24) ?
+forget about it, you can make it a parameter
+I just put Integer.MAX_VALUE , anyway thanks it worked like a charm.
+HTML:
+<p>This is how I would implemented, to be safely used with any InputStream : </p>&#xA;&#xA;<ul>&#xA;<li>write your own InputStream wrapper where you create a temporary file to mirror the original stream content</li>&#xA;<li>dump everything read from the original input stream into this temporary file</li>&#xA;<li>when the stream was completely read you will have all the data mirrored in the temporary file</li>&#xA;<li>use InputStream.reset to switch(initialize) the internal stream to a FileInputStream(mirrored_content_file)</li>&#xA;<li>from now on you will loose the reference of the original stream(can be collected)</li>&#xA;<li>add a new method release() which will remove the temporary file and release any open stream.</li>&#xA;<li>you can even call release() from <em>finalize</em> to be sure the temporary file is release in case you forget to call release()(most of the time you should avoid using <em>finalize</em>, always call a method to release object resources). see <a href="http://stackoverflow.com/questions/158174/why-would-you-ever-implement-finalize">Why would you ever implement finalize()?</a></li>&#xA;</ul>&#xA;
+Comment:
+HTML:
+<p>Try BufferedInputStream, which adds mark and reset functionality to another input stream, and just override its close method:</p>&#xA;&#xA;<pre><code>public class UnclosableBufferedInputStream extends BufferedInputStream {&#xA;&#xA;    public UnclosableBufferedInputStream(InputStream in) {&#xA;    	super(in);&#xA;    	super.mark(Integer.MAX_VALUE);&#xA;    }&#xA;&#xA;    @Override&#xA;    public void close() throws IOException {&#xA;    	super.reset();&#xA;    }&#xA;}&#xA;</code></pre>&#xA;&#xA;<p>So:</p>&#xA;&#xA;<pre><code>UnclosableBufferedInputStream  bis = new UnclosableBufferedInputStream (inputStream);&#xA;</code></pre>&#xA;&#xA;<p>and use <code>bis</code> wherever inputStream was used before.</p>&#xA;
+Comment:
+Please check EDIT2 of the question:&#xA;"... the InputStream i get ... doesn't support markings thus cannot reset..."
+It doesn't matter whether your InputStream supports it or not. BufferedInputStream wraps around another stream, buffers the input, and supports marking on its own. &#xA;&#xA;The overridden close method, will also conveniently reset it, whenever it's consumed.
+good point, thanks
+why would you like to reset it when you ask from it to be closed? is it really needed? shouldn't we just call reset() when we wish to ?
+@androiddeveloper If you are using a library, for example, that needs an `InputStream` and closes it after using it.
+@Timmos i am not sure you've understood me. i can see in the "close()" method that he called "reset()" . i don't understand why he did it. isn't it really a bad thing to keep inputStreams alive all the time?
+@androiddeveloper In general, yes. For file input streams, for example. What I do is a combination of the 2 proposed solution in the accepted answer. I read the file into a `byte[]` and then pass this into a `ByteArrayInputStream`, which I keep open by calling `reset()` in the `close()` method. But this last step is unnecessary as the Javadoc for `ByteArrayInputStream` states: "Closing a ByteArrayInputStream has no effect. The methods in this class can be called after the stream has been closed without generating an IOException."
+@Timmos cool. thanks. i wonder though how i can use an inputStream of the internet and be able to go back in it, maybe using a custom input stream. for some reason , using BufferedInputStream didn't always work for me. i've posted a question about it, but didn't find a good solution. here's the link : http://stackoverflow.com/questions/17774442/how-to-get-bitmap-information-and-then-decode-bitmap-from-internet-inputstream . it seems like it works on most websites, but not on others. weird.
+HTML:
+<pre><code>public static void main(String[] args) throws IOException {&#xA;    BufferedInputStream inputStream = new BufferedInputStream(IOUtils.toInputStream("Foobar"));&#xA;    inputStream.mark(Integer.MAX_VALUE);&#xA;    System.out.println(IOUtils.toString(inputStream));&#xA;    inputStream.reset();&#xA;    System.out.println(IOUtils.toString(inputStream));&#xA;}&#xA;</code></pre>&#xA;&#xA;<p>This works.  IOUtils is part of commons IO.</p>&#xA;
+Comment:
+HTML:
+<p>This works correctly:</p>&#xA;&#xA;<pre><code>byte[] bytes = getBytes(inputStream);&#xA;POIFSFileSystem fileSystem = new POIFSFileSystem(new ByteArrayInputStream(bytes));&#xA;</code></pre>&#xA;&#xA;<p>where getBytes is like this:</p>&#xA;&#xA;<pre><code>private static byte[] getBytes(InputStream is) throws IOException {&#xA;    byte[] buffer = new byte[8192];&#xA;ByteArrayOutputStream baos = new ByteArrayOutputStream(2048);&#xA;int n;&#xA;baos.reset();&#xA;&#xA;while ((n = is.read(buffer, 0, buffer.length)) != -1) {&#xA;      baos.write(buffer, 0, n);&#xA;    }&#xA;&#xA;   return baos.toByteArray();&#xA; }&#xA;</code></pre>&#xA;
+Comment:
+HTML:
+<p>I just add my solution here, as this works for me. It basically is a combination of the top two answers :)</p>&#xA;&#xA;<pre><code>    private String convertStreamToString(InputStream is) {&#xA;    Writer w = new StringWriter();&#xA;    char[] buf = new char[1024];&#xA;    Reader r;&#xA;    is.mark(1 &lt;&lt; 24);&#xA;    try {&#xA;        r = new BufferedReader(new InputStreamReader(is, "UTF-8"));&#xA;        int n;&#xA;        while ((n=r.read(buf)) != -1) {&#xA;            w.write(buf, 0, n);&#xA;        }&#xA;        is.reset();&#xA;    } catch(UnsupportedEncodingException e) {&#xA;        Logger.debug(this.getClass(), "Cannot convert stream to string.", e);&#xA;    } catch(IOException e) {&#xA;        Logger.debug(this.getClass(), "Cannot convert stream to string.", e);&#xA;    }&#xA;    return w.toString();&#xA;}&#xA;</code></pre>&#xA;
+Comment:
+It is great that it works for you, but you shoudln't put answers to your problems, but answers to the questions asked ;)
+This is my solution on how to cache an InputStream for multiple use. Isn't that the problem you submitted?
+I appreciate your effort. And for the problem I submitted, sometimes details make it different. The question I asked is a bit more specific, a multiple use of a _Stream_ to be consumed by _Apache POI_ which may or may not work with _String_. So you actually answered more general question, and not the more specific I posted. That's why the most specific answer won.
+I see, thanks for the clarification :)
+
+Phrase:
+read from it like this 
+to read from it like this 
+use apache poi components to read from it like this 
+have an InputStream of a file and i use apache poi components to read from it like this 
+use the same stream multiple times 
+to use the same stream multiple times 
+need to use the same stream multiple times 
+is that i need to use the same stream multiple times 
+closes the stream after use 
+cache the data from the input stream 
+serve more input streams to different POIFSFileSystem 
+cache the data from the input stream and then serve more input streams to different POIFSFileSystem 
+to cache the data from the input stream and then serve more input streams to different POIFSFileSystem 
+speedup the application 
+to speedup the application 
+meant store for later use , not as a way to speedup the application 
+read up the input stream into an array or string 
+then create input streams 
+just read up the input stream into an array or string and then create input streams 
+to just read up the input stream into an array or string and then create input streams 
+working inside desktop and web application 
+are somewhat different when working inside desktop and web application 
+reopen the question , but the conditions are somewhat different when working inside desktop and web application 
+to reopen the question , but the conditions are somewhat different when working inside desktop and web application 
+get from the org.apache.commons.fileupload.FileItem in my tomcat web app 
+reset 
+can not reset 
+support markings thus can not reset 
+does n't support markings thus can not reset 
+keep the file in memory for faster acces and less io problems 
+to keep the file in memory for faster acces and less io problems 
+dealing with files 
+be able to keep the file in memory for faster acces and less io problems when dealing with files 
+to be able to keep the file in memory for faster acces and less io problems when dealing with files 
+like to be able to keep the file in memory for faster acces and less io problems when dealing with files 
+'d like to be able to keep the file in memory for faster acces and less io problems when dealing with files 
+works 
+hoping that it works 
+'m hoping that it works 
+see my `` Edit 2 '' in my post ; I 'm hoping that it works 
+passed to POIFSFileSystem with a version that when close 
+being passed to POIFSFileSystem with a version that when close 
+respond with reset ( 
+called it respond with reset ( 
+is called it respond with reset ( 
+decorate InputStream being passed to POIFSFileSystem with a version that when close ( ) is called it respond with reset ( ) 
+can decorate InputStream being passed to POIFSFileSystem with a version that when close ( ) is called it respond with reset ( ) 
+passing it to a ByteArrayInputStream 
+read the entire file in a byte -LSB- -RSB- ( slurp mode ) then passing it to a ByteArrayInputStream 
+can read the entire file in a byte -LSB- -RSB- ( slurp mode ) then passing it to a ByteArrayInputStream 
+using the magic constant in & #xA ; anInputStream.mark ( 1 << 24 ) 
+handle while using the magic constant in & #xA ; anInputStream.mark ( 1 << 24 ) 
+forget about it 
+make it a parameter 
+can make it a parameter 
+worked like a charm 
+put Integer.MAX _ VALUE , anyway thanks it worked like a charm 
+is not that big 
+read it into a CODE0 array 
+created from that array 
+give POI a CODE1 created from that array 
+read it into a CODE0 array and give POI a CODE1 created from that array 
+is big 
+can 
+do the caching for you as best as it can 
+will do the caching for you as best as it can 
+care , since the OS will do the caching for you as best as it can 
+should n't care , since the OS will do the caching for you as best as it can 
+read the File into a byte array in an efficient way 
+to read the File into a byte array in an efficient way 
+is very slow 
+reads the file byte by byte which is very slow 
+use CODE0 since it reads the file byte by byte which is very slow 
+Do not use CODE0 since it reads the file byte by byte which is very slow 
+do it yourself 
+get the length 
+to get the length 
+use a CODE0 object to get the length 
+reads bytes from the file 
+create the array and the a loop which reads bytes from the file 
+do it yourself , use a CODE0 object to get the length , create the array and the a loop which reads bytes from the file 
+to do it yourself , use a CODE0 object to get the length , create the array and the a loop which reads bytes from the file 
+want to do it yourself , use a CODE0 object to get the length , create the array and the a loop which reads bytes from the file 
+read less than CODE2 bytes 
+can read less than CODE2 bytes 
+usually does 
+can read less than CODE2 bytes ( and usually does ) 
+loop since CODE1 can read less than CODE2 bytes ( and usually does ) 
+must loop since CODE1 can read less than CODE2 bytes ( and usually does ) 
+split the bytes : little or big endian 
+read returns always 0-255 or -1 
+Check first for -1 
+end of stream 
+byte 
+to byte 
+cast it safety to byte 
+can cast it safety to byte 
+mean with `` cache '' 
+start at the beginning of the stream 
+to start at the beginning of the stream 
+want the different POIFSFileSystem to start at the beginning of the stream 
+Do you want the different POIFSFileSystem to start at the beginning of the stream 
+'s absolutely no point caching anything in your Java code 
+done by the OS 
+be done by the OS 
+will be done by the OS 
+open a new stream 
+stopped 
+continue reading at the point where the first POIFSFileSystem stopped 
+to continue reading at the point where the first POIFSFileSystem stopped 
+wan to continue reading at the point where the first POIFSFileSystem stopped 
+do you wan to continue reading at the point where the first POIFSFileSystem stopped 
+caching 
+'s not caching 
+do 
+to do 
+'s very difficult to do 
+getting closed 
+avoid the stream getting closed 
+ca n't avoid the stream getting closed 
+think of if you ca n't avoid the stream getting closed 
+can think of if you ca n't avoid the stream getting closed 
+read 
+been read 
+have been read 
+counts how many bytes have been read 
+write a thin wrapper that counts how many bytes have been read 
+then open a new stream 
+skip that many bytes 
+then open a new stream and skip that many bytes 
+write a thin wrapper that counts how many bytes have been read and then open a new stream and skip that many bytes 
+to write a thin wrapper that counts how many bytes have been read and then open a new stream and skip that many bytes 
+be to write a thin wrapper that counts how many bytes have been read and then open a new stream and skip that many bytes 
+would be to write a thin wrapper that counts how many bytes have been read and then open a new stream and skip that many bytes 
+uses something like a BufferedInputStream 
+fail when POIFSFileSystem internally uses something like a BufferedInputStream 
+could fail when POIFSFileSystem internally uses something like a BufferedInputStream 
+is resetable indeed 
+presume that the input stream is resetable indeed 
+to presume that the input stream is resetable indeed 
+passed to POIFSFileSystem with a version that when close 
+being passed to POIFSFileSystem with a version that when close 
+respond with reset ( 
+called it respond with reset ( 
+is called it respond with reset ( 
+decorate InputStream being passed to POIFSFileSystem with a version that when close ( ) is called it respond with reset ( ) 
+can decorate InputStream being passed to POIFSFileSystem with a version that when close ( ) is called it respond with reset ( ) 
+passing it to a ByteArrayInputStream 
+read the entire file in a byte -LSB- -RSB- ( slurp mode ) then passing it to a ByteArrayInputStream 
+can read the entire file in a byte -LSB- -RSB- ( slurp mode ) then passing it to a ByteArrayInputStream 
+using the magic constant in & #xA ; anInputStream.mark ( 1 << 24 ) 
+handle while using the magic constant in & #xA ; anInputStream.mark ( 1 << 24 ) 
+forget about it 
+make it a parameter 
+can make it a parameter 
+worked like a charm 
+put Integer.MAX _ VALUE , anyway thanks it worked like a charm 
+safely used with any InputStream 
+be safely used with any InputStream 
+to be safely used with any InputStream 
+implemented , to be safely used with any InputStream 
+would implemented , to be safely used with any InputStream 
+is how I would implemented , to be safely used with any InputStream 
+mirror the original stream content 
+to mirror the original stream content 
+create a temporary file to mirror the original stream content 
+write your own InputStream wrapper where you create a temporary file to mirror the original stream content 
+read from the original input stream into this temporary file 
+dump everything read from the original input stream into this temporary file 
+mirrored in the temporary file 
+have all the data mirrored in the temporary file 
+will have all the data mirrored in the temporary file 
+read you will have all the data mirrored in the temporary file 
+was completely read you will have all the data mirrored in the temporary file 
+initialize 
+switch ( initialize ) the internal stream to a FileInputStream ( mirrored_content_file ) 
+to switch ( initialize ) the internal stream to a FileInputStream ( mirrored_content_file ) 
+use InputStream.reset to switch ( initialize ) the internal stream to a FileInputStream ( mirrored_content_file ) 
+loose 
+will loose 
+collected 
+be collected 
+can be collected 
+remove the temporary file 
+will remove the temporary file 
+add a new method release ( ) which will remove the temporary file 
+release any open stream 
+add a new method release ( ) which will remove the temporary file and release any open stream 
+call release ( 
+to call release ( 
+forget to call release ( 
+is release in case you forget to call release ( 
+be sure the temporary file is release in case you forget to call release ( 
+to be sure the temporary file is release in case you forget to call release ( 
+) from finalize to be sure the temporary file is release in case you forget to call release ( 
+using finalize 
+avoid using finalize 
+release object resources 
+to release object resources 
+call a method to release object resources 
+avoid using finalize , always call a method to release object resources 
+should avoid using finalize , always call a method to release object resources 
+call release ( ) from finalize to be sure the temporary file is release in case you forget to call release ( ) ( most of the time you should avoid using finalize , always call a method to release object resources ) 
+can even call release ( ) from finalize to be sure the temporary file is release in case you forget to call release ( ) ( most of the time you should avoid using finalize , always call a method to release object resources ) 
+implement finalize ( ) 
+see Why would you ever implement finalize ( ) ? 
+adds mark 
+Try BufferedInputStream , which adds mark 
+reset functionality to another input stream 
+just override its close method 
+Try BufferedInputStream , which adds mark and reset functionality to another input stream , and just override its close method 
+used before 
+was used before 
+use CODE0 wherever inputStream was used before 
+#xA 
+check EDIT2 of the question : & #xA ; '' . 
+get 
+support markings thus 
+does n't support markings thus 
+reset 
+can not reset 
+supports it 
+matter whether your InputStream supports it or not 
+does n't matter whether your InputStream supports it or not 
+wraps around another stream 
+buffers the input 
+marking on its own 
+supports marking on its own 
+wraps around another stream , buffers the input , and supports marking on its own 
+consumed 
+'s consumed 
+reset it , whenever it 's consumed 
+will also conveniently reset it , whenever it 's consumed 
+closed 
+be closed 
+to be closed 
+ask from it to be closed 
+reset it when you ask from it to be closed 
+to reset it when you ask from it to be closed 
+like to reset it when you ask from it to be closed 
+is 
+wish to 
+call reset ( ) when we wish to 
+using a library , for example 
+are using a library , for example 
+using it 
+closes it after using it 
+needs an ` InputStream ` and closes it after using it 
+understood 
+'ve understood 
+am not sure you 've understood 
+@Timmos i am not sure you 've understood 
+`` reset ( ) '' 
+called `` reset ( ) '' 
+see in the `` close ( ) '' method that he called `` reset ( ) '' 
+can see in the `` close ( ) '' method that he called `` reset ( ) '' 
+did it 
+understand why he did it 
+do n't understand why he did it 
+keep inputStreams alive all the time 
+to keep inputStreams alive all the time 
+streams 
+is a combination of the 2 proposed solution in the accepted answer 
+do is a combination of the 2 proposed solution in the accepted answer 
+read the file into a ` byte -LSB- -RSB- ` 
+calling ` reset ( ) ` in the ` close ( ) ` method 
+keep open by calling ` reset ( ) ` in the ` close ( ) ` method 
+pass this into a ` ByteArrayInputStream ` , which I keep open by calling ` reset ( ) ` in the ` close ( ) ` method 
+read the file into a ` byte -LSB- -RSB- ` and then pass this into a ` ByteArrayInputStream ` , which I keep open by calling ` reset ( ) ` in the ` close ( ) ` method 
+has no effect 
+is unnecessary as the Javadoc for ` ByteArrayInputStream ` states : `` Closing a ByteArrayInputStream has no effect 
+generating an IOException 
+closed without generating an IOException 
+been closed without generating an IOException 
+has been closed without generating an IOException 
+called after the stream has been closed without generating an IOException 
+be called after the stream has been closed without generating an IOException 
+can be called after the stream has been closed without generating an IOException 
+cool 
+use an inputStream of the internet 
+go back in it 
+to go back in it 
+using a custom input stream 
+be able to go back in it , maybe using a custom input stream 
+use an inputStream of the internet and be able to go back in it , maybe using a custom input stream 
+can use an inputStream of the internet and be able to go back in it , maybe using a custom input stream 
+wonder though how i can use an inputStream of the internet and be able to go back in it , maybe using a custom input stream 
+work for me 
+did n't always work for me 
+using BufferedInputStream did n't always work for me 
+posted a question about it 
+'ve posted a question about it 
+find a good solution 
+did n't find a good solution 
+'ve posted a question about it , but did n't find a good solution 
+'s the link : http://stackoverflow.com/questions/17774442/how-to-get-bitmap-information-and-then-decode-bitmap-from-internet-inputstream 
+works on most websites , but not on others 
+seems like it works on most websites , but not on others 
+works 
+is part of commons IO 
+works correctly 
+works for me 
+add my solution here , as this works for me 
+is a combination of the top two answers : 
+works for you 
+put answers to your problems 
+shoudl n't put answers to your problems 
+asked 
+is great that it works for you , but you shoudl n't put answers to your problems , but answers to the questions asked ; 
+cache an InputStream for multiple use 
+to cache an InputStream for multiple use 
+is my solution on how to cache an InputStream for multiple use 
+submitted 
+appreciate your effort 
+submitted 
+make it different 
+asked 
+work with _ String _ 
+may or may not work with _ String _ 
+consumed by _ Apache POI _ which may or may not work with _ String _ 
+be consumed by _ Apache POI _ which may or may not work with _ String _ 
+to be consumed by _ Apache POI _ which may or may not work with _ String _ 
+is a bit more specific , a multiple use of a _ Stream _ to be consumed by _ Apache POI _ which may or may not work with _ String _ 
+answered more general question 
+posted 
+won 
+'s why the most specific answer won 
+see , thanks for the clarification : 

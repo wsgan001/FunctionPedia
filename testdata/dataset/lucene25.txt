@@ -1,0 +1,158 @@
+QUESTION:
+HTML:
+<p>I want to use Lucene (in particular, Lucene.NET) to search for email address domains.</p>&#xA;&#xA;<p>E.g. I want to search for "@gmail.com" to find all emails sent to a gmail address.</p>&#xA;&#xA;<p>Running a Lucene query for "*@gmail.com" results in an error, asterisks cannot be at the start of queries. Running a query for "@gmail.com" doesn't return any matches, because "foo@gmail.com" is seen as a whole word, and you cannot search for just parts of a word.</p>&#xA;&#xA;<p>How can I do this?</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>No one gave a satisfactory answer, so we started poking around Lucene documentation and discovered we can accomplish this using custom Analyzers and Tokenizers.</p>&#xA;&#xA;<p>The answer is this: create a WhitespaceAndAtSymbolTokenizer and a WhitespaceAndAtSymbolAnalyzer, then recreate your index using this analyzer. Once you do this, a search for "@gmail.com" will return all gmail addresses, because it's seen as a separate word thanks to the Tokenizer we just created.</p>&#xA;&#xA;<p>Here's the source code, it's actually very simple:</p>&#xA;&#xA;<pre><code>class WhitespaceAndAtSymbolTokenizer : CharTokenizer&#xA;{&#xA;    public WhitespaceAndAtSymbolTokenizer(TextReader input)&#xA;        : base(input)&#xA;    {&#xA;    }&#xA;&#xA;    protected override bool IsTokenChar(char c)&#xA;    {&#xA;        // Make whitespace characters and the @ symbol be indicators of new words.&#xA;        return !(char.IsWhiteSpace(c) || c == '@');&#xA;    }&#xA;}&#xA;&#xA;&#xA;internal class WhitespaceAndAtSymbolAnalyzer : Analyzer&#xA;{&#xA;    public override TokenStream TokenStream(string fieldName, TextReader reader)&#xA;    {&#xA;        return new WhitespaceAndAtSymbolTokenizer(reader);&#xA;    }&#xA;}&#xA;</code></pre>&#xA;&#xA;<p>That's it! Now you just need to rebuild your index and do all searches using this new Analyzer. For example, to write documents to your index:</p>&#xA;&#xA;<pre><code>IndexWriter index = new IndexWriter(indexDirectory, new WhitespaceAndAtSymbolAnalyzer());&#xA;index.AddDocument(myDocument);&#xA;</code></pre>&#xA;&#xA;<p>Performing searches should use the analyzer as well:</p>&#xA;&#xA;<pre><code>IndexSearcher searcher = new IndexSearcher(indexDirectory);&#xA;Query query = new QueryParser("TheFieldNameToSearch", new WhitespaceAndAtSymbolAnalyzer()).Parse("@gmail.com");&#xA;Hits hits = query.Search(query);&#xA;</code></pre>&#xA;
+Comment:
+
+ANS:
+HTML:
+<p>No one gave a satisfactory answer, so we started poking around Lucene documentation and discovered we can accomplish this using custom Analyzers and Tokenizers.</p>&#xA;&#xA;<p>The answer is this: create a WhitespaceAndAtSymbolTokenizer and a WhitespaceAndAtSymbolAnalyzer, then recreate your index using this analyzer. Once you do this, a search for "@gmail.com" will return all gmail addresses, because it's seen as a separate word thanks to the Tokenizer we just created.</p>&#xA;&#xA;<p>Here's the source code, it's actually very simple:</p>&#xA;&#xA;<pre><code>class WhitespaceAndAtSymbolTokenizer : CharTokenizer&#xA;{&#xA;    public WhitespaceAndAtSymbolTokenizer(TextReader input)&#xA;        : base(input)&#xA;    {&#xA;    }&#xA;&#xA;    protected override bool IsTokenChar(char c)&#xA;    {&#xA;        // Make whitespace characters and the @ symbol be indicators of new words.&#xA;        return !(char.IsWhiteSpace(c) || c == '@');&#xA;    }&#xA;}&#xA;&#xA;&#xA;internal class WhitespaceAndAtSymbolAnalyzer : Analyzer&#xA;{&#xA;    public override TokenStream TokenStream(string fieldName, TextReader reader)&#xA;    {&#xA;        return new WhitespaceAndAtSymbolTokenizer(reader);&#xA;    }&#xA;}&#xA;</code></pre>&#xA;&#xA;<p>That's it! Now you just need to rebuild your index and do all searches using this new Analyzer. For example, to write documents to your index:</p>&#xA;&#xA;<pre><code>IndexWriter index = new IndexWriter(indexDirectory, new WhitespaceAndAtSymbolAnalyzer());&#xA;index.AddDocument(myDocument);&#xA;</code></pre>&#xA;&#xA;<p>Performing searches should use the analyzer as well:</p>&#xA;&#xA;<pre><code>IndexSearcher searcher = new IndexSearcher(indexDirectory);&#xA;Query query = new QueryParser("TheFieldNameToSearch", new WhitespaceAndAtSymbolAnalyzer()).Parse("@gmail.com");&#xA;Hits hits = query.Search(query);&#xA;</code></pre>&#xA;
+Comment:
+HTML:
+<p>I see you have your solution, but mine would have avoided this and added a field to the documents you're indexing called email_domain, into which I would have added the parsed out domain of the email address. It might sound silly, but the amount of storage associated with this is pretty minimal.  If you feel like getting fancier, say some domain had many subdomains, you could instead make a field into which the reversed domain went, so you'd store com.gmail, com.company.department, or ae.eim so you could find all the United Arab Emirates related addresses with a prefix query of 'ae.'</p>&#xA;
+Comment:
+HTML:
+<p>You could a separate field that indexes the email address reversed:&#xA;Index 'foo@gmail.com' as 'moc.liamg@oof'&#xA;Which enables you to do a query for "moc.liamg@*" </p>&#xA;
+Comment:
+Hmm. That sounds really hackish.
+HTML:
+<p>There also is <a href="http://lucene.apache.org/java/2_3_2/api/org/apache/lucene/queryParser/QueryParser.html#setAllowLeadingWildcard(boolean)" rel="nofollow"><strong>setAllowLeadingWildcard</strong></a></p>&#xA;&#xA;<p>But be <strong>careful</strong>. This could get very performance expensive (thats why it is disabled by default). Maybe in some cases this would be an easy solution, but I would prefer a custom Tokenizer as stated by <a href="http://stackoverflow.com/questions/19014/using-lucene-to-search-for-email-addresses#20468">Judah Himango</a>, too.</p>&#xA;
+Comment:
+
+Phrase:
+search for email address domains 
+to search for email address domains 
+use Lucene ( in particular , Lucene.NET ) to search for email address domains 
+to use Lucene ( in particular , Lucene.NET ) to search for email address domains 
+want to use Lucene ( in particular , Lucene.NET ) to search for email address domains 
+sent to a gmail address 
+find all emails sent to a gmail address 
+to find all emails sent to a gmail address 
+search for '' @gmail . com '' to find all emails sent to a gmail address 
+to search for '' @gmail . com '' to find all emails sent to a gmail address 
+want to search for '' @gmail . com '' to find all emails sent to a gmail address 
+Running a Lucene query for '' * @gmail . com '' results in an error 
+be at the start of queries 
+can not be at the start of queries 
+return any 
+does n't return any 
+Running a query for '' @gmail . com '' does n't return any 
+seen as a whole word 
+is seen as a whole word 
+matches , because `` foo@gmail.com&quot; is seen as a whole word 
+search for just parts of a word 
+can not search for just parts of a word 
+do this 
+gave a satisfactory answer 
+poking around Lucene documentation 
+started poking around Lucene documentation 
+using custom Analyzers and Tokenizers 
+accomplish this using custom Analyzers and Tokenizers 
+can accomplish this using custom Analyzers and Tokenizers 
+discovered we can accomplish this using custom Analyzers and Tokenizers 
+started poking around Lucene documentation and discovered we can accomplish this using custom Analyzers and Tokenizers 
+create a WhitespaceAndAtSymbolTokenizer and a WhitespaceAndAtSymbolAnalyzer 
+using this analyzer 
+recreate your index using this analyzer 
+is this : create a WhitespaceAndAtSymbolTokenizer and a WhitespaceAndAtSymbolAnalyzer , then recreate your index using this analyzer 
+return all gmail addresses 
+will return all gmail addresses 
+seen as a separate word thanks to the Tokenizer 
+'s seen as a separate word thanks to the Tokenizer 
+do this , a search for '' @gmail . com '' will return all gmail addresses , because it 's seen as a separate word thanks to the Tokenizer 
+created 
+'s the source code 
+'s actually very simple 
+'s it 
+rebuild your index 
+using this new Analyzer 
+do all searches using this new Analyzer 
+rebuild your index and do all searches using this new Analyzer 
+to rebuild your index and do all searches using this new Analyzer 
+need to rebuild your index and do all searches using this new Analyzer 
+write documents to your index 
+to write documents to your index 
+use the analyzer as well 
+should use the analyzer as well 
+gave a satisfactory answer 
+poking around Lucene documentation 
+started poking around Lucene documentation 
+using custom Analyzers and Tokenizers 
+accomplish this using custom Analyzers and Tokenizers 
+can accomplish this using custom Analyzers and Tokenizers 
+discovered we can accomplish this using custom Analyzers and Tokenizers 
+started poking around Lucene documentation and discovered we can accomplish this using custom Analyzers and Tokenizers 
+create a WhitespaceAndAtSymbolTokenizer and a WhitespaceAndAtSymbolAnalyzer 
+using this analyzer 
+recreate your index using this analyzer 
+is this : create a WhitespaceAndAtSymbolTokenizer and a WhitespaceAndAtSymbolAnalyzer , then recreate your index using this analyzer 
+return all gmail addresses 
+will return all gmail addresses 
+seen as a separate word thanks to the Tokenizer 
+'s seen as a separate word thanks to the Tokenizer 
+do this , a search for '' @gmail . com '' will return all gmail addresses , because it 's seen as a separate word thanks to the Tokenizer 
+created 
+'s the source code 
+'s actually very simple 
+'s it 
+rebuild your index 
+using this new Analyzer 
+do all searches using this new Analyzer 
+rebuild your index and do all searches using this new Analyzer 
+to rebuild your index and do all searches using this new Analyzer 
+need to rebuild your index and do all searches using this new Analyzer 
+write documents to your index 
+to write documents to your index 
+use the analyzer as well 
+should use the analyzer as well 
+have your solution 
+avoided this 
+have avoided this 
+would have avoided this 
+added a field to the documents 
+would have avoided this and added a field to the documents 
+added the parsed out domain of the email address 
+have added the parsed out domain of the email address 
+would have added the parsed out domain of the email address 
+indexing called email_domain , into which I would have added the parsed out domain of the email address 
+'re indexing called email_domain , into which I would have added the parsed out domain of the email address 
+see you have your solution , but mine would have avoided this and added a field to the documents you 're indexing called email_domain , into which I would have added the parsed out domain of the email address 
+sound silly 
+might sound silly 
+associated with this 
+is pretty minimal 
+getting fancier 
+feel like getting fancier 
+went 
+make a field into which the reversed domain went 
+could instead make a field into which the reversed domain went 
+find all the United Arab Emirates related addresses with a prefix query of ` ae 
+could find all the United Arab Emirates related addresses with a prefix query of ` ae 
+store com.gmail , com.company.department , or ae.eim so you could find all the United Arab Emirates related addresses with a prefix query of ` ae 
+'d store com.gmail , com.company.department , or ae.eim so you could find all the United Arab Emirates related addresses with a prefix query of ` ae 
+had many subdomains , you could instead make a field into which the reversed domain went , so you 'd store com.gmail , com.company.department , or ae.eim so you could find all the United Arab Emirates related addresses with a prefix query of ` ae 
+say some domain had many subdomains , you could instead make a field into which the reversed domain went , so you 'd store com.gmail , com.company.department , or ae.eim so you could find all the United Arab Emirates related addresses with a prefix query of ` ae 
+do a query for `` moc.liamg@*&quot; 
+to do a query for `` moc.liamg@*&quot; 
+enables you to do a query for `` moc.liamg@*&quot; 
+foo@gmail.com' as ` moc.liamg@oof' Which enables you to do a query for `` moc.liamg@*&quot; 
+reversed : Index ` foo@gmail.com' as ` moc.liamg@oof' Which enables you to do a query for `` moc.liamg@*&quot; 
+a separate field that indexes the email address reversed : Index ` foo@gmail.com' as ` moc.liamg@oof' Which enables you to do a query for `` moc.liamg@*&quot; 
+could a separate field that indexes the email address reversed : Index ` foo@gmail.com' as ` moc.liamg@oof' Which enables you to do a query for `` moc.liamg@*&quot; 
+sounds really hackish 
+setAllowLeadingWildcard 
+is setAllowLeadingWildcard 
+be careful 
+disabled by default 
+is disabled by default 
+get very performance expensive ( thats why it is disabled by default ) 
+could get very performance expensive ( thats why it is disabled by default ) 
+be an easy solution 
+would be an easy solution 
+stated by Judah Himango , too 
+prefer a custom Tokenizer as stated by Judah Himango , too 
+would prefer a custom Tokenizer as stated by Judah Himango , too 

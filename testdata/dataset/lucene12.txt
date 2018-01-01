@@ -1,0 +1,228 @@
+QUESTION:
+HTML:
+<p>I'm looking for a way to do query auto-completion/suggestions in Lucene. I've Googled around a bit and played around a bit, but all of the examples I've seen seem to be setting up filters in Solr. We don't use Solr and aren't planning to move to using Solr in the near future, and Solr is obviously just wrapping around Lucene anyway, so I imagine there must be a way to do it!</p>&#xA;&#xA;<p>I've looked into using EdgeNGramFilter, and I realise that I'd have to run the filter on the index fields and get the tokens out and then compare them against the inputted Query... I'm just struggling to make the connection between the two into a bit of code, so help is much appreciated!</p>&#xA;&#xA;<p>To be clear on what I'm looking for (I realised I wasn't being overly clear, sorry) - I'm looking for a solution where when searching for a term, it'd return a list of suggested queries. When typing 'inter' into the search field, it'll come back with a list of suggested queries, such as 'internet', 'international', etc.</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>Based on @Alexandre Victoor's answer, I wrote a little class based on the Lucene Spellchecker in the contrib package (and using the LuceneDictionary included in it) that does exactly what I want.</p>&#xA;&#xA;<p>This allows re-indexing from a single source index with a single field, and provides suggestions for terms. Results are sorted by the number of matching documents with that term in the original index, so more popular terms appear first. Seems to work pretty well :)</p>&#xA;&#xA;<pre><code>import java.io.IOException;&#xA;import java.io.Reader;&#xA;import java.util.ArrayList;&#xA;import java.util.HashMap;&#xA;import java.util.Iterator;&#xA;import java.util.List;&#xA;import java.util.Map;&#xA;&#xA;import org.apache.lucene.analysis.Analyzer;&#xA;import org.apache.lucene.analysis.ISOLatin1AccentFilter;&#xA;import org.apache.lucene.analysis.LowerCaseFilter;&#xA;import org.apache.lucene.analysis.StopFilter;&#xA;import org.apache.lucene.analysis.TokenStream;&#xA;import org.apache.lucene.analysis.ngram.EdgeNGramTokenFilter;&#xA;import org.apache.lucene.analysis.ngram.EdgeNGramTokenFilter.Side;&#xA;import org.apache.lucene.analysis.standard.StandardFilter;&#xA;import org.apache.lucene.analysis.standard.StandardTokenizer;&#xA;import org.apache.lucene.document.Document;&#xA;import org.apache.lucene.document.Field;&#xA;import org.apache.lucene.index.CorruptIndexException;&#xA;import org.apache.lucene.index.IndexReader;&#xA;import org.apache.lucene.index.IndexWriter;&#xA;import org.apache.lucene.index.Term;&#xA;import org.apache.lucene.search.IndexSearcher;&#xA;import org.apache.lucene.search.Query;&#xA;import org.apache.lucene.search.ScoreDoc;&#xA;import org.apache.lucene.search.Sort;&#xA;import org.apache.lucene.search.TermQuery;&#xA;import org.apache.lucene.search.TopDocs;&#xA;import org.apache.lucene.search.spell.LuceneDictionary;&#xA;import org.apache.lucene.store.Directory;&#xA;import org.apache.lucene.store.FSDirectory;&#xA;&#xA;/**&#xA; * Search term auto-completer, works for single terms (so use on the last term&#xA; * of the query).&#xA; * &lt;p&gt;&#xA; * Returns more popular terms first.&#xA; * &#xA; * @author Mat Mannion, M.Mannion@warwick.ac.uk&#xA; */&#xA;public final class Autocompleter {&#xA;&#xA;    private static final String GRAMMED_WORDS_FIELD = "words";&#xA;&#xA;    private static final String SOURCE_WORD_FIELD = "sourceWord";&#xA;&#xA;    private static final String COUNT_FIELD = "count";&#xA;&#xA;    private static final String[] ENGLISH_STOP_WORDS = {&#xA;    "a", "an", "and", "are", "as", "at", "be", "but", "by",&#xA;    "for", "i", "if", "in", "into", "is",&#xA;    "no", "not", "of", "on", "or", "s", "such",&#xA;    "t", "that", "the", "their", "then", "there", "these",&#xA;    "they", "this", "to", "was", "will", "with"&#xA;    };&#xA;&#xA;    private final Directory autoCompleteDirectory;&#xA;&#xA;    private IndexReader autoCompleteReader;&#xA;&#xA;    private IndexSearcher autoCompleteSearcher;&#xA;&#xA;    public Autocompleter(String autoCompleteDir) throws IOException {&#xA;    	this.autoCompleteDirectory = FSDirectory.getDirectory(autoCompleteDir,&#xA;    			null);&#xA;&#xA;    	reOpenReader();&#xA;    }&#xA;&#xA;    public List&lt;String&gt; suggestTermsFor(String term) throws IOException {&#xA;    	// get the top 5 terms for query&#xA;    	Query query = new TermQuery(new Term(GRAMMED_WORDS_FIELD, term));&#xA;    	Sort sort = new Sort(COUNT_FIELD, true);&#xA;&#xA;    	TopDocs docs = autoCompleteSearcher.search(query, null, 5, sort);&#xA;    	List&lt;String&gt; suggestions = new ArrayList&lt;String&gt;();&#xA;    	for (ScoreDoc doc : docs.scoreDocs) {&#xA;    		suggestions.add(autoCompleteReader.document(doc.doc).get(&#xA;    				SOURCE_WORD_FIELD));&#xA;    	}&#xA;&#xA;    	return suggestions;&#xA;    }&#xA;&#xA;    @SuppressWarnings("unchecked")&#xA;    public void reIndex(Directory sourceDirectory, String fieldToAutocomplete)&#xA;    		throws CorruptIndexException, IOException {&#xA;    	// build a dictionary (from the spell package)&#xA;    	IndexReader sourceReader = IndexReader.open(sourceDirectory);&#xA;&#xA;    	LuceneDictionary dict = new LuceneDictionary(sourceReader,&#xA;    			fieldToAutocomplete);&#xA;&#xA;    	// code from&#xA;    	// org.apache.lucene.search.spell.SpellChecker.indexDictionary(&#xA;    	// Dictionary)&#xA;    	IndexReader.unlock(autoCompleteDirectory);&#xA;&#xA;    	// use a custom analyzer so we can do EdgeNGramFiltering&#xA;    	IndexWriter writer = new IndexWriter(autoCompleteDirectory,&#xA;    	new Analyzer() {&#xA;    		public TokenStream tokenStream(String fieldName,&#xA;    				Reader reader) {&#xA;    			TokenStream result = new StandardTokenizer(reader);&#xA;&#xA;    			result = new StandardFilter(result);&#xA;    			result = new LowerCaseFilter(result);&#xA;    			result = new ISOLatin1AccentFilter(result);&#xA;    			result = new StopFilter(result,&#xA;    				ENGLISH_STOP_WORDS);&#xA;    			result = new EdgeNGramTokenFilter(&#xA;    	
+Comment:
+Note that this was created for an older version of Lucene. In the current version (4.4.0) the abstract method to implement on the Analyzer class is createComponents(String fieldName, Reader reader). See http://lucene.apache.org/core/4_4_0/core/org/apache/lucene/analysis/Analyzer.html
+
+ANS:
+HTML:
+<p>You can use the class <strong>PrefixQuery</strong> on a "dictionary" index. The class <strong>LuceneDictionary</strong> could be helpful too.</p>&#xA;&#xA;<p>Take a look at this <a href="http://today.java.net/pub/a/today/2005/08/09/didyoumean.html" rel="nofollow"><strong>article</strong></a>. It explains how to implement the feature "Did you mean ?" available in modern search engine such as Google. You may not need something as complex as described in the article. However the article explains how to use the Lucene spell package.</p>&#xA;&#xA;<p>One way to build a "dictionary" index would be  to iterate on a LuceneDictionary.</p>&#xA;&#xA;<p>Hope it helps</p>&#xA;
+Comment:
+HTML:
+<p>Based on @Alexandre Victoor's answer, I wrote a little class based on the Lucene Spellchecker in the contrib package (and using the LuceneDictionary included in it) that does exactly what I want.</p>&#xA;&#xA;<p>This allows re-indexing from a single source index with a single field, and provides suggestions for terms. Results are sorted by the number of matching documents with that term in the original index, so more popular terms appear first. Seems to work pretty well :)</p>&#xA;&#xA;<pre><code>import java.io.IOException;&#xA;import java.io.Reader;&#xA;import java.util.ArrayList;&#xA;import java.util.HashMap;&#xA;import java.util.Iterator;&#xA;import java.util.List;&#xA;import java.util.Map;&#xA;&#xA;import org.apache.lucene.analysis.Analyzer;&#xA;import org.apache.lucene.analysis.ISOLatin1AccentFilter;&#xA;import org.apache.lucene.analysis.LowerCaseFilter;&#xA;import org.apache.lucene.analysis.StopFilter;&#xA;import org.apache.lucene.analysis.TokenStream;&#xA;import org.apache.lucene.analysis.ngram.EdgeNGramTokenFilter;&#xA;import org.apache.lucene.analysis.ngram.EdgeNGramTokenFilter.Side;&#xA;import org.apache.lucene.analysis.standard.StandardFilter;&#xA;import org.apache.lucene.analysis.standard.StandardTokenizer;&#xA;import org.apache.lucene.document.Document;&#xA;import org.apache.lucene.document.Field;&#xA;import org.apache.lucene.index.CorruptIndexException;&#xA;import org.apache.lucene.index.IndexReader;&#xA;import org.apache.lucene.index.IndexWriter;&#xA;import org.apache.lucene.index.Term;&#xA;import org.apache.lucene.search.IndexSearcher;&#xA;import org.apache.lucene.search.Query;&#xA;import org.apache.lucene.search.ScoreDoc;&#xA;import org.apache.lucene.search.Sort;&#xA;import org.apache.lucene.search.TermQuery;&#xA;import org.apache.lucene.search.TopDocs;&#xA;import org.apache.lucene.search.spell.LuceneDictionary;&#xA;import org.apache.lucene.store.Directory;&#xA;import org.apache.lucene.store.FSDirectory;&#xA;&#xA;/**&#xA; * Search term auto-completer, works for single terms (so use on the last term&#xA; * of the query).&#xA; * &lt;p&gt;&#xA; * Returns more popular terms first.&#xA; * &#xA; * @author Mat Mannion, M.Mannion@warwick.ac.uk&#xA; */&#xA;public final class Autocompleter {&#xA;&#xA;    private static final String GRAMMED_WORDS_FIELD = "words";&#xA;&#xA;    private static final String SOURCE_WORD_FIELD = "sourceWord";&#xA;&#xA;    private static final String COUNT_FIELD = "count";&#xA;&#xA;    private static final String[] ENGLISH_STOP_WORDS = {&#xA;    "a", "an", "and", "are", "as", "at", "be", "but", "by",&#xA;    "for", "i", "if", "in", "into", "is",&#xA;    "no", "not", "of", "on", "or", "s", "such",&#xA;    "t", "that", "the", "their", "then", "there", "these",&#xA;    "they", "this", "to", "was", "will", "with"&#xA;    };&#xA;&#xA;    private final Directory autoCompleteDirectory;&#xA;&#xA;    private IndexReader autoCompleteReader;&#xA;&#xA;    private IndexSearcher autoCompleteSearcher;&#xA;&#xA;    public Autocompleter(String autoCompleteDir) throws IOException {&#xA;    	this.autoCompleteDirectory = FSDirectory.getDirectory(autoCompleteDir,&#xA;    			null);&#xA;&#xA;    	reOpenReader();&#xA;    }&#xA;&#xA;    public List&lt;String&gt; suggestTermsFor(String term) throws IOException {&#xA;    	// get the top 5 terms for query&#xA;    	Query query = new TermQuery(new Term(GRAMMED_WORDS_FIELD, term));&#xA;    	Sort sort = new Sort(COUNT_FIELD, true);&#xA;&#xA;    	TopDocs docs = autoCompleteSearcher.search(query, null, 5, sort);&#xA;    	List&lt;String&gt; suggestions = new ArrayList&lt;String&gt;();&#xA;    	for (ScoreDoc doc : docs.scoreDocs) {&#xA;    		suggestions.add(autoCompleteReader.document(doc.doc).get(&#xA;    				SOURCE_WORD_FIELD));&#xA;    	}&#xA;&#xA;    	return suggestions;&#xA;    }&#xA;&#xA;    @SuppressWarnings("unchecked")&#xA;    public void reIndex(Directory sourceDirectory, String fieldToAutocomplete)&#xA;    		throws CorruptIndexException, IOException {&#xA;    	// build a dictionary (from the spell package)&#xA;    	IndexReader sourceReader = IndexReader.open(sourceDirectory);&#xA;&#xA;    	LuceneDictionary dict = new LuceneDictionary(sourceReader,&#xA;    			fieldToAutocomplete);&#xA;&#xA;    	// code from&#xA;    	// org.apache.lucene.search.spell.SpellChecker.indexDictionary(&#xA;    	// Dictionary)&#xA;    	IndexReader.unlock(autoCompleteDirectory);&#xA;&#xA;    	// use a custom analyzer so we can do EdgeNGramFiltering&#xA;    	IndexWriter writer = new IndexWriter(autoCompleteDirectory,&#xA;    	new Analyzer() {&#xA;    		public TokenStream tokenStream(String fieldName,&#xA;    				Reader reader) {&#xA;    			TokenStream result = new StandardTokenizer(reader);&#xA;&#xA;    			result = new StandardFilter(result);&#xA;    			result = new LowerCaseFilter(result);&#xA;    			result = new ISOLatin1AccentFilter(result);&#xA;    			result = new StopFilter(result,&#xA;    				ENGLISH_STOP_WORDS);&#xA;    			result = new EdgeNGramTokenFilter(&#xA;    	
+Comment:
+Note that this was created for an older version of Lucene. In the current version (4.4.0) the abstract method to implement on the Analyzer class is createComponents(String fieldName, Reader reader). See http://lucene.apache.org/core/4_4_0/core/org/apache/lucene/analysis/Analyzer.html
+HTML:
+<p>Here's a transliteration of Mat's implementation into C# for Lucene.NET, along with a snippet for wiring a text box using jQuery's autocomplete feature.</p>&#xA;&#xA;<pre><code>&lt;input id="search-input" name="query" placeholder="Search database." type="text" /&gt;&#xA;</code></pre>&#xA;&#xA;<p>... JQuery Autocomplete:</p>&#xA;&#xA;<pre><code>// don't navigate away from the field when pressing tab on a selected item&#xA;$( "#search-input" ).keydown(function (event) {&#xA;    if (event.keyCode === $.ui.keyCode.TAB &amp;&amp; $(this).data("autocomplete").menu.active) {&#xA;        event.preventDefault();&#xA;    }&#xA;});&#xA;&#xA;$( "#search-input" ).autocomplete({&#xA;    source: '@Url.Action("SuggestTerms")', // &lt;-- ASP.NET MVC Razor syntax&#xA;    minLength: 2,&#xA;    delay: 500,&#xA;    focus: function () {&#xA;        // prevent value inserted on focus&#xA;        return false;&#xA;    },&#xA;    select: function (event, ui) {&#xA;        var terms = this.value.split(/\s+/);&#xA;        terms.pop(); // remove dropdown item&#xA;        terms.push(ui.item.value.trim()); // add completed item&#xA;        this.value = terms.join(" "); &#xA;        return false;&#xA;    },&#xA; });&#xA;</code></pre>&#xA;&#xA;<p>... here's the ASP.NET MVC Controller code:</p>&#xA;&#xA;<pre><code>    //&#xA;    // GET: /MyApp/SuggestTerms?term=something&#xA;    public JsonResult SuggestTerms(string term)&#xA;    {&#xA;        if (string.IsNullOrWhiteSpace(term))&#xA;            return Json(new string[] {});&#xA;&#xA;        term = term.Split().Last();&#xA;&#xA;        // Fetch suggestions&#xA;        string[] suggestions = SearchSvc.SuggestTermsFor(term).ToArray();&#xA;&#xA;        return Json(suggestions, JsonRequestBehavior.AllowGet);&#xA;    }&#xA;</code></pre>&#xA;&#xA;<p>... and here's Mat's code in C#:</p>&#xA;&#xA;<pre><code>using System;&#xA;using System.Collections.Generic;&#xA;using System.Linq;&#xA;using System.Text;&#xA;using Lucene.Net.Store;&#xA;using Lucene.Net.Index;&#xA;using Lucene.Net.Search;&#xA;using SpellChecker.Net.Search.Spell;&#xA;using Lucene.Net.Analysis;&#xA;using Lucene.Net.Analysis.Standard;&#xA;using Lucene.Net.Analysis.NGram;&#xA;using Lucene.Net.Documents;&#xA;&#xA;namespace Cipher.Services&#xA;{&#xA;    /// &lt;summary&gt;&#xA;    /// Search term auto-completer, works for single terms (so use on the last term of the query).&#xA;    /// Returns more popular terms first.&#xA;    /// &lt;br/&gt;&#xA;    /// Author: Mat Mannion, M.Mannion@warwick.ac.uk&#xA;    /// &lt;seealso cref="http://stackoverflow.com/questions/120180/how-to-do-query-auto-completion-suggestions-in-lucene"/&gt;&#xA;    /// &lt;/summary&gt;&#xA;    /// &#xA;    public class SearchAutoComplete {&#xA;&#xA;        public int MaxResults { get; set; }&#xA;&#xA;        private class AutoCompleteAnalyzer : Analyzer&#xA;        {&#xA;            public override TokenStream  TokenStream(string fieldName, System.IO.TextReader reader)&#xA;            {&#xA;                TokenStream result = new StandardTokenizer(kLuceneVersion, reader);&#xA;&#xA;                result = new StandardFilter(result);&#xA;                result = new LowerCaseFilter(result);&#xA;                result = new ASCIIFoldingFilter(result);&#xA;                result = new StopFilter(false, result, StopFilter.MakeStopSet(kEnglishStopWords));&#xA;                result = new EdgeNGramTokenFilter(&#xA;                    result, Lucene.Net.Analysis.NGram.EdgeNGramTokenFilter.Side.FRONT,1, 20);&#xA;&#xA;                return result;&#xA;            }&#xA;        }&#xA;&#xA;        private static readonly Lucene.Net.Util.Version kLuceneVersion = Lucene.Net.Util.Version.LUCENE_29;&#xA;&#xA;        private static readonly String kGrammedWordsField = "words";&#xA;&#xA;        private static readonly String kSourceWordField = "sourceWord";&#xA;&#xA;        private static readonly String kCountField = "count";&#xA;&#xA;        private static readonly String[] kEnglishStopWords = {&#xA;            "a", "an", "and", "are", "as", "at", "be", "but", "by",&#xA;            "for", "i", "if", "in", "into", "is",&#xA;            "no", "not", "of", "on", "or", "s", "such",&#xA;            "t", "that", "the", "their", "then", "there", "these",&#xA;            "they", "this", "to", "was", "will", "with"&#xA;        };&#xA;&#xA;        private readonly Directory m_directory;&#xA;&#xA;        private IndexReader m_reader;&#xA;&#xA;        private IndexSearcher m_searcher;&#xA;&#xA;        public SearchAutoComplete(string autoCompleteDir) : &#xA;            this(FSDirectory.Open(new System.IO.DirectoryInfo(autoCompleteDir)))&#xA;        {&#xA;        }&#xA;&#xA;        public SearchAutoComplete(Directory autoCompleteDir, int maxResults = 8) &#xA;        {&#xA;            this.m_directory = autoCompleteDir;&#xA;            MaxResults = maxResults;&#xA;&#xA;            ReplaceSearcher();&#xA;        }&#xA;&#xA;        /// &lt;summary&gt;&#xA;        /// Find terms matching the gi
+Comment:
+Would it be possible for you to add a C# driver snippet that executes your code, as well as the code to build the index? I can get your code to compile just fine, but I have trouble figuring out how to build my Directory so that it can be queried by the code above.
+does it matter how the directory has been previously indexed? Can I run this on a index that was created using the snowball analyzer? Or should I use a field that has not be analyzed at all?  (asked the same question above)
+HTML:
+<p>In addition to the above (much appreciated) post re: c# conversion, should you be using .NET 3.5 you'll need to include the code for the EdgeNGramTokenFilter - or at least I did - using Lucene 2.9.2 - this filter is missing from the .NET version as far as I could tell.  I had to go and find the .NET 4 version online in 2.9.3 and port back - hope this makes the procedure less painful for someone...</p>&#xA;&#xA;<p>Edit : Please also note that the array returned by the SuggestTermsFor() function is sorted by count ascending, you'll probably want to reverse it to get the most popular terms first in your list</p>&#xA;&#xA;<pre><code>using System.IO;&#xA;using System.Collections;&#xA;using Lucene.Net.Analysis;&#xA;using Lucene.Net.Analysis.Tokenattributes;&#xA;using Lucene.Net.Util;&#xA;&#xA;namespace Lucene.Net.Analysis.NGram&#xA;{&#xA;&#xA;/**&#xA; * Tokenizes the given token into n-grams of given size(s).&#xA; * &lt;p&gt;&#xA; * This {@link TokenFilter} create n-grams from the beginning edge or ending edge of a input token.&#xA; * &lt;/p&gt;&#xA; */&#xA;public class EdgeNGramTokenFilter : TokenFilter&#xA;{&#xA;    public static Side DEFAULT_SIDE = Side.FRONT;&#xA;    public static int DEFAULT_MAX_GRAM_SIZE = 1;&#xA;    public static int DEFAULT_MIN_GRAM_SIZE = 1;&#xA;&#xA;    // Replace this with an enum when the Java 1.5 upgrade is made, the impl will be simplified&#xA;    /** Specifies which side of the input the n-gram should be generated from */&#xA;    public class Side&#xA;    {&#xA;        private string label;&#xA;&#xA;        /** Get the n-gram from the front of the input */&#xA;        public static Side FRONT = new Side("front");&#xA;&#xA;        /** Get the n-gram from the end of the input */&#xA;        public static Side BACK = new Side("back");&#xA;&#xA;        // Private ctor&#xA;        private Side(string label) { this.label = label; }&#xA;&#xA;        public string getLabel() { return label; }&#xA;&#xA;        // Get the appropriate Side from a string&#xA;        public static Side getSide(string sideName)&#xA;        {&#xA;            if (FRONT.getLabel().Equals(sideName))&#xA;            {&#xA;                return FRONT;&#xA;            }&#xA;            else if (BACK.getLabel().Equals(sideName))&#xA;            {&#xA;                return BACK;&#xA;            }&#xA;            return null;&#xA;        }&#xA;    }&#xA;&#xA;    private int minGram;&#xA;    private int maxGram;&#xA;    private Side side;&#xA;    private char[] curTermBuffer;&#xA;    private int curTermLength;&#xA;    private int curGramSize;&#xA;    private int tokStart;&#xA;&#xA;    private TermAttribute termAtt;&#xA;    private OffsetAttribute offsetAtt;&#xA;&#xA;    protected EdgeNGramTokenFilter(TokenStream input) : base(input)&#xA;    {&#xA;        this.termAtt = (TermAttribute)AddAttribute(typeof(TermAttribute));&#xA;        this.offsetAtt = (OffsetAttribute)AddAttribute(typeof(OffsetAttribute));&#xA;    }&#xA;&#xA;    /**&#xA;     * Creates EdgeNGramTokenFilter that can generate n-grams in the sizes of the given range&#xA;     *&#xA;     * @param input {@link TokenStream} holding the input to be tokenized&#xA;     * @param side the {@link Side} from which to chop off an n-gram&#xA;     * @param minGram the smallest n-gram to generate&#xA;     * @param maxGram the largest n-gram to generate&#xA;     */&#xA;    public EdgeNGramTokenFilter(TokenStream input, Side side, int minGram, int maxGram)&#xA;        : base(input)&#xA;    {&#xA;&#xA;        if (side == null)&#xA;        {&#xA;            throw new System.ArgumentException("sideLabel must be either front or back");&#xA;        }&#xA;&#xA;        if (minGram &lt; 1)&#xA;        {&#xA;            throw new System.ArgumentException("minGram must be greater than zero");&#xA;        }&#xA;&#xA;        if (minGram &gt; maxGram)&#xA;        {&#xA;            throw new System.ArgumentException("minGram must not be greater than maxGram");&#xA;        }&#xA;&#xA;        this.minGram = minGram;&#xA;        this.maxGram = maxGram;&#xA;        this.side = side;&#xA;        this.termAtt = (TermAttribute)AddAttribute(typeof(TermAttribute));&#xA;        this.offsetAtt = (OffsetAttribute)AddAttribute(typeof(OffsetAttribute));&#xA;    }&#xA;&#xA;    /**&#xA;     * Creates EdgeNGramTokenFilter that can generate n-grams in the sizes of the given range&#xA;     *&#xA;     * @param input {@link TokenStream} holding the input to be tokenized&#xA;     * @param sideLabel the name of the {@link Side} from which to chop off an n-gram&#xA;     * @param minGram the smallest n-gram to generate&#xA;     * @param maxGram the largest n-gram to generate&#xA;     */&#xA;    public EdgeNGramTokenFilter(TokenStream input, string sideLabel, int minGram, int maxGram)&#xA;        : this(input, Side.getSide(sideLabel), minGram, maxGram)&#xA;    {&#xA;&#xA;    }&#xA;&#xA;    public override bool IncrementToken()&#xA;    {&#xA;        while (true)&#xA;        {&#xA;            if (curTermBuffer == nu
+Comment:
+does it matter how the directory has been previously indexed?  Can I run this on a index that was created using the snowball analyzer? Or should I use a field that has not be analyzed at all?
+
+Phrase:
+do query auto-completion/suggestions in Lucene 
+to do query auto-completion/suggestions in Lucene 
+looking for a way to do query auto-completion/suggestions in Lucene 
+'m looking for a way to do query auto-completion/suggestions in Lucene 
+Googled around a bit 
+played around a bit 
+Googled around a bit and played around a bit 
+'ve Googled around a bit and played around a bit 
+seen 
+'ve seen 
+setting up filters in Solr 
+be setting up filters in Solr 
+to be setting up filters in Solr 
+seem to be setting up filters in Solr 
+use Solr 
+do n't use Solr 
+using Solr in the near future 
+move to using Solr in the near future 
+to move to using Solr in the near future 
+planning to move to using Solr in the near future 
+are n't planning to move to using Solr in the near future 
+do n't use Solr and are n't planning to move to using Solr in the near future 
+do it 
+to do it 
+be a way to do it 
+must be a way to do it 
+imagine there must be a way to do it 
+obviously just wrapping around Lucene anyway , so I imagine there must be a way to do it 
+is obviously just wrapping around Lucene anyway , so I imagine there must be a way to do it 
+using EdgeNGramFilter 
+looked into using EdgeNGramFilter 
+'ve looked into using EdgeNGramFilter 
+run the filter on the index fields 
+get the tokens out 
+compare them against the inputted Query 
+run the filter on the index fields and get the tokens out and then compare them against the inputted Query 
+to run the filter on the index fields and get the tokens out and then compare them against the inputted Query 
+have to run the filter on the index fields and get the tokens out and then compare them against the inputted Query 
+'d have to run the filter on the index fields and get the tokens out and then compare them against the inputted Query 
+realise that I 'd have to run the filter on the index fields and get the tokens out and then compare them against the inputted Query 
+make the connection between the two into a bit of code 
+to make the connection between the two into a bit of code 
+struggling to make the connection between the two into a bit of code 
+'m just struggling to make the connection between the two into a bit of code 
+appreciated 
+is much appreciated 
+looking for 
+being overly clear , sorry 
+was n't being overly clear , sorry 
+realised I was n't being overly clear , sorry 
+looking for ( I realised I was n't being overly clear , sorry ) 
+'m looking for ( I realised I was n't being overly clear , sorry ) 
+looking for a solution 
+'m looking for a solution 
+searching for a term 
+be clear on what I 'm looking for ( I realised I was n't being overly clear , sorry ) - I 'm looking for a solution where when searching for a term 
+To be clear on what I 'm looking for ( I realised I was n't being overly clear , sorry ) - I 'm looking for a solution where when searching for a term 
+return a list of suggested queries 
+'d return a list of suggested queries 
+typing ` inter ' into the search field 
+come back with a list of suggested queries , such as ` internet ' , ` international ' , etc. 
+'ll come back with a list of suggested queries , such as ` internet ' , ` international ' , etc. 
+included in it 
+using the LuceneDictionary included in it 
+want 
+does exactly what I want 
+wrote a little class based on the Lucene Spellchecker in the contrib package ( and using the LuceneDictionary included in it ) that does exactly what I want 
+allows re-indexing from a single source index with a single field 
+provides suggestions for terms 
+allows re-indexing from a single source index with a single field , and provides suggestions for terms 
+appear first 
+sorted by the number of matching documents with that term in the original index , so more popular terms appear first 
+are sorted by the number of matching documents with that term in the original index , so more popular terms appear first 
+created for an older version of Lucene 
+was created for an older version of Lucene 
+Note that this was created for an older version of Lucene 
+implement on the Analyzer class 
+to implement on the Analyzer class 
+is createComponents ( String fieldName , Reader reader ) 
+use the class PrefixQuery on a `` dictionary '' index 
+can use the class PrefixQuery on a `` dictionary '' index 
+be helpful too 
+could be helpful too 
+Take a look at this article 
+mean 
+implement the feature `` Did you mean ? '' available in modern search engine such as Google 
+to implement the feature `` Did you mean ? '' available in modern search engine such as Google 
+explains how to implement the feature `` Did you mean ? '' available in modern search engine such as Google 
+described in the article 
+need something as complex as described in the article 
+may not need something as complex as described in the article 
+use the Lucene spell package 
+to use the Lucene spell package 
+explains how to use the Lucene spell package 
+build a `` dictionary '' index 
+to build a `` dictionary '' index 
+iterate on a LuceneDictionary 
+to iterate on a LuceneDictionary 
+be to iterate on a LuceneDictionary 
+would be to iterate on a LuceneDictionary 
+helps 
+Hope it helps 
+included in it 
+using the LuceneDictionary included in it 
+want 
+does exactly what I want 
+wrote a little class based on the Lucene Spellchecker in the contrib package ( and using the LuceneDictionary included in it ) that does exactly what I want 
+allows re-indexing from a single source index with a single field 
+provides suggestions for terms 
+allows re-indexing from a single source index with a single field , and provides suggestions for terms 
+appear first 
+sorted by the number of matching documents with that term in the original index , so more popular terms appear first 
+are sorted by the number of matching documents with that term in the original index , so more popular terms appear first 
+created for an older version of Lucene 
+was created for an older version of Lucene 
+Note that this was created for an older version of Lucene 
+implement on the Analyzer class 
+to implement on the Analyzer class 
+is createComponents ( String fieldName , Reader reader ) 
+'s a transliteration of Mat 's implementation into C # for Lucene.NET , along with a snippet for wiring 
+using jQuery 's autocomplete feature 
+'s 
+'s Mat 's code in C # 
+executes your code 
+build the index 
+to build the index 
+add a C # driver snippet that executes your code , as well as the code to build the index 
+to add a C # driver snippet that executes your code , as well as the code to build the index 
+be possible for you to add a C # driver snippet that executes your code , as well as the code to build the index 
+compile just fine 
+to compile just fine 
+get your code to compile just fine 
+can get your code to compile just fine 
+queried by the code above 
+be queried by the code above 
+can be queried by the code above 
+build my Directory so that it can be queried by the code above 
+to build my Directory so that it can be queried by the code above 
+figuring out how to build my Directory so that it can be queried by the code above 
+have trouble figuring out how to build my Directory so that it can be queried by the code above 
+previously indexed 
+been previously indexed 
+has been previously indexed 
+matter how the directory has been previously indexed 
+using the snowball analyzer 
+created using the snowball analyzer 
+was created using the snowball analyzer 
+run this on a index that was created using the snowball analyzer 
+Can I run this on a index that was created using the snowball analyzer 
+analyzed at all 
+be analyzed at all 
+has not be analyzed at all 
+use a field that has not be analyzed at all 
+asked the same question above 
+using 
+be using 
+include the code for the EdgeNGramTokenFilter 
+to include the code for the EdgeNGramTokenFilter 
+need to include the code for the EdgeNGramTokenFilter 
+'ll need to include the code for the EdgeNGramTokenFilter 
+NET 3.5 you 'll need to include the code for the EdgeNGramTokenFilter - or at least 
+did 
+missing from the 
+is missing from the 
+using Lucene 2.9.2 - this filter is missing from the . 
+tell 
+could tell 
+NET version as far as I could tell 
+go and find the . NET 4 version online in 2.9.3 and port back 
+to go and find the . NET 4 version online in 2.9.3 and port back 
+had to go and find the . NET 4 version online in 2.9.3 and port back 
+makes the procedure less painful for someone 
+hope this makes the procedure less painful for someone 
+returned by the SuggestTermsFor ( ) function 
+ascending 
+sorted by count ascending 
+is sorted by count ascending 
+note that the array returned by the SuggestTermsFor ( ) function is sorted by count ascending 
+Please also note that the array returned by the SuggestTermsFor ( ) function is sorted by count ascending 
+get the most popular terms first in your list 
+to get the most popular terms first in your list 
+reverse it to get the most popular terms first in your list 
+to reverse it to get the most popular terms first in your list 
+want to reverse it to get the most popular terms first in your list 
+'ll probably want to reverse it to get the most popular terms first in your list 
+previously indexed 
+been previously indexed 
+has been previously indexed 
+matter how the directory has been previously indexed 
+using the snowball analyzer 
+created using the snowball analyzer 
+was created using the snowball analyzer 
+run this on a index that was created using the snowball analyzer 
+Can I run this on a index that was created using the snowball analyzer 
+analyzed at all 
+be analyzed at all 
+has not be analyzed at all 
+use a field that has not be analyzed at all 

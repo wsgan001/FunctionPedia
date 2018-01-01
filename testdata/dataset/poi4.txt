@@ -1,0 +1,151 @@
+QUESTION:
+HTML:
+<p>All I need to do is open an MS excel sheet - not sure which kind yet (2003, 2007, etc.) - and parse the information in each row into an object. I'm performing only readonly operations.</p>&#xA;&#xA;<p>out of <a href="http://poi.apache.org/" rel="nofollow">Apache POI</a>, <a href="http://jexcelapi.sourceforge.net/" rel="nofollow">JExcelAPI</a>, or <a href="http://www.extentech.com/estore/product%5Fdetail.jsp?product%5Fgroup%5Fid=228" rel="nofollow">OpenXLS</a> which is best for this task?</p>&#xA;&#xA;<p>I'd rather not find out about anymore api's but if you're certain that none of these are the best then I'll take your input.</p>&#xA;
+Comment:
+JXL WARNING: it calls GC explicitly by default, which will cause your super-fast-highly-concurrent-performance-optimized web server to halt. save some white hair and use `-Djxl.nogc=true `
+
+ACCEPTED ANS:
+
+ANS:
+HTML:
+<p>I have used POI only but found it to be simple to use and work as advertised.</p>&#xA;
+Comment:
+I second POI. Plus it advertises support for 2007 format (I haven't tried it myself yet, can't vouch for it);  JExcelAPI only supports 2003.
+I'm very impressed with POI's usability but i'm constently finding inconsistencies between the library and the documentation which is making it very confusing to learn. :P
+Is there any method in POI which allows to put password on XLS files?
+@happy it has encryption support http://poi.apache.org/encryption.html
+@Gambo it encrypts file content ,Is there any way to set password on file which will prompt for password when I try to open file?,like it is ther in aspose but it is not freeware.
+HTML:
+<p>I have used only JExcelAPI, and found it quite usable and solid.  Encountered one weirdness, but it was in writing, not reading, and is clearly documented (with solution) in their <a href="http://jexcelapi.sourceforge.net/resources/faq/" rel="nofollow">FAQ</a>, so - happy to recommend it.</p>&#xA;
+Comment:
+HTML:
+<p>I do NOT recommend OpenXLS.  I used it for a little while but became very frustrated by the limits of the free version.  If you want to write formulae, for example, you can't.  Unless you buy the commercial version that the company behind OpenXLS sells, anyway.</p>&#xA;&#xA;<p>I've been using JExcelAPI for the last few months and am quite impressed with it.  It's very easy to use it to read and write Excel spreadsheets.  The documentation is fairly good but it could be better.  If you haven't already made your choice, I would recommend JExcelAPI to you.</p>&#xA;&#xA;<p>I'm afraid that I haven't tried POI so I can't comment on it.</p>&#xA;
+Comment:
+HTML:
+<p>FWIW and Extentech - the makers of OpenXLS - released a new version that now supports adding formulas and executing them like so:</p>&#xA;&#xA;<pre><code>CellHandle cx = sheet.add("=sum(a1+a2)","b1");&#xA;String val = cx.getFormulaHandle().getFormattedValue();&#xA;</code></pre>&#xA;&#xA;<p>Also, you will find that <a href="http://Sheetster.com" rel="nofollow">Sheetster.com</a> is an open source web spreadsheet from Extentech and you can embed a nice web spreadsheet in your web apps.</p>&#xA;
+Comment:
+
+Phrase:
+do 
+to do 
+need to do 
+yet 
+open an MS excel sheet - not sure which kind yet ( 2003 , 2007 , etc. ) 
+parse the information in each row into an object 
+open an MS excel sheet - not sure which kind yet ( 2003 , 2007 , etc. ) - and parse the information in each row into an object 
+is open an MS excel sheet - not sure which kind yet ( 2003 , 2007 , etc. ) - and parse the information in each row into an object 
+performing only readonly operations 
+'m performing only readonly operations 
+is best for this task 
+find out about anymore api 's 
+'d rather not find out about anymore api 's 
+are the best 
+'re certain that none of these are the best 
+take your input 
+'ll take your input 
+halt 
+to halt 
+cause your super-fast-highly-concurrent-performance-optimized web server to halt 
+will cause your super-fast-highly-concurrent-performance-optimized web server to halt 
+calls GC explicitly by default , which will cause your super-fast-highly-concurrent-performance-optimized web server to halt 
+true 
+save some white hair and use ` - Djxl.nogc = true ` 
+used POI only 
+have used POI only 
+use and work as advertised 
+to use and work as advertised 
+be simple to use and work as advertised 
+to be simple to use and work as advertised 
+found it to be simple to use and work as advertised 
+have used POI only but found it to be simple to use and work as advertised 
+POI 
+vouch for it 
+ca n't vouch for it 
+tried it myself yet , ca n't vouch for it 
+have n't tried it myself yet , ca n't vouch for it 
+advertises support for 2007 format ( I have n't tried it myself yet , ca n't vouch for it ) 
+supports 2003 
+learn 
+to learn 
+making it very confusing to learn 
+is making it very confusing to learn 
+finding inconsistencies between the library and the documentation which is making it very confusing to learn 
+'m constently finding inconsistencies between the library and the documentation which is making it very confusing to learn 
+'m very impressed with POI 's usability but i 'm constently finding inconsistencies between the library and the documentation which is making it very confusing to learn 
+P 
+put password on XLS files 
+to put password on XLS files 
+allows to put password on XLS files 
+encryption support http://poi.apache.org/encryption.html 
+has encryption support http://poi.apache.org/encryption.html 
+@happy it has encryption support http://poi.apache.org/encryption.html 
+file content 
+encrypts file content 
+open file 
+to open file 
+try to open file 
+is ther in aspose 
+prompt for password when I try to open file ? , like it is ther in aspose 
+will prompt for password when I try to open file ? , like it is ther in aspose 
+set password on file which will prompt for password when I try to open file ? , like it is ther in aspose 
+to set password on file which will prompt for password when I try to open file ? , like it is ther in aspose 
+Is there any way to set password on file which will prompt for password when I try to open file ? , like it is ther in aspose 
+is not freeware 
+used only JExcelAPI 
+have used only JExcelAPI 
+found it quite usable and solid 
+have used only JExcelAPI , and found it quite usable and solid 
+weirdness 
+writing 
+reading 
+writing , not reading 
+was in writing , not reading 
+documented ( with solution ) 
+is clearly documented ( with solution ) 
+recommend it 
+to recommend it 
+was in writing , not reading , and is clearly documented ( with solution ) in their FAQ , so - happy to recommend it 
+recommend OpenXLS 
+do NOT recommend OpenXLS 
+used it for a little while 
+became very frustrated by the limits of the free version 
+used it for a little while but became very frustrated by the limits of the free version 
+write formulae , for example 
+to write formulae , for example 
+want to write formulae , for example 
+ca n't 
+sells 
+buy the commercial version that the company behind OpenXLS sells 
+using JExcelAPI for the last few months 
+been using JExcelAPI for the last few months 
+'ve been using JExcelAPI for the last few months 
+am quite impressed with it 
+'ve been using JExcelAPI for the last few months and am quite impressed with it 
+read and write Excel spreadsheets 
+to read and write Excel spreadsheets 
+use it to read and write Excel spreadsheets 
+to use it to read and write Excel spreadsheets 
+'s very easy to use it to read and write Excel spreadsheets 
+be better 
+could be better 
+is fairly good but it could be better 
+made your choice 
+have n't already made your choice 
+recommend JExcelAPI to you 
+would recommend JExcelAPI to you 
+comment on it 
+ca n't comment on it 
+tried POI so I ca n't comment on it 
+have n't tried POI so I ca n't comment on it 
+'m afraid that I have n't tried POI so I ca n't comment on it 
+adding formulas 
+like so 
+executing them like so 
+adding formulas and executing them like so 
+supports adding formulas and executing them like so 
+released a new version that now supports adding formulas and executing them like so 
+is an open source web spreadsheet from Extentech 
+find that Sheetster.com is an open source web spreadsheet from Extentech 
+will find that Sheetster.com is an open source web spreadsheet from Extentech 
+embed a nice web spreadsheet in your web apps 
+can embed a nice web spreadsheet in your web apps 

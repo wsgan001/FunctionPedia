@@ -1,0 +1,103 @@
+QUESTION:
+HTML:
+<p>What is the difference between this 2 graph DB: Neo4j and AllegroGraph? &#xA;Which is better for JAVA Web programming?</p>&#xA;&#xA;<p>Thanks&#xA;Erwin</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+
+ANS:
+HTML:
+<p>If you have no reason to choose RDF + SPARQL (which both products support), Neo4j provides a clean Java API for manipulating a property graph (nodes + relationships + properties on both). For web applications, I wrote up an <a href="http://wiki.neo4j.org/content/IMDB_Example">example</a> using Spring Framework, which also exists in a simplified version as a <a href="http://wiki.neo4j.org/content/IMDB_Workshop">workshop</a>.</p>&#xA;&#xA;<p>Disclaimer: Obviously I'm on the Neo4j team, and I don't have any in-depth knowledge regarding AllegroGraph.</p>&#xA;
+Comment:
+HTML:
+<p>AllegroGraph has a java client library which supports 2 standard java semantic API's: Jena and Sesame.  The client source is EPL on github.  AG supports sparql, transactions, reasoning, geospatial, temporal, and graph analysis.  There are no extra features specifically for web apps, but it would fit into any framework as a library.</p>&#xA;&#xA;<p>(I work for Franz.)</p>&#xA;
+Comment:
+HTML:
+<p>I chose AllegroGraph over Neo4j because of its support for SPARQL queries. It seemed to me that the Neo4j approach of traversing a graph is less tidy, especially for more complex retrieval operations.</p>&#xA;&#xA;<p>...and no, I have no affiliation with either organisation.</p>&#xA;
+Comment:
+Neo4j supports RDF+SPARQL as well. And BTW [Gremlin](http://github.com/tinkerpop/gremlin) too.
+It might, but not as a core function. The blankness of the home page for that component speaks volumes about the level of support. http://components.neo4j.org/neo4j-rdf-sparql/
+HTML:
+<p>One other consideration is the licenses. AllegroGraph's free edition can be used as long as you have fewer than 50 million triples. See <a href="http://www.franz.com/agraph/allegrograph/ag_commercial_edition.lhtml" rel="nofollow">http://www.franz.com/agraph/allegrograph/ag_commercial_edition.lhtml</a></p>&#xA;&#xA;<p>Neo4j is free as long as your project uses the community edition; only if you modify the Neo4j source you must open-source the modifications. The basic license terms can be found on their home page: <a href="http://neo4j.org/" rel="nofollow">http://neo4j.org/</a></p>&#xA;
+Comment:
+Just discovered for a project that Neo4j can be used also in closed source projects as long as you don't close source modifications to neo4j source itself (like MySQL and so on...)
+Feel free to edit this into my answer.
+Thanks, I just accepted the edit.
+HTML:
+<p>In addition to SPARQL, AllegoGraph allows you to write Prolog rules and queries. For complex query logic, it's much more expressive than SPARQL.</p>&#xA;&#xA;<p>There are some examples in the Java client tutorial: <a href="http://www.franz.com/agraph/support/documentation/v4/java-tutorial/java-tutorial-40.html" rel="nofollow">http://www.franz.com/agraph/support/documentation/v4/java-tutorial/java-tutorial-40.html</a></p>&#xA;
+Comment:
+HTML:
+<p>Does Neo4j support reasoning, sub-properties and transitivity ?</p>&#xA;
+Comment:
+Neo4j's native model is a "Property Graph" with nodes and relationships, both of which may contain properties (key-value pairs). RDF support is not native, though possible through TinkerPop's Blueprints (https://github.com/tinkerpop/blueprints). So if you're thinking in semantic web terms, AllegroGraph may be a better fit.
+
+Phrase:
+support 
+choose RDF + SPARQL ( which both products support ) 
+to choose RDF + SPARQL ( which both products support ) 
+have no reason to choose RDF + SPARQL ( which both products support ) 
+manipulating a property graph ( nodes + relationships + properties on both ) 
+provides a clean Java API for manipulating a property graph ( nodes + relationships + properties on both ) 
+exists in a simplified version as a workshop 
+using Spring Framework , which also exists in a simplified version as a workshop 
+wrote up an example using Spring Framework , which also exists in a simplified version as a workshop 
+'m on the Neo4j team 
+have any in-depth knowledge regarding AllegroGraph 
+do n't have any in-depth knowledge regarding AllegroGraph 
+supports 2 standard java semantic API 's : Jena and Sesame 
+has a java client library which supports 2 standard java semantic API 's : Jena and Sesame 
+is EPL on github 
+supports sparql , transactions , reasoning , geospatial , temporal , and graph analysis 
+are no extra features specifically for web apps 
+fit into any framework as a library 
+would fit into any framework as a library 
+work for Franz 
+chose AllegroGraph over Neo4j because of its support for SPARQL queries 
+traversing a graph 
+is less tidy , especially for more complex retrieval operations 
+seemed to me that the Neo4j approach of traversing a graph is less tidy , especially for more complex retrieval operations 
+have no affiliation with either organisation 
+supports RDF+SPARQL as well 
+-RSB- ( http://github.com/tinkerpop/gremlin ) too 
+might 
+not as a core function 
+might , but not as a core function 
+speaks volumes about the level of support 
+is the licenses 
+have fewer than 50 million triples 
+used as long as you have fewer than 50 million triples 
+be used as long as you have fewer than 50 million triples 
+can be used as long as you have fewer than 50 million triples 
+See http://www.franz.com/agraph/allegrograph/ag_commercial_edition.lhtml 
+uses the community edition 
+is free as long as your project uses the community edition 
+modify the Neo4j source 
+open-source the modifications 
+must open-source the modifications 
+found on their home page : http://neo4j.org/ 
+be found on their home page : http://neo4j.org/ 
+can be found on their home page : http://neo4j.org/ 
+discovered for a project 
+close source modifications to neo4j source itself ( like MySQL and so on ... ) 
+do n't close source modifications to neo4j source itself ( like MySQL and so on ... ) 
+used also in closed source projects as long as you do n't close source modifications to neo4j source itself ( like MySQL and so on ... ) 
+be used also in closed source projects as long as you do n't close source modifications to neo4j source itself ( like MySQL and so on ... ) 
+can be used also in closed source projects as long as you do n't close source modifications to neo4j source itself ( like MySQL and so on ... ) 
+edit this into my answer 
+to edit this into my answer 
+free to edit this into my answer 
+accepted the edit 
+write Prolog rules and queries 
+to write Prolog rules and queries 
+allows you to write Prolog rules and queries 
+'s much more expressive than SPARQL 
+are some examples in the Java client tutorial : http://www.franz.com/agraph/support/documentation/v4/java-tutorial/java-tutorial-40.html 
+support reasoning , sub-properties and transitivity 
+contain properties ( key-value pairs ) 
+may contain properties ( key-value pairs ) 
+is a `` Property Graph '' with nodes and relationships , both of which may contain properties ( key-value pairs ) 
+is not native , though possible through TinkerPop 's Blueprints ( https://github.com/tinkerpop/blueprints ) 
+thinking in semantic web terms 
+'re thinking in semantic web terms 
+be a better fit 
+may be a better fit 

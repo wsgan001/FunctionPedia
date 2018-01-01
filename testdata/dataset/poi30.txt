@@ -1,0 +1,107 @@
+QUESTION:
+HTML:
+<p>I've been using Java POI for some time now, but have encountered a new problem, and I'm wondering if anyone has found a solution.</p>&#xA;&#xA;<p>When you read a spreadsheet, you need to know the type of cell in order to use the proper read method.</p>&#xA;&#xA;<p>So you get the cell type, then call the appropriate read method to get the cell's contents.</p>&#xA;&#xA;<p>This works for all cells except for the FORMULA cell, where the value is a number. If it's text, you can read it just fine. But if the resulting value is a number, then all you get from the cell is a blank string.</p>&#xA;&#xA;<p>I've been through the javadocs for POI, and am using the correct data type (HSSFRichTextString), but still no joy.</p>&#xA;&#xA;<p>Anyone have a solution?</p>&#xA;&#xA;<p>P.S. this behavior of POI does bug me as there should be a default cell.toString() method that would return the string representation of ANY cell type, say defaulting to the cell's value property. (sort of like the paste-special where you can choose "value").</p>&#xA;&#xA;<p>PPS: As asked - I'm using Java 6 (1.6.0_06) and poi-3.0.2-FINAL-20080204.jar</p>&#xA;
+Comment:
+What version of POI are you using?
+
+ACCEPTED ANS:
+
+ANS:
+HTML:
+<pre><code> FileInputStream fis = new FileInputStream("c:/temp/test.xls");&#xA;    Workbook wb = new HSSFWorkbook(fis); //or new XSSFWorkbook("c:/temp/test.xls")&#xA;    Sheet sheet = wb.getSheetAt(0);&#xA;    FormulaEvaluator evaluator = wb.getCreationHelper().createFormulaEvaluator();&#xA;&#xA;    // suppose your formula is in B3&#xA;    CellReference cellReference = new CellReference("B3"); &#xA;    Row row = sheet.getRow(cellReference.getRow());&#xA;    Cell cell = row.getCell(cellReference.getCol()); &#xA;&#xA;    CellValue cellValue = evaluator.evaluate(cell);&#xA;&#xA;    switch (cellValue.getCellType()) {&#xA;        case Cell.CELL_TYPE_BOOLEAN:&#xA;            System.out.println(cellValue.getBooleanValue());&#xA;            break;&#xA;        case Cell.CELL_TYPE_NUMERIC:&#xA;            System.out.println(cellValue.getNumberValue());&#xA;            break;&#xA;        case Cell.CELL_TYPE_STRING:&#xA;            System.out.println(cellValue.getStringValue());&#xA;            break;&#xA;        case Cell.CELL_TYPE_BLANK:&#xA;            break;&#xA;        case Cell.CELL_TYPE_ERROR:&#xA;            break;&#xA;&#xA;        // CELL_TYPE_FORMULA will never happen&#xA;        case Cell.CELL_TYPE_FORMULA: &#xA;            break;&#xA;    }&#xA;</code></pre>&#xA;&#xA;<p>Copied shamelessly from <a href="http://poi.apache.org/spreadsheet/eval.html" rel="nofollow">here</a> </p>&#xA;
+Comment:
+Upvote for  Modesty :)
+Be aware that the evaluator.evaluate(cell) can throw a RuntimeException if the formula is invalid.
+Have you actually tried this? I too can read the docs. I'm looking for actual "yes, I've tried this and it works" info. Thanks.
+HTML:
+<p>If POI doesn't work out for you, try <a href="http://andykhan.com/jexcelapi/index.html" rel="nofollow">Andy Khan's JExcel</a>.  I prefer it.</p>&#xA;
+Comment:
+HTML:
+<p>Just convert that cell into text .. using copy-"paste special" ... I did it as follows .... </p>&#xA;&#xA;<p><strong>Read from Point # 2 at :</strong></p>&#xA;&#xA;<p><a href="http://www.asif-shahzad.com/2010/12/how-to-read-numbers-as-string-value-in.html" rel="nofollow">http://www.asif-shahzad.com/2010/12/how-to-read-numbers-as-string-value-in.html</a></p>&#xA;
+Comment:
+HTML:
+<p>An alternative to using createFormulaEvaluator is to use SetCellType(CellType.STRING) and then access StringCellValue. I ran into problems using a formula evaluator (using NPOI) when it contains the WORKDAY() function.</p>&#xA;
+Comment:
+
+Phrase:
+using Java POI for some time now 
+been using Java POI for some time now 
+'ve been using Java POI for some time now 
+encountered a new problem 
+have encountered a new problem 
+'ve been using Java POI for some time now , but have encountered a new problem 
+found a solution 
+has found a solution 
+wondering if anyone has found a solution 
+'m wondering if anyone has found a solution 
+read a spreadsheet 
+use the proper read method 
+to use the proper read method 
+know the type of cell in order to use the proper read method 
+to know the type of cell in order to use the proper read method 
+need to know the type of cell in order to use the proper read method 
+get the cell type 
+get the cell 's contents 
+to get the cell 's contents 
+then call the appropriate read method to get the cell 's contents 
+is a number 
+works for all cells except for the FORMULA cell , where the value is a number 
+'s text 
+read it just fine 
+can read it just fine 
+get from the cell 
+is a number , then all you get from the cell 
+is a blank string 
+been through the javadocs for POI 
+'ve been through the javadocs for POI 
+using the correct data type ( HSSFRichTextString ) , but still no joy 
+am using the correct data type ( HSSFRichTextString ) , but still no joy 
+'ve been through the javadocs for POI , and am using the correct data type ( HSSFRichTextString ) , but still no joy 
+have a solution 
+return the string representation of ANY cell type , say defaulting 
+would return the string representation of ANY cell type , say defaulting 
+cell.toString ( ) method that would return the string representation of ANY cell type , say defaulting to the cell 's value property 
+be a default cell.toString ( ) method that would return the string representation of ANY cell type , say defaulting to the cell 's value property 
+should be a default cell.toString ( ) method that would return the string representation of ANY cell type , say defaulting to the cell 's value property 
+does bug me as there should be a default cell.toString ( ) method that would return the string representation of ANY cell type , say defaulting to the cell 's value property 
+choose `` value '' 
+can choose `` value '' 
+like the paste-special where you can choose `` value '' 
+using Java 6 ( 1.6.0 _ 06 ) and poi-3 .0.2 - FINAL-20080204 . jar 
+'m using Java 6 ( 1.6.0 _ 06 ) and poi-3 .0.2 - FINAL-20080204 . jar 
+asked - I 'm using Java 6 ( 1.6.0 _ 06 ) and poi-3 .0.2 - FINAL-20080204 . jar 
+using 
+Copied shamelessly from here 
+is invalid 
+throw a RuntimeException if the formula is invalid 
+can throw a RuntimeException if the formula is invalid 
+Be aware that the evaluator.evaluate ( cell ) can throw a RuntimeException if the formula is invalid 
+tried this 
+Have you actually tried this 
+read the docs 
+can read the docs 
+tried this 
+'ve tried this 
+works 
+looking for actual `` yes , I 've tried this and it works '' info 
+'m looking for actual `` yes , I 've tried this and it works '' info 
+work out for you 
+does n't work out for you 
+try Andy Khan 's JExcel 
+prefer it 
+convert that cell into text 
+`` paste special '' 
+follows 
+did it as follows 
+Read from Point # 2 at 
+using createFormulaEvaluator 
+use SetCellType ( CellType.STRING ) 
+then access StringCellValue 
+use SetCellType ( CellType.STRING ) and then access StringCellValue 
+to use SetCellType ( CellType.STRING ) and then access StringCellValue 
+is to use SetCellType ( CellType.STRING ) and then access StringCellValue 
+using NPOI 
+function 
+contains the WORKDAY ( ) function 
+using a formula evaluator ( using NPOI ) when it contains the WORKDAY ( ) function 
+ran into problems using a formula evaluator ( using NPOI ) when it contains the WORKDAY ( ) function 

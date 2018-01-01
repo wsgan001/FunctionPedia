@@ -1,0 +1,44 @@
+QUESTION:
+HTML:
+<p>I dont find how to remove a column with the Apache POI API.&#xA;I would appreciate a sample code or help on this point.&#xA;Thank you</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+
+ANS:
+HTML:
+<p>I think you have to go down each HSSFRow and call HSSFRow.getCell and then HSSFRow.removeCell.  The API is oriented towards rows, rather than columns, and very few operations work at the whole column level.</p>&#xA;&#xA;<p>Sample code (untested):</p>&#xA;&#xA;<pre><code>HSSFSheet sheet = ...&#xA;int colToRemove = 5;&#xA;Iterator rowIter = sheet.iterator();&#xA;while (rowIter.hasNext()) {&#xA;   HSSFRow row = (HSSFRow)rowIter.next();&#xA;   HSSFCell cell = row.getCell(colToRemove);&#xA;   row.removeCell(cell);&#xA;}&#xA;</code></pre>&#xA;
+Comment:
+nope. doesn't work - this just removed all data of this cell (like content, style, ...) but the column is still there.
+You would then need to shift all relevant cells one column to the left.
+HTML:
+<p><a href="http://apache-poi.1045710.n5.nabble.com/Adding-Deleting-a-Column-td2309908.html" rel="nofollow">Alan Williamson on the mailing list</a> wrote <a href="http://pastebin.com/ff806298" rel="nofollow">a small helper for column removal</a></p>&#xA;
+Comment:
+
+Phrase:
+remove a column with the Apache POI API 
+to remove a column with the Apache POI API 
+find how to remove a column with the Apache POI API 
+dont find how to remove a column with the Apache POI API 
+appreciate a sample code 
+help on this point 
+appreciate a sample code or help on this point 
+would appreciate a sample code or help on this point 
+Thank you 
+go down each HSSFRow 
+call HSSFRow.getCell and then HSSFRow.removeCell 
+go down each HSSFRow and call HSSFRow.getCell and then HSSFRow.removeCell 
+to go down each HSSFRow and call HSSFRow.getCell and then HSSFRow.removeCell 
+have to go down each HSSFRow and call HSSFRow.getCell and then HSSFRow.removeCell 
+think you have to go down each HSSFRow and call HSSFRow.getCell and then HSSFRow.removeCell 
+is oriented towards rows , rather than columns 
+work at the whole column level 
+work 
+does n't work 
+is still there 
+removed all data of this cell ( like content , style , ... ) but the column is still there 
+shift all relevant cells one column to the left 
+to shift all relevant cells one column to the left 
+need to shift all relevant cells one column to the left 
+would then need to shift all relevant cells one column to the left 
+wrote a small helper for column removal 

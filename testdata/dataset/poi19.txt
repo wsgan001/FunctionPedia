@@ -1,0 +1,64 @@
+QUESTION:
+HTML:
+<p>Does anyone know if it's possible to add VB to an Excel document, from within Java? I basically want to add a pivot table to a sheet, and set some of it's properties dynamically. I know that I can access the pivot table settings from VB, but not directly from POI.</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>I've done something similar, where I've created a spreadsheet with VBA in advance using Excel. I then load it using POI, populate the values and then save it out again. Thus I get a spreadsheet with the populated values and the preconfigured VB/macros etc.</p>&#xA;&#xA;<p>Perhaps you need to create your VBA in advance, and it will read its dynamic properties from the sheet. You can then populate these properties at will.</p>&#xA;
+Comment:
+
+ANS:
+HTML:
+<p>I've done something similar, where I've created a spreadsheet with VBA in advance using Excel. I then load it using POI, populate the values and then save it out again. Thus I get a spreadsheet with the populated values and the preconfigured VB/macros etc.</p>&#xA;&#xA;<p>Perhaps you need to create your VBA in advance, and it will read its dynamic properties from the sheet. You can then populate these properties at will.</p>&#xA;
+Comment:
+
+Phrase:
+add VB to an Excel document 
+to add VB to an Excel document 
+'s possible to add VB to an Excel document , from within Java 
+know if it 's possible to add VB to an Excel document , from within Java 
+add a pivot table to a sheet 
+to add a pivot table to a sheet 
+basically want to add a pivot table to a sheet 
+set some of it 's properties dynamically 
+basically want to add a pivot table to a sheet , and set some of it 's properties dynamically 
+access the pivot table settings from VB , but not directly from POI 
+can access the pivot table settings from VB , but not directly from POI 
+know that I can access the pivot table settings from VB , but not directly from POI 
+using Excel 
+created a spreadsheet with VBA in advance using Excel 
+'ve created a spreadsheet with VBA in advance using Excel 
+done something similar , where I 've created a spreadsheet with VBA in advance using Excel 
+'ve done something similar , where I 've created a spreadsheet with VBA in advance using Excel 
+using POI 
+load it using POI 
+populate the values 
+save it out again 
+then load it using POI , populate the values and then save it out again 
+get a spreadsheet with the populated values and the preconfigured VB/macros etc. 
+create your VBA in advance 
+to create your VBA in advance 
+need to create your VBA in advance 
+read its dynamic properties from the sheet 
+will read its dynamic properties from the sheet 
+populate these properties at will 
+can then populate these properties at will 
+using Excel 
+created a spreadsheet with VBA in advance using Excel 
+'ve created a spreadsheet with VBA in advance using Excel 
+done something similar , where I 've created a spreadsheet with VBA in advance using Excel 
+'ve done something similar , where I 've created a spreadsheet with VBA in advance using Excel 
+using POI 
+load it using POI 
+populate the values 
+save it out again 
+then load it using POI , populate the values and then save it out again 
+get a spreadsheet with the populated values and the preconfigured VB/macros etc. 
+create your VBA in advance 
+to create your VBA in advance 
+need to create your VBA in advance 
+read its dynamic properties from the sheet 
+will read its dynamic properties from the sheet 
+populate these properties at will 
+can then populate these properties at will 

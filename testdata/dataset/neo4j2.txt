@@ -1,0 +1,67 @@
+QUESTION:
+HTML:
+<p>Is there a .NET version/binding for Neo4j?</p>&#xA;&#xA;<p>It looks like exactly what I want, but I'm working in C# on .NET.  </p>&#xA;&#xA;<p>Thanks</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>I think you best bet at the moment is to use the <a href="http://wiki.neo4j.org/content/Getting_Started_REST">REST server</a>. There's a blog post with a proof of concept .NET client: <a href="http://blog.jayway.com/2010/04/16/neo4j-net-client-over-http-using-rest-and-json/">Neo4j .NET Client over HTTP using REST and json</a>.</p>&#xA;&#xA;<p><strong>Update:</strong> Now there's actually two different .Net Neo4j REST clients:</p>&#xA;&#xA;<ul>&#xA;<li><a href="http://bitbucket.org/2hdddg/neo4restnet/">Neo4RestNet</a></li>&#xA;<li><a href="http://neo4jrestsharp.codeplex.com/">Neo4jRestSharp</a></li>&#xA;</ul>&#xA;
+Comment:
+oh, I was hoping for something with a C# client library/bindings.  I don't suppose you know of something similar to Neo4j in the C# world?
+not sure about similarity to Neo4j, but have a look over here for a list of graph databases: http://graph-database.org/
+Here's a getting started: http://blog.noop.se/archive/2010/04/16/neo4j-net-client-over-http-using-rest-and-json.aspx
+
+ANS:
+HTML:
+<p>I think you best bet at the moment is to use the <a href="http://wiki.neo4j.org/content/Getting_Started_REST">REST server</a>. There's a blog post with a proof of concept .NET client: <a href="http://blog.jayway.com/2010/04/16/neo4j-net-client-over-http-using-rest-and-json/">Neo4j .NET Client over HTTP using REST and json</a>.</p>&#xA;&#xA;<p><strong>Update:</strong> Now there's actually two different .Net Neo4j REST clients:</p>&#xA;&#xA;<ul>&#xA;<li><a href="http://bitbucket.org/2hdddg/neo4restnet/">Neo4RestNet</a></li>&#xA;<li><a href="http://neo4jrestsharp.codeplex.com/">Neo4jRestSharp</a></li>&#xA;</ul>&#xA;
+Comment:
+oh, I was hoping for something with a C# client library/bindings.  I don't suppose you know of something similar to Neo4j in the C# world?
+not sure about similarity to Neo4j, but have a look over here for a list of graph databases: http://graph-database.org/
+Here's a getting started: http://blog.noop.se/archive/2010/04/16/neo4j-net-client-over-http-using-rest-and-json.aspx
+HTML:
+<p>Just updating this question with a more current option - the Neo4jClient available on NuGet. The package and links to the project site are at <a href="http://nuget.org/packages/Neo4jClient">http://nuget.org/packages/Neo4jClient</a></p>&#xA;
+Comment:
+Neo4JClient is very up to date to the latest versions and supports most of the REST API.
+
+Phrase:
+want 
+working in C # on . NET 
+'m working in C # on . NET 
+looks like exactly what I want , but I 'm working in C # on . NET 
+use the REST server 
+to use the REST server 
+is to use the REST server 
+think you best bet at the moment is to use the REST server 
+using REST and json 
+'s a blog post with a proof of concept . NET client : Neo4j . NET Client over HTTP using REST and json 
+'s actually two different 
+hoping for something with a C # client library/bindings 
+was hoping for something with a C # client library/bindings 
+know of something similar to Neo4j in the C # world 
+suppose you know of something similar to Neo4j in the C # world 
+do n't suppose you know of something similar to Neo4j in the C # world 
+have a look over here for a list of graph databases : http://graph-database.org/ 
+'s 
+started 
+getting started 
+use the REST server 
+to use the REST server 
+is to use the REST server 
+think you best bet at the moment is to use the REST server 
+using REST and json 
+'s a blog post with a proof of concept . NET client : Neo4j . NET Client over HTTP using REST and json 
+'s actually two different 
+hoping for something with a C # client library/bindings 
+was hoping for something with a C # client library/bindings 
+know of something similar to Neo4j in the C # world 
+suppose you know of something similar to Neo4j in the C # world 
+do n't suppose you know of something similar to Neo4j in the C # world 
+have a look over here for a list of graph databases : http://graph-database.org/ 
+'s 
+started 
+getting started 
+updating this question with a more current option - the Neo4jClient available on NuGet 
+are at http://nuget.org/packages/Neo4jClient 
+is very up to date to the latest versions 
+supports most of the REST API 
+is very up to date to the latest versions and supports most of the REST API 

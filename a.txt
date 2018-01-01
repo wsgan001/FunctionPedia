@@ -1,0 +1,52 @@
+﻿<p>asd zhangsan()  lisi.wangwu zhaoLiu <code> sd </code> asdf::</p> <li> <code>sdsd</code> </li><pre>dd <code> cc </code></pre>
+<p>asd zhangsan()  lisi.wangwu  67.900 zhaoLiu <code> sd </code> asdf AehjEsdhjHDJdd() Tudh20.8.2:</p> 
+		
+<p>I have searched this site, oracle, and others to no avail.</p>
+
+<p>I am having a couple of issues with my program, but for right now I only want to deal with one.</p>
+
+<p>First let me post the parts of my program I am having issues with</p>
+
+<p><strong>verifyAge method</strong></p>
+
+<pre><code> private void verifyAge()
+ {
+     String ca = iP.cAge.getText();
+     try
+     {
+         a = Integer.parseInt(ca); 
+         if (a &lt; 0 || a &gt; 120)
+         {
+             JOptionPane.showMessageDialog(null,"Enter number between 0"
+                     + " and 120", "Input Error",JOptionPane.ERROR_MESSAGE);
+             iP.cAge.setText("");  
+         }
+     }
+     catch(NumberFormatException afe)
+     {
+         JOptionPane.showMessageDialog(null, "Must Enter Number", "Input"
+                 + " Error", JOptionPane.ERROR_MESSAGE);
+         iP.cAge.setText("");
+     }
+} 
+</code></pre>
+
+<p>I have a FileListener that this code will be going into. It needs to run and loop until error is fixed before moving on in the code. Does anyone have any suggestions and please give examples.</p>
+<p>You have two choices to achieve this:</p>
+
+<ol>
+<li><p>Either return a value from your validate methods and check the value in acitonPerformed. If  validated then only move to the next method. You can achieve this by putting few if/else statements</p></li>
+<li><p>Or you can create validate exception classes. If your validate method is not able to validate then it should throw an exception which you can catch in your action performed. If you put all the validate method in the try block then if a method throws the exception you can skip other methods as you reach the catch block.</p></li>
+</ol>
+
+<p>I am not sure whether I correctly understand your second problem. As I understand you want to continue with the program even if your addFile method throws an exception. For that case you need to wrap your addFile method call in a separate try catch. You need not to return from your actionPerformed in case of exception if your program can logically continue with addfile failure. Simply log an error in the catch that addFile failed and continue with rest of the code following the catch statement.</p>
+<p>Firstly, create a new <code>Exception</code> called something like <code>ValidationException</code>.  Have each of the methods throw this.  You will now be required to catch it in the <code>ActionListener</code>.  This way, you stop all the other methods from executing when one fails.</p>
+
+<p>Secondly, you need some way to either highlight or focus the field that failed.</p>
+
+<p>You could use something like a <code>Component</code> called (for example) <code>invalidField</code>.  If this is not <code>null</code> (in the <code>actionPerformed</code> method), you could call <code>requestFocusInWindow</code> to return focus control back to that field.</p>
+
+<p>Each validation method would be required to set this before they threw their <code>ValidationException</code></p>
+
+
+just for test

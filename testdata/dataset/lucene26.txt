@@ -1,0 +1,206 @@
+QUESTION:
+HTML:
+<p>I use solr to search for documents and when trying to search for documents using this query "<code>id:*</code>", I get this query parser exception telling that it cannot parse the query with * or ? as the first character. </p>&#xA;&#xA;<pre><code>HTTP Status 400 - org.apache.lucene.queryParser.ParseException: Cannot parse 'id:*': '*' or '?' not allowed as first character in WildcardQuery&#xA;&#xA;type Status report&#xA;&#xA;message org.apache.lucene.queryParser.ParseException: Cannot parse 'id:*': '*' or '?' not allowed as first character in WildcardQuery&#xA;&#xA;description The request sent by the client was syntactically incorrect (org.apache.lucene.queryParser.ParseException: Cannot parse 'id:*': '*' or '?' not allowed as first character in WildcardQuery).&#xA;</code></pre>&#xA;&#xA;<p>Is there any patch for getting this to work with just * ? Or is it very costly to do such a query?</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+
+ANS:
+HTML:
+<p>I'm assuming with id:* you're just trying to match all documents, right?</p>&#xA;&#xA;<p>I've never used solr before, but in my Lucene experience, when ingesting data, we've added a hidden field to every document, then when we need to return every record we do a search for the string constant in that field that's the same for every record.</p>&#xA;&#xA;<p>If you can't add a field like that in your situation, you could use a RegexQuery with a regex that would match anything that could be found in the id field.</p>&#xA;&#xA;<p>Edit: actually answering the question.  I've never heard of a patch to get that to work, but I would be surprised if it could even be made to work reasonably well.  See <a href="http://stackoverflow.com/questions/8532/with-lucene-why-do-i-get-a-too-many-clauses-error-if-i-do-a-prefix-search" rel="nofollow">this question</a> for a reason why unconstrained PrefixQuery's can cause a problem.</p>&#xA;
+Comment:
+HTML:
+<p>Actually, I have been using a workaround for this. I append a character to the id, eg: A1, A2, etc.</p>&#xA;&#xA;<p>With such values in the field, it is possible to search using the query <code>id:A*</code></p>&#xA;&#xA;<p>But would love to find whether a true solution exists.</p>&#xA;
+Comment:
+HTML:
+<p>Lucene doesn't allow you to start WildcardQueries with an asterisk by default, because those are incredibly expensive queries and will be very, very, very slow on large indexes.</p>&#xA;&#xA;<p>If you're using the Lucene QueryParser, call setAllowLeadingWildcard(true) on it to enable it.</p>&#xA;&#xA;<p>If you want all of the documents with a certain field set, you are much better off querying or walking the index programmatically than using QueryParser.  You should really only use QueryParser to parse user input.</p>&#xA;
+Comment:
+HTML:
+<pre><code>id:[a* TO z*] id:[0* TO 9*] etc.&#xA;</code></pre>&#xA;&#xA;<p>I just did this in lukeall on my index and it worked, therefore it should work in Solr which uses the standard query parser. I don't actually use Solr.</p>&#xA;&#xA;<p>In base Lucene there's a fine reason for why you'd never query for every document, it's because to query for a document you must use a <code>new indexReader("DirectoryName")</code> and apply a query to it. Therefore you could totally skip applying a query to it and use the <code>indexReader</code> methods <code>numDocs()</code> to get a count of all the documents, and <code>document(int n)</code> to retrieve any of the documents.</p>&#xA;
+Comment:
+HTML:
+<p>If you want all documents, do a query on &#042;:&#042;</p>&#xA;&#xA;<p>If you want all documents with a certain field (e.g. id) try id:[* TO *]</p>&#xA;
+Comment:
+HTML:
+<p>If you are just trying to get all documents, Solr does support the *:* query.  It's the only time I know of that Solr will let you begin a query with an *.  I'm sure you've probably seen this as the default query in the Solr admin page.</p>&#xA;&#xA;<p>If you are trying to do a more specific query with an * as the first character, like say id:*456 then one of the best ways I've seen is to index that field twice.  Once normally (field name: id), and once with all the characters reversed (field name: reverse_id).  Then you could essentially do the query id:*456 by sending the query reverse_id:654* instead.  Hope that makes sense.</p>&#xA;&#xA;<p>You can also search the Solr user group mailing list at <a href="http://www.mail-archive.com/solr-user@lucene.apache.org/" rel="nofollow">http://www.mail-archive.com/solr-user@lucene.apache.org/</a> where questions like this come up quite often.</p>&#xA;
+Comment:
+HTML:
+<p>The following Solr issue is a request to be able to configure the default lucene query parser.&#xA;<a href="https://issues.apache.org/jira/browse/SOLR-218" rel="nofollow">https://issues.apache.org/jira/browse/SOLR-218</a></p>&#xA;&#xA;<p>In this issue you can find the following description how to 'patch' Solr. This modification would allow you to start queries with a *.</p>&#xA;&#xA;<blockquote>&#xA;  <p>Jonas Salk: I've basically updated only one Java file: SolrQueryParser.java.</p>&#xA;</blockquote>&#xA;&#xA;<pre><code>public SolrQueryParser(IndexSchema schema, String defaultField) { &#xA;    ... &#xA;    setAllowLeadingWildcard(true); &#xA;    setLowercaseExpandedTerms(true); &#xA;    ... &#xA;}&#xA;&#xA; ...&#xA;&#xA;public SolrQueryParser(QParser parser, String defaultField, Analyzer analyzer) {&#xA;    ... &#xA;    setAllowLeadingWildcard(true); &#xA;    setLowercaseExpandedTerms(true);&#xA;    ... &#xA;}&#xA;</code></pre>&#xA;&#xA;<p>I'm not sure if setLowercaseExpandedTerms is needed...</p>&#xA;
+Comment:
+
+Phrase:
+using this query `` CODE0 '' 
+search for documents using this query `` CODE0 '' 
+to search for documents using this query `` CODE0 '' 
+trying to search for documents using this query `` CODE0 '' 
+parse the query with * or 
+can not parse the query with * or 
+telling that it can not parse the query with * or 
+get this query parser exception telling that it can not parse the query with * or 
+Is there 
+work with just * 
+to work with just * 
+getting this to work with just * 
+do such a query 
+to do such a query 
+assuming with id 
+'m assuming with id 
+match all documents , right 
+to match all documents , right 
+trying to match all documents , right 
+'re just trying to match all documents , right 
+used solr before 
+'ve never used solr before 
+ingesting data 
+added a hidden field to every document 
+'ve added a hidden field to every document 
+return every record 
+to return every record 
+need to return every record 
+'s the same for every record 
+do a search for the string constant in that field that 's the same for every record 
+add a field like that in your situation 
+ca n't add a field like that in your situation 
+found in the id field 
+be found in the id field 
+could be found in the id field 
+match anything that could be found in the id field 
+would match anything that could be found in the id field 
+use a RegexQuery with a regex that would match anything that could be found in the id field 
+could use a RegexQuery with a regex that would match anything that could be found in the id field 
+actually answering the question 
+work 
+to work 
+get that to work 
+to get that to work 
+heard of a patch to get that to work 
+'ve never heard of a patch to get that to work 
+work reasonably well 
+to work reasonably well 
+made to work reasonably well 
+be made to work reasonably well 
+could even be made to work reasonably well 
+be surprised if it could even be made to work reasonably well 
+would be surprised if it could even be made to work reasonably well 
+cause a problem 
+can cause a problem 
+unconstrained PrefixQuery 's can cause a problem 
+See this question for a reason why unconstrained PrefixQuery 's can cause a problem 
+using a workaround for this 
+been using a workaround for this 
+have been using a workaround for this 
+append a character to the id , eg : A1 , A2 , etc. 
+using the query CODE0 
+search using the query CODE0 
+to search using the query CODE0 
+is possible to search using the query CODE0 
+exists 
+find whether a true solution exists 
+to find whether a true solution exists 
+love to find whether a true solution exists 
+would love to find whether a true solution exists 
+queries 
+be very , very , very slow on large indexes 
+will be very , very , very slow on large indexes 
+queries and will be very , very , very slow on large indexes 
+are incredibly expensive queries and will be very , very , very slow on large indexes 
+start WildcardQueries with an asterisk by default , because those are incredibly expensive queries and will be very , very , very slow on large indexes 
+to start WildcardQueries with an asterisk by default , because those are incredibly expensive queries and will be very , very , very slow on large indexes 
+allow you to start WildcardQueries with an asterisk by default , because those are incredibly expensive queries and will be very , very , very slow on large indexes 
+does n't allow you to start WildcardQueries with an asterisk by default , because those are incredibly expensive queries and will be very , very , very slow on large indexes 
+using the Lucene QueryParser 
+'re using the Lucene QueryParser 
+enable it 
+to enable it 
+call setAllowLeadingWildcard ( true ) on it to enable it 
+set 
+want all of the documents with a certain field set 
+using QueryParser 
+querying or walking the index programmatically than using QueryParser 
+are much better off querying or walking the index programmatically than using QueryParser 
+parse user input 
+to parse user input 
+only use QueryParser to parse user input 
+should really only use QueryParser to parse user input 
+did this in lukeall on my index 
+worked 
+uses the standard query parser 
+work in Solr which uses the standard query parser 
+should work in Solr which uses the standard query parser 
+use Solr 
+do n't actually use Solr 
+query for every document 
+'d never query for every document 
+'s a fine reason for why you 'd never query for every document 
+use a CODE0 
+apply a query to it 
+use a CODE0 and apply a query to it 
+must use a CODE0 and apply a query to it 
+query for a document you must use a CODE0 and apply a query to it 
+to query for a document you must use a CODE0 and apply a query to it 
+'s because to query for a document you must use a CODE0 and apply a query to it 
+applying a query to it 
+skip applying a query to it 
+get a count of all the documents 
+to get a count of all the documents 
+use the CODE1 methods CODE2 to get a count of all the documents 
+retrieve any of the documents 
+to retrieve any of the documents 
+CODE3 to retrieve any of the documents 
+skip applying a query to it and use the CODE1 methods CODE2 to get a count of all the documents , and CODE3 to retrieve any of the documents 
+could totally skip applying a query to it and use the CODE1 methods CODE2 to get a count of all the documents , and CODE3 to retrieve any of the documents 
+want all documents 
+do a query on * : * 
+all documents with a certain field ( e.g 
+want all documents with a certain field ( e.g 
+id ) try id 
+get all documents 
+to get all documents 
+trying to get all documents 
+are just trying to get all documents 
+does support the * : * query 
+begin a query with an * 
+let you begin a query with an * 
+will let you begin a query with an * 
+know of that Solr will let you begin a query with an * 
+'s the only time I know of that Solr will let you begin a query with an * 
+seen this as the default query in the Solr admin page 
+'ve probably seen this as the default query in the Solr admin page 
+'m sure you 've probably seen this as the default query in the Solr admin page 
+do a more specific query with an * as the first character 
+to do a more specific query with an * as the first character 
+trying to do a more specific query with an * as the first character 
+are trying to do a more specific query with an * as the first character 
+say id 
+seen 
+'ve seen 
+is to index that field twice 
+Once normally ( field name : id ) 
+reversed ( field name : reverse_id ) 
+Once normally ( field name : id ) , and once with all the characters reversed ( field name : reverse_id ) 
+do the query id 
+could essentially do the query id 
+sending the query reverse_id :654 * instead 
+makes 
+sense 
+come up quite often 
+search the Solr user group mailing list at http://www.mail-archive.com/solr-user@lucene.apache.org/ where questions like this come up quite often 
+can also search the Solr user group mailing list at http://www.mail-archive.com/solr-user@lucene.apache.org/ where questions like this come up quite often 
+configure the default lucene query parser 
+to configure the default lucene query parser 
+be able to configure the default lucene query parser 
+to be able to configure the default lucene query parser 
+is a request to be able to configure the default lucene query parser 
+` patch ' Solr 
+to ` patch ' Solr 
+find the following description how to ` patch ' Solr 
+can find the following description how to ` patch ' Solr 
+start queries with a * 
+to start queries with a * 
+allow you to start queries with a * 
+would allow you to start queries with a * 
+updated only one Java file : SolrQueryParser.java 
+'ve basically updated only one Java file : SolrQueryParser.java 
+needed 
+is needed 
+'m not sure if setLowercaseExpandedTerms is needed 

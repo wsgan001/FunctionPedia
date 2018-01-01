@@ -1,0 +1,101 @@
+QUESTION:
+HTML:
+<p>Consider that I've a excel sheet in below format:</p>&#xA;&#xA;&#xA;&#xA;<b>person</b>&#xA;<b>age</b>&#xA;&#xA;<br/>&#xA;&#xA;Foo&#xA;29&#xA;&#xA;<br/>&#xA;&#xA;Bar&#xA;27&#xA;&#xA;&#xA;&#xA;<p>Now I want to read these values (using POI HSSF) and have to process them. What's the best way to do that?</p>&#xA;&#xA;<p>Note that I do not have a Object Person in my application, becasue the values that may come in excel sheet is arbitrary (i.e. it may not be the person name and age). So, I need to use some kinda HashMap to store these values. In case multiple rows, is it good to have a List !?</p>&#xA;
+Comment:
+Do you need to store any arbitrary sheet or is the example you give representative i.e. will you always expect two columns with headings in the first row and data in subsequent rows?
+the number of columns may vary, in different excel sheets. First I need to read how many column names are there (in the example, is 2) and based on that I have to read the column values.
+
+ACCEPTED ANS:
+HTML:
+<pre><code>public class Grid {&#xA;    private Row headerColumns;&#xA;    private List&lt;Row&gt; dataRows;&#xA;&#xA;    public Grid() {&#xA;    	dataRows = new LinkedList&lt;Row&gt;();&#xA;    }&#xA;&#xA;    public Grid(int rowCount) {&#xA;    	dataRows = new ArrayList&lt;Row&gt;(rowCount);&#xA;    }&#xA;&#xA;    public void addHeaderRow(List&lt;String&gt; headers) {&#xA;    	this.headerColumns = new Row(headers);&#xA;    }&#xA;&#xA;    public void addDataRow(List&lt;String&gt; data) {&#xA;    	this.dataRows.add( new Row(data) );&#xA;    }&#xA;&#xA;    public List&lt;Row&gt; getAllData() {&#xA;    	List&lt;Row&gt; data = new ArrayList&lt;Row&gt;(1+dataRows.size());&#xA;    	data.add(this.headerColumns);&#xA;    	data.addAll(dataRows);&#xA;    	return data;&#xA;    }&#xA;&#xA;    public Row getHeaderColumns() {&#xA;    	return headerColumns;&#xA;    }&#xA;&#xA;    public List&lt;Row&gt; getDataRows() {&#xA;    	return dataRows;&#xA;    }&#xA;}&#xA;&#xA;class Row {&#xA;    private List&lt;String&gt; data;&#xA;&#xA;    public Row(List&lt;String&gt; data) {&#xA;    	this.data = data;&#xA;    }&#xA;&#xA;    public void addColumn(String columnData) {&#xA;    	data.add(columnData);&#xA;    }&#xA;&#xA;    public List&lt;String&gt; getData() {&#xA;    	return data;&#xA;    }&#xA;}&#xA;</code></pre>&#xA;
+Comment:
+thank you for such a detailed solution. :)
+
+ANS:
+HTML:
+<p>If the format is defined, make a class that accomodates all those fields.</p>&#xA;&#xA;<p>If the format isn't defined, pass Row-s around, or Lists, or even DOM from excel-to-dom transformation. You have no choice. I'd recommend just stick to POI's native Row and Cell objects.</p>&#xA;
+Comment:
+HTML:
+<p>Yes, you cannot use map if you have multiple key values. And i didn't find some build-in class for this issue. You can try write some kind of wrapper.&#xA;If you don't care of speed use simple 2D array like this:</p>&#xA;&#xA;<pre><code>String[][] filter = new String[initial width][initial height];&#xA;</code></pre>&#xA;&#xA;<p>it can be Object instead of String;</p>&#xA;
+Comment:
+HTML:
+<pre><code>public class Grid {&#xA;    private Row headerColumns;&#xA;    private List&lt;Row&gt; dataRows;&#xA;&#xA;    public Grid() {&#xA;    	dataRows = new LinkedList&lt;Row&gt;();&#xA;    }&#xA;&#xA;    public Grid(int rowCount) {&#xA;    	dataRows = new ArrayList&lt;Row&gt;(rowCount);&#xA;    }&#xA;&#xA;    public void addHeaderRow(List&lt;String&gt; headers) {&#xA;    	this.headerColumns = new Row(headers);&#xA;    }&#xA;&#xA;    public void addDataRow(List&lt;String&gt; data) {&#xA;    	this.dataRows.add( new Row(data) );&#xA;    }&#xA;&#xA;    public List&lt;Row&gt; getAllData() {&#xA;    	List&lt;Row&gt; data = new ArrayList&lt;Row&gt;(1+dataRows.size());&#xA;    	data.add(this.headerColumns);&#xA;    	data.addAll(dataRows);&#xA;    	return data;&#xA;    }&#xA;&#xA;    public Row getHeaderColumns() {&#xA;    	return headerColumns;&#xA;    }&#xA;&#xA;    public List&lt;Row&gt; getDataRows() {&#xA;    	return dataRows;&#xA;    }&#xA;}&#xA;&#xA;class Row {&#xA;    private List&lt;String&gt; data;&#xA;&#xA;    public Row(List&lt;String&gt; data) {&#xA;    	this.data = data;&#xA;    }&#xA;&#xA;    public void addColumn(String columnData) {&#xA;    	data.add(columnData);&#xA;    }&#xA;&#xA;    public List&lt;String&gt; getData() {&#xA;    	return data;&#xA;    }&#xA;}&#xA;</code></pre>&#xA;
+Comment:
+thank you for such a detailed solution. :)
+
+Phrase:
+'ve a excel sheet in below format 
+Consider that I 've a excel sheet in below format 
+read these values 
+using POI HSSF 
+process them 
+to process them 
+have to process them 
+read these values ( using POI HSSF ) and have to process them 
+to read these values ( using POI HSSF ) and have to process them 
+want to read these values ( using POI HSSF ) and have to process them 
+do that 
+to do that 
+have a Object Person in my application 
+do not have a Object Person in my application 
+Note that I do not have a Object Person in my application 
+is 
+come in excel sheet is 
+may come in excel sheet is 
+becasue the values that may come in excel sheet is arbitrary ( i.e 
+Note that I do not have a Object Person in my application , becasue the values that may come in excel sheet is arbitrary ( i.e 
+be the person name and age 
+may not be the person name and age 
+store these values 
+to store these values 
+use some kinda HashMap to store these values 
+to use some kinda HashMap to store these values 
+need to use some kinda HashMap to store these values 
+have a List 
+to have a List 
+is it good to have a List 
+store any arbitrary sheet 
+to store any arbitrary sheet 
+need to store any arbitrary sheet 
+give representative i.e 
+is the example you give representative i.e 
+need to store any arbitrary sheet or is the example you give representative i.e 
+Do you need to store any arbitrary sheet or is the example you give representative i.e 
+expect two columns with headings in the first row and data in subsequent rows 
+vary , in different excel sheets 
+may vary , in different excel sheets 
+are there 
+read how many column names are there 
+to read how many column names are there 
+need to read how many column names are there 
+read the column values 
+to read the column values 
+have to read the column values 
+based on that I have to read the column values 
+need to read how many column names are there ( in the example , is 2 ) and based on that I have to read the column values 
+thank you for such a detailed solution 
+defined 
+is defined 
+accomodates all those fields 
+make a class that accomodates all those fields 
+defined 
+is n't defined 
+pass Row-s around , or Lists , or even DOM from excel-to-dom transformation 
+have no choice 
+recommend just stick to POI 's native Row and Cell objects 
+'d recommend just stick to POI 's native Row and Cell objects 
+have multiple key values 
+use map if you have multiple key values 
+can not use map if you have multiple key values 
+find some build-in class for this issue 
+did n't find some build-in class for this issue 
+write some kind of wrapper 
+try write some kind of wrapper 
+can try write some kind of wrapper 
+care of speed 
+do n't care of speed 
+use simple 
+like this 
+be Object instead of String 
+can be Object instead of String 
+thank you for such a detailed solution 

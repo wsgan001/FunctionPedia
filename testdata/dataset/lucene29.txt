@@ -1,0 +1,72 @@
+QUESTION:
+HTML:
+<p>In Lucene if you had an multiple indexes that covered only one partition each. Why does the same search on different indexes return results with different scores? The results from the different servers match exactly. i.e If I searched for:</p>&#xA;&#xA;<ul>&#xA;<li>Name - John Smith</li>&#xA;<li>DOB - 11/11/1934</li>&#xA;</ul>&#xA;&#xA;<p>Partition 0 would return a score of 0.345&#xA;Partition 1 would return a score of 0.337</p>&#xA;&#xA;<p>Both matched exactly on the name and dob.</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+
+ANS:
+HTML:
+<p>The <a href="http://lucene.apache.org/core/3_6_0/api/all/org/apache/lucene/search/Similarity.html" rel="nofollow">scoring</a> contains the Inverse Document Frequency(IDF). If the term "John Smith" is in one partition, 0, 100 times and in partition 1, once. The score for searching for John Smith would be higher search in partition 1 as the term is more scarce.</p>&#xA;&#xA;<p>To get round this you would wither have to have your index being over all partitions, or you would need to override the IDF.</p>&#xA;
+Comment:
+Or you could construct a multisearcher from all indices.
+HTML:
+<p>Because the score is determined on the Index if I am not completely mistaken. If you have different indexes (more/less or different data that was indexed), the score will differ:</p>&#xA;&#xA;<p><a href="http://lucene.apache.org/core/3_6_0/scoring.html" rel="nofollow">http://lucene.apache.org/core/3_6_0/scoring.html</a></p>&#xA;&#xA;<p>(Warning: Contains Math :-))</p>&#xA;
+Comment:
+updated link: &#xA;&#xA;http://lucene.apache.org/java/2_4_0/scoring.html
+Thanks, I've updated it in the answer.
+HTML:
+<p>You may also be interested in the output of the explain() method, which will give you an idea of how things are scored the way they are:</p>&#xD;&#xA;&#xD;&#xA;<blockquote>&#xD;&#xA;  <p><a href="http://lucene.apache.org/java/2_2_0/api/org/apache/lucene/search/Searcher.html#explain" rel="nofollow" title="org.apache.lucene.search.Query,%20int">http://lucene.apache.org/java/2_2_0/api/org/apache/lucene/search/Searcher.html#explain(org.apache.lucene.search.Query,%20int)</a></p>&#xD;&#xA;</blockquote>&#xD;&#xA;&#xD;&#xA;<p>and the Explanation object:</p>&#xD;&#xA;&#xD;&#xA;<blockquote>&#xD;&#xA;  <p><a href="http://lucene.apache.org/java/2_2_0/api/org/apache/lucene/search/Explanation.html" rel="nofollow">http://lucene.apache.org/java/2_2_0/api/org/apache/lucene/search/Explanation.html</a></p>&#xD;&#xA;</blockquote>&#xD;&#xA;&#xD;&#xA;<p>(Ick, scary URLs.)</p>
+Comment:
+
+Phrase:
+covered only one partition each 
+had an multiple indexes that covered only one partition each 
+return results with different scores 
+match exactly 
+searched for 
+i.e If I searched for 
+return a score of 0.337 
+would return a score of 0.337 
+return a score of 0.345 Partition 1 would return a score of 0.337 
+would return a score of 0.345 Partition 1 would return a score of 0.337 
+matched exactly on the name and dob 
+contains the Inverse Document Frequency ( IDF ) 
+is in one partition , 0 , 100 times and in partition 1 , once 
+searching for John Smith 
+is more scarce 
+be higher search in partition 1 as the term is more scarce 
+would be higher search in partition 1 as the term is more scarce 
+get round this 
+To get round this 
+being over all partitions 
+have your index being over all partitions 
+to have your index being over all partitions 
+have to have your index being over all partitions 
+would wither have to have your index being over all partitions 
+override the IDF 
+to override the IDF 
+need to override the IDF 
+would need to override the IDF 
+construct a multisearcher from all indices 
+could construct a multisearcher from all indices 
+completely mistaken 
+am not completely mistaken 
+determined on the Index if I am not completely mistaken 
+is determined on the Index if I am not completely mistaken 
+indexed 
+was indexed 
+have different indexes ( more/less or different data that was indexed ) 
+differ 
+will differ 
+http://lucene.apache.org/java/2_4_0/scoring.html 
+updated it in the answer 
+'ve updated it in the answer 
+are 
+scored the way they are 
+are scored the way they are 
+give you an idea of how things are scored the way they are 
+will give you an idea of how things are scored the way they are 
+be interested in the output of the explain ( ) method , which will give you an idea of how things are scored the way they are 
+may also be interested in the output of the explain ( ) method , which will give you an idea of how things are scored the way they are 
+object 

@@ -1,0 +1,72 @@
+QUESTION:
+HTML:
+<p>I'm currently working on a Java application that uses a template excel file that contains a pivot table. </p>&#xA;&#xA;<p>The template file also has a data sheet that seeds the pivot table. This data sheet is dynamically loaded in the java application through the Apache POI api. </p>&#xA;&#xA;<p>When I open the excel file I must refresh the Pivot table manually to get the data loaded correctly. </p>&#xA;&#xA;<p>Is there any way to refresh the Pivot table with the POI api so I don't have to manually do it?</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+
+ANS:
+HTML:
+<p>The basic answer to this is no. POI is a document format reader and writer. Updating the Pivot table is an excel engine issue. Sure, another application could try to duplicate the Excel engine behavior here, but that is really going to get ugly. I recommend using <a href="http://www.joelonsoftware.com/items/2008/02/19.html" rel="nofollow">Joel's</a> workaround of accessing the excel COM objects over a webservice to get this kind of thing done.</p>&#xA;
+Comment:
+HTML:
+<p>This post says you can turn on an option on the pivot table that will cause it to refresh itself automatically every time the workbook is opened:</p>&#xA;&#xA;<p><a href="http://stackoverflow.com/questions/70947/how-can-i-refresh-all-the-pivot-tables-in-my-excel-workbook-with-a-macro">http://stackoverflow.com/questions/70947/how-can-i-refresh-all-the-pivot-tables-in-my-excel-workbook-with-a-macro</a></p>&#xA;&#xA;<p>Hopefully this will still be true after you have used Apache POI to refresh or extend the data rows on which the pivot tables are based.</p>&#xA;
+Comment:
+
+Phrase:
+contains a pivot table 
+excel file that contains a pivot table 
+uses a template excel file that contains a pivot table 
+working on a Java application that uses a template excel file that contains a pivot table 
+'m currently working on a Java application that uses a template excel file that contains a pivot table 
+also has a data sheet that seeds 
+loaded in the java application through the Apache POI api 
+is dynamically loaded in the java application through the Apache POI api 
+loaded correctly 
+get the data loaded correctly 
+to get the data loaded correctly 
+refresh the Pivot table manually to get the data loaded correctly 
+must refresh the Pivot table manually to get the data loaded correctly 
+file I must refresh the Pivot table manually to get the data loaded correctly 
+open the excel file I must refresh the Pivot table manually to get the data loaded correctly 
+manually do it 
+to manually do it 
+have to manually do it 
+do n't have to manually do it 
+refresh the Pivot table with the POI api so I do n't have to manually do it 
+to refresh the Pivot table with the POI api so I do n't have to manually do it 
+is no 
+is a document format reader and writer 
+is an excel engine issue 
+Updating the Pivot table is an excel engine issue 
+duplicate the Excel engine behavior here 
+to duplicate the Excel engine behavior here 
+try to duplicate the Excel engine behavior here 
+could try to duplicate the Excel engine behavior here 
+get ugly 
+to get ugly 
+going to get ugly 
+is really going to get ugly 
+done 
+get this kind of thing done 
+to get this kind of thing done 
+accessing the excel COM objects over a webservice to get this kind of thing done 
+using Joel 's workaround of accessing the excel COM objects over a webservice to get this kind of thing done 
+recommend using Joel 's workaround of accessing the excel COM objects over a webservice to get this kind of thing done 
+refresh itself automatically every time 
+to refresh itself automatically every time 
+cause it to refresh itself automatically every time 
+will cause it to refresh itself automatically every time 
+turn on an option on the pivot table that will cause it to refresh itself automatically every time 
+can turn on an option on the pivot table that will cause it to refresh itself automatically every time 
+says you can turn on an option on the pivot table that will cause it to refresh itself automatically every time 
+opened 
+is opened 
+based 
+are based 
+refresh or extend the data rows on which the pivot tables are based 
+to refresh or extend the data rows on which the pivot tables are based 
+used Apache POI to refresh or extend the data rows on which the pivot tables are based 
+have used Apache POI to refresh or extend the data rows on which the pivot tables are based 
+be true after you have used Apache POI to refresh or extend the data rows on which the pivot tables are based 
+will still be true after you have used Apache POI to refresh or extend the data rows on which the pivot tables are based 

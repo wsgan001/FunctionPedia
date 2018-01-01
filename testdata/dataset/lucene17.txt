@@ -1,0 +1,177 @@
+QUESTION:
+HTML:
+<p>I've found how to sort query results by a given field in a Lucene.Net index instead of by score; all it takes is a field that is indexed but not tokenized. However, what I haven't been able to figure out is how to sort that field while ignoring stop words such as "a" and "the", so that the following book titles, for example, would sort in ascending order like so:</p>&#xA;&#xA;<ol>&#xA;<li>The Cat in the Hat</li>&#xA;<li>Horton Hears a Who</li>&#xA;</ol>&#xA;&#xA;<p>Is such a thing possible, and if yes, how?</p>&#xA;&#xA;<p>I'm using Lucene.Net 2.3.1.2.</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>I wrap the results returned by Lucene into my own collection of custom objects. Then I can populate it with extra info/context information (and use things like the highlighter class to pull out a snippet of the matches), plus add paging. If you took a similar route you could create a "result" class/object, add something like a SortBy property and grab whatever field you wanted to sort by, strip out any stop words, then save it in this property. Now just sort the collection based on that property instead.</p>&#xA;
+Comment:
+I think that's how it would have to be done, yes. I do create a collection of custom objects with the Lucene results so it shouldn't be too hard. Thanks.
+
+ANS:
+HTML:
+<p>When you create your index, create a field that only contains the words you wish to sort on, then when retrieving, sort on that field but display the full title.</p>&#xA;
+Comment:
+Well, that's the trick, isn't it? You can't sort by a tokenized field, and its the tokenizing that analyzes the field for stop words and punctuation, as I understand it. So how to strip those stop words but keep the field un-tokenized?
+In your code, strip out the stop words. You'll have to maintain your own list.
+HTML:
+<p>It's been a while since I used Lucene but my guess would be to add an extra field for sorting and storing the value in there with the stop words already stripped. You can probably use the same analyzers to generate this value.</p>&#xA;
+Comment:
+HTML:
+<p>There seems to be a catch-22 in that you must tokenize a field with an analyzer in order to strip punctuation and stop words, but you can't sort on tokenized fields. How then to strip the stop words without tokenizing?</p>&#xA;
+Comment:
+Don't rely on Lucene to strip them, do it yourself.
+HTML:
+<p>I wrap the results returned by Lucene into my own collection of custom objects. Then I can populate it with extra info/context information (and use things like the highlighter class to pull out a snippet of the matches), plus add paging. If you took a similar route you could create a "result" class/object, add something like a SortBy property and grab whatever field you wanted to sort by, strip out any stop words, then save it in this property. Now just sort the collection based on that property instead.</p>&#xA;
+Comment:
+I think that's how it would have to be done, yes. I do create a collection of custom objects with the Lucene results so it shouldn't be too hard. Thanks.
+HTML:
+<p>For search, I found <a href="http://www.logiclabz.com/c/search-lucene-index-in-net-c-with-sorting-options.aspx" rel="nofollow">search lucene .net index with sort option</a> link interesting to solve ur problem</p>&#xA;
+Comment:
+
+Phrase:
+sort query results by a given field in a Lucene.Net index instead of by score 
+to sort query results by a given field in a Lucene.Net index instead of by score 
+found how to sort query results by a given field in a Lucene.Net index instead of by score 
+'ve found how to sort query results by a given field in a Lucene.Net index instead of by score 
+takes 
+indexed but not tokenized 
+is indexed but not tokenized 
+is a field that is indexed but not tokenized 
+ignoring stop words such as `` a '' and `` the '' 
+sort that field while ignoring stop words such as `` a '' and `` the '' 
+to sort that field while ignoring stop words such as `` a '' and `` the '' 
+is how to sort that field while ignoring stop words such as `` a '' and `` the '' 
+ascending order like so 
+sort in ascending order like so 
+would sort in ascending order like so 
+figure out is how to sort that field while ignoring stop words such as `` a '' and `` the '' , so that the following book titles , for example , would sort in ascending order like so 
+to figure out is how to sort that field while ignoring stop words such as `` a '' and `` the '' , so that the following book titles , for example , would sort in ascending order like so 
+been able to figure out is how to sort that field while ignoring stop words such as `` a '' and `` the '' , so that the following book titles , for example , would sort in ascending order like so 
+have n't been able to figure out is how to sort that field while ignoring stop words such as `` a '' and `` the '' , so that the following book titles , for example , would sort in ascending order like so 
+yes , how 
+using Lucene.Net 2.3.1.2 
+'m using Lucene.Net 2.3.1.2 
+returned by Lucene into my own collection of custom objects 
+wrap the results returned by Lucene into my own collection of custom objects 
+pull out a snippet of the matches 
+to pull out a snippet of the matches 
+use things like the highlighter class to pull out a snippet of the matches 
+populate it with extra info/context information ( and use things like the highlighter class to pull out a snippet of the matches ) 
+can populate it with extra info/context information ( and use things like the highlighter class to pull out a snippet of the matches ) 
+add paging 
+create a `` result '' class/object 
+add something like a SortBy property 
+sort by 
+to sort by 
+wanted to sort by 
+grab whatever field you wanted to sort by 
+create a `` result '' class/object , add something like a SortBy property and grab whatever field you wanted to sort by 
+could create a `` result '' class/object , add something like a SortBy property and grab whatever field you wanted to sort by 
+took a similar route you could create a `` result '' class/object , add something like a SortBy property and grab whatever field you wanted to sort by 
+strip out any stop words 
+save it in this property 
+strip out any stop words , then save it in this property 
+just sort the collection based on that property instead 
+done , yes 
+be done , yes 
+to be done , yes 
+have to be done , yes 
+would have to be done , yes 
+'s how it would have to be done , yes 
+think that 's how it would have to be done , yes 
+be too hard 
+should n't be too hard 
+create a collection of custom objects with the Lucene results so it should n't be too hard 
+do create a collection of custom objects with the Lucene results so it should n't be too hard 
+create your index 
+sort on , then when retrieving , sort on that field 
+to sort on , then when retrieving , sort on that field 
+wish to sort on , then when retrieving , sort on that field 
+contains the words you wish to sort on , then when retrieving , sort on that field 
+create a field that only contains the words you wish to sort on , then when retrieving , sort on that field 
+display the full title 
+create a field that only contains the words you wish to sort on , then when retrieving , sort on that field but display the full title 
+'s the trick 
+is n't it 
+analyzes the field for stop words 
+understand it 
+sort by a tokenized field , and its the tokenizing that analyzes the field for stop words and punctuation , as I understand it 
+ca n't sort by a tokenized field , and its the tokenizing that analyzes the field for stop words and punctuation , as I understand it 
+stop words 
+keep the field un-tokenized 
+stop words but keep the field un-tokenized 
+strip those stop words but keep the field un-tokenized 
+to strip those stop words but keep the field un-tokenized 
+strip out the stop words 
+maintain your own list 
+to maintain your own list 
+have to maintain your own list 
+'ll have to maintain your own list 
+sorting and storing the value in there 
+add an extra field for sorting and storing the value in there 
+to add an extra field for sorting and storing the value in there 
+be to add an extra field for sorting and storing the value in there 
+would be to add an extra field for sorting and storing the value in there 
+used Lucene but my guess would be to add an extra field for sorting and storing the value in there 
+already stripped 
+been a while since I used Lucene but my guess would be to add an extra field for sorting and storing the value in there with the stop words already stripped 
+'s been a while since I used Lucene but my guess would be to add an extra field for sorting and storing the value in there with the stop words already stripped 
+generate this value 
+to generate this value 
+use the same analyzers to generate this value 
+can probably use the same analyzers to generate this value 
+strip punctuation and stop words 
+to strip punctuation and stop words 
+tokenize a field with an analyzer in order to strip punctuation and stop words 
+must tokenize a field with an analyzer in order to strip punctuation and stop words 
+sort on tokenized fields 
+ca n't sort on tokenized fields 
+be a catch-22 in that you must tokenize a field with an analyzer in order to strip punctuation and stop words , but you ca n't sort on tokenized fields 
+to be a catch-22 in that you must tokenize a field with an analyzer in order to strip punctuation and stop words , but you ca n't sort on tokenized fields 
+seems to be a catch-22 in that you must tokenize a field with an analyzer in order to strip punctuation and stop words , but you ca n't sort on tokenized fields 
+tokenizing 
+strip the stop words without tokenizing 
+to strip the stop words without tokenizing 
+strip them 
+to strip them 
+rely on Lucene to strip them 
+Do n't rely on Lucene to strip them 
+do it 
+returned by Lucene into my own collection of custom objects 
+wrap the results returned by Lucene into my own collection of custom objects 
+pull out a snippet of the matches 
+to pull out a snippet of the matches 
+use things like the highlighter class to pull out a snippet of the matches 
+populate it with extra info/context information ( and use things like the highlighter class to pull out a snippet of the matches ) 
+can populate it with extra info/context information ( and use things like the highlighter class to pull out a snippet of the matches ) 
+add paging 
+create a `` result '' class/object 
+add something like a SortBy property 
+sort by 
+to sort by 
+wanted to sort by 
+grab whatever field you wanted to sort by 
+create a `` result '' class/object , add something like a SortBy property and grab whatever field you wanted to sort by 
+could create a `` result '' class/object , add something like a SortBy property and grab whatever field you wanted to sort by 
+took a similar route you could create a `` result '' class/object , add something like a SortBy property and grab whatever field you wanted to sort by 
+strip out any stop words 
+save it in this property 
+strip out any stop words , then save it in this property 
+just sort the collection based on that property instead 
+done , yes 
+be done , yes 
+to be done , yes 
+have to be done , yes 
+would have to be done , yes 
+'s how it would have to be done , yes 
+think that 's how it would have to be done , yes 
+be too hard 
+should n't be too hard 
+create a collection of custom objects with the Lucene results so it should n't be too hard 
+do create a collection of custom objects with the Lucene results so it should n't be too hard 
+solve ur problem 
+to solve ur problem 
+link interesting to solve ur problem 
+found search lucene . net index with sort option link interesting to solve ur problem 

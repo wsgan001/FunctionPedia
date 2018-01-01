@@ -1,0 +1,20 @@
+NOT_ANALYZED not working with uppercase characters
+boost document based on keywords
+solr query NOT on nested child documents
+build a SolrQuery from form input
+filter solr inner query with outer query values
+Solr Query not parsing forward slash
+retrieve single solr child document
+Lucene non indexed fields, case insensitive search
+can't search the same word again in Lucene search
+stringfield no result
+date range with multiple occurences
+accessing custom Lucene attribute from DirectoryReader
+solr index segment merge
+get the Term-Doc frequency from many fields combined
+index a few tokens for each word in the text
+Query syntax using Boolean Clauses
+use WhitespaceTokenizerFactory & StandardToken together to accept only few specific symbols
+change the value of a field
+activate stemming on my Lucene search code
+disable score in lucene to speed up search

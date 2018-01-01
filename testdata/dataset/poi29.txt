@@ -1,0 +1,80 @@
+QUESTION:
+HTML:
+<p>I need to read a Word .doc file from Java that has text and images. I need to recognize the images &amp; text and separate them into 2 files.</p>&#xA;&#xA;<p>I've recently heard about "Apache POI."  How I can use Apache POI to read Word .doc files?</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+
+ANS:
+HTML:
+<p>The examples and sample code on apache's site are pretty good.  I recommend you start there.</p>&#xA;&#xA;<p><a href="http://poi.apache.org/hwpf/quick-guide.html">http://poi.apache.org/hwpf/quick-guide.html</a></p>&#xA;&#xA;<blockquote>&#xA;  <p>To get specific bits of text, first create a org.apache.poi.hwpf.HWPFDocument. Fetch the range with getRange(), then get paragraphs from that. You can then get text and other properties. </p>&#xA;</blockquote>&#xA;&#xA;<p><a href="http://svn.apache.org/viewvc/poi/trunk/src/scratchpad/testcases/org/apache/poi/hwpf/TestHWPFPictures.java?view=log">Here</a> for an example of extracting an image.  <a href="http://svn.apache.org/viewvc/poi/trunk/src/scratchpad/testcases/org/apache/poi/hwpf/TestHWPFPictures.java?revision=712084&amp;view=markup">Here</a> for the latest revision as of this writing.</p>&#xA;&#xA;<p>And of course, the <a href="http://poi.apache.org/apidocs/index.html">Javadocs</a></p>&#xA;&#xA;<p>Note that, according to the POI site, </p>&#xA;&#xA;<blockquote>&#xA;  <p>HWPF is still in early development.</p>&#xA;</blockquote>&#xA;
+Comment:
+HTML:
+<p>It's not free (or even cheap!) but <a href="http://www.aspose.com/" rel="nofollow">Aspose.Words</a> should be able to do this. Their evaluation download will let you play with small files. </p>&#xA;&#xA;<p>Do the destination files also have to be Docs? You could open the docs in Office and save them out as HTML. Then the separation becomes trivial. RTF is also a viable option, but I can't recommend a good RTF parser off the top of my head.</p>&#xA;&#xA;<p><strong>Edit to say:</strong> I just remembered another possible solution: <a href="http://sourceforge.net/projects/jacob-project/" rel="nofollow">Jacob</a>, but you'll need an instance of Office running on the same machine. It's short for Java COM Bridge and it lets you make calls to the COM libraries in Office to manipulate the documents. I'm sure it's not as scary as it might sound!</p>&#xA;
+Comment:
+
+Phrase:
+has text and images 
+read a Word . doc file from Java that has text and images 
+to read a Word . doc file from Java that has text and images 
+need to read a Word . doc file from Java that has text and images 
+recognize the images & text 
+separate them into 2 files 
+recognize the images & text and separate them into 2 files 
+to recognize the images & text and separate them into 2 files 
+need to recognize the images & text and separate them into 2 files 
+read Word . doc files 
+to read Word . doc files 
+use Apache POI to read Word . doc files 
+can use Apache POI to read Word . doc files 
+heard about `` Apache POI . '' How I can use Apache POI to read Word . doc files 
+'ve recently heard about `` Apache POI . '' How I can use Apache POI to read Word . doc files 
+are pretty good 
+start there 
+recommend you start there 
+get specific bits of text 
+To get specific bits of text 
+create a org.apache.poi.hwpf.HWPFDocument 
+get paragraphs from that 
+Fetch the range with getRange ( ) , then get paragraphs from that 
+get text and other properties 
+can then get text and other properties 
+extracting an image 
+Note that , according to the POI site , 
+is still in early development 
+do this 
+to do this 
+be able to do this 
+should be able to do this 
+'s not free ( or even cheap ! ) but Aspose.Words should be able to do this 
+play with small files 
+let you play with small files 
+will let you play with small files 
+be Docs 
+to be Docs 
+have to be Docs 
+Do the destination files also have to be Docs 
+open the docs in Office 
+save them out as HTML 
+open the docs in Office and save them out as HTML 
+could open the docs in Office and save them out as HTML 
+becomes trivial 
+is also a viable option 
+recommend a good RTF parser off the top of my head 
+ca n't recommend a good RTF parser off the top of my head 
+remembered another possible solution : Jacob 
+running on the same machine 
+need an instance of Office running on the same machine 
+'ll need an instance of Office running on the same machine 
+say : I just remembered another possible solution : Jacob , but you 'll need an instance of Office running on the same machine 
+to say : I just remembered another possible solution : Jacob , but you 'll need an instance of Office running on the same machine 
+Edit to say : I just remembered another possible solution : Jacob , but you 'll need an instance of Office running on the same machine 
+manipulate the documents 
+to manipulate the documents 
+make calls to the COM libraries in Office to manipulate the documents 
+lets you make calls to the COM libraries in Office to manipulate the documents 
+'s short for Java COM Bridge and it lets you make calls to the COM libraries in Office to manipulate the documents 
+sound 
+might sound 
+'s not as scary as it might sound 
+'m sure it 's not as scary as it might sound 

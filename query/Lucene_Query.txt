@@ -1,0 +1,20 @@
+NOT_ANALYZED not working with uppercase characters
+How to boost document based on keywords in apache solr
+Solr query NOT on nested child documents
+Building a SolrQuery from form input
+filter solr inner query with outer query values
+Solr Query not parsing forward slash
+How to retrieve single solr child document
+Lucene non indexed fields, case insensitive search?
+Can't search the same word again in Lucene search
+Lucene stringfield no result
+Lucene date range with multiple occurences
+Accessing custom Lucene attribute from DirectoryReader
+Solr index segment merge
+How to get the Term-Doc frequency from many fields combined?
+Lucene. index a few tokens for each word in the text
+Lucene Query syntax using Boolean Clauses
+Can we use WhitespaceTokenizerFactory & StandardToken together to accept only few specific symbols?
+Luke (in Lucene) How do I change the value of a field?
+How activate stemming on my Lucene search code
+Disable score in lucene to speed up search

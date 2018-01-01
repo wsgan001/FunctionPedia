@@ -1,0 +1,66 @@
+QUESTION:
+HTML:
+<p>I try to write down the result of the POI unit test at: <a href="http://svn.apache.org/viewvc/poi/trunk/src/scratchpad/testcases/org/apache/poi/hwpf/usermodel/TestRangeReplacement.java?view=co" rel="nofollow">code here</a>, by adding the line</p>&#xA;&#xA;<pre><code>daDoc.write(new FileOutputStream("C:\\wordtest.doc"));&#xA;</code></pre>&#xA;&#xA;<p>to the end of the method <strong>testRangeReplacementAll</strong>. The new document is corrupt when I try to open it with word 2003. </p>&#xA;&#xA;<p>Any suggestions to fix this?</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+
+ANS:
+HTML:
+<p>I would at least try to narrow this down, since that test does a number of things.</p>&#xA;&#xA;<ol>&#xA;<li>Can you open the original file in Word 2003 ?</li>&#xA;<li>can you open the file and immediately resave as another without doing any replacements. Does that open in Word 2003 ?</li>&#xA;<li>can you perform one replacement at least ?</li>&#xA;</ol>&#xA;
+Comment:
+I can only replace text which has an equal length to the placeholder. Means ${xy} can be replaced with 12345 and not with 1234 or 123456
+Can you open the original file in Word 2003 ? << yes &#xA;can you open the file and immediately resave as another without doing any replacements. Does that open in Word 2003 ? << i can open the original file. The replace result can't be opened.&#xA;&#xA;I use the .doc file from the JUnit test case: http://svn.apache.org/viewvc/poi/trunk/src/scratchpad/testcases/org/apache/poi/hwpf/data/testRangeReplacement.doc?view=co&#xA;&#xA;Like I said, the test went fine but the result can't be opened if i save it to a new .doc file.
+
+Phrase:
+code here 
+adding the line 
+write down the result of the POI unit test at : code here , by adding the line 
+to write down the result of the POI unit test at : code here , by adding the line 
+try to write down the result of the POI unit test at : code here , by adding the line 
+open it with word 2003 
+to open it with word 2003 
+try to open it with word 2003 
+is corrupt when I try to open it with word 2003 
+fix this 
+to fix this 
+does a number of things 
+narrow this down , since that test does a number of things 
+to narrow this down , since that test does a number of things 
+try to narrow this down , since that test does a number of things 
+would at least try to narrow this down , since that test does a number of things 
+open the original file in Word 2003 
+open the file 
+doing any replacements 
+resave as another without doing any replacements 
+open the file and immediately resave as another without doing any replacements 
+open in Word 2003 
+perform one replacement at least 
+has an equal length to the placeholder 
+replace text which has an equal length to the placeholder 
+can only replace text which has an equal length to the placeholder 
+replaced with 12345 and not with 1234 or 123456 
+be replaced with 12345 and not with 1234 or 123456 
+can be replaced with 12345 and not with 1234 or 123456 
+open the original file in Word 2003 
+Can you open the original file in Word 2003 
+open the file 
+doing any replacements 
+resave as another without doing any replacements 
+open the file and immediately resave as another without doing any replacements 
+Does 
+open the original file 
+can open the original file 
+be opened . & #xA ; & #xA 
+ca n't be opened . & #xA ; & #xA 
+said 
+went fine 
+save it to a new 
+opened if i save it to a new 
+be opened if i save it to a new 
+ca n't be opened if i save it to a new 
+http://svn.apache.org/viewvc/poi/trunk/src/scratchpad/testcases/org/apache/poi/hwpf/data/testRangeReplacement.doc?view=co&#xA;&#xA;Like I said , the test went fine but the result ca n't be opened if i save it to a new 
+file from the JUnit test case : http://svn.apache.org/viewvc/poi/trunk/src/scratchpad/testcases/org/apache/poi/hwpf/data/testRangeReplacement.doc?view=co&#xA;&#xA;Like I said , the test went fine but the result ca n't be opened if i save it to a new . 
+file 
+doc file 
+use the . doc file from the JUnit test case : http://svn.apache.org/viewvc/poi/trunk/src/scratchpad/testcases/org/apache/poi/hwpf/data/testRangeReplacement.doc?view=co&#xA;&#xA;Like I said , the test went fine but the result ca n't be opened if i save it to a new . doc file 

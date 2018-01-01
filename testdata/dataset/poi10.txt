@@ -1,0 +1,45 @@
+QUESTION:
+HTML:
+<p>Using Apache POI to generate a document and i'm having a small problem with cell styles, currentlly i'm using:</p>&#xA;&#xA;<pre><code>CellStyle currencyCellStyle=workbook.createCellStyle();&#xA;currencyCellStyle.setDataFormat(format.getFormat("$#,##0.00"));&#xA;</code></pre>&#xA;&#xA;<p>Which works totally fine for positive numbers, however I would like to assign a different style to negative cells automatically.</p>&#xA;&#xA;<p>Question is is there any to set this up without having to check the individual cell values and assign a separate style to them?</p>&#xA;&#xA;<p>Or alternatively is there any way to tell Apache POI to use the built in excel currency format with one of its negative options?</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>Found it, thanks me :D</p>&#xA;&#xA;<pre><code>CellStyle currencyCellStyle=workbook.createCellStyle();&#xA;currencyCellStyle.setDataFormat(format.getFormat("$#,##0.00;[Red]($#,##0.00)"));&#xA;</code></pre>&#xA;
+Comment:
+
+ANS:
+HTML:
+<p>Found it, thanks me :D</p>&#xA;&#xA;<pre><code>CellStyle currencyCellStyle=workbook.createCellStyle();&#xA;currencyCellStyle.setDataFormat(format.getFormat("$#,##0.00;[Red]($#,##0.00)"));&#xA;</code></pre>&#xA;
+Comment:
+
+Phrase:
+having a small problem with cell styles 
+'m having a small problem with cell styles 
+generate a document and i 'm having a small problem with cell styles 
+to generate a document and i 'm having a small problem with cell styles 
+Using Apache POI to generate a document and i 'm having a small problem with cell styles 
+using 
+'m using 
+works totally fine for positive numbers 
+assign a different style to negative cells automatically 
+to assign a different style to negative cells automatically 
+like to assign a different style to negative cells automatically 
+would like to assign a different style to negative cells automatically 
+check the individual cell values 
+assign a separate style to them 
+check the individual cell values and assign a separate style to them 
+to check the individual cell values and assign a separate style to them 
+having to check the individual cell values and assign a separate style to them 
+set this up without having to check the individual cell values and assign a separate style to them 
+to set this up without having to check the individual cell values and assign a separate style to them 
+is is there any to set this up without having to check the individual cell values and assign a separate style to them 
+use the built in excel currency format with one of its negative options 
+to use the built in excel currency format with one of its negative options 
+tell Apache POI to use the built in excel currency format with one of its negative options 
+to tell Apache POI to use the built in excel currency format with one of its negative options 
+is there any way to tell Apache POI to use the built in excel currency format with one of its negative options 
+thanks me 
+Found it , thanks me 
+thanks me 
+Found it , thanks me 

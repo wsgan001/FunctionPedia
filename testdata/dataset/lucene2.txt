@@ -1,0 +1,51 @@
+QUESTION:
+HTML:
+<p>I'm using Lucene.Net in an ASP.NET application on a shared host.   Got this stack trace shown below.  What's the work around? </p>&#xA;&#xA;<p>[SecurityException: Request for the permission of type 'System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089' failed.]&#xA;   System.Security.CodeAccessSecurityEngine.Check(Object demand, StackCrawlMark&amp; stackMark, Boolean isPermSet) +0&#xA;   System.Security.CodeAccessPermission.Demand() +59&#xA;   System.IO.Path.GetTempPath() +54&#xA;   Lucene.Net.Store.FSDirectory..cctor() +73</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>Here's the answer to my own question.   The solution was to modify Lucene.Net.Store.FSDirectory, by commenting out this unused line:</p>&#xA;&#xA;<pre><code>// Comments out by Corey Trager, Oct 2008 to workaround permission restrictions at shared host.  This is not used.&#xA;//        public static readonly System.String LOCK_DIR = SupportClass.AppSettings.Get("Lucene.Net.lockDir", System.IO.Path.GetTempPath());&#xA;</code></pre>&#xA;&#xA;<p>There was one more security permission hurdle after that, and here's that workaround too.   I don't understand why one way of getting the names of files in a directory would be blocked, and another way not blocked.</p>&#xA;&#xA;<pre><code>	public override System.String[] List()&#xA;	{&#xA;&#xA;/* Changes by Corey Trager, Oct 2008, to workaround permission restrictions at shared host */&#xA;		    System.IO.DirectoryInfo dir = new System.IO.DirectoryInfo(directory.FullName);&#xA;	        System.IO.FileInfo[] files = dir.GetFiles();&#xA;            string[] list = new string[files.Length];&#xA;            for (int i = 0; i &lt; files.Length; i++)&#xA;            {&#xA;                list[i] = files[i].Name;&#xA;            }&#xA;            return list;&#xA;/* end of changes */&#xA;&#xA;//            System.String[] files = SupportClass.FileSupport.GetLuceneIndexFiles(directory.FullName, IndexFileNameFilter.GetFilter());&#xA;//            for (int i = 0; i &lt; files.Length; i++)&#xA;//            {&#xA;//                System.IO.FileInfo fi = new System.IO.FileInfo(files[i]);&#xA;//                files[i] = fi.Name;&#xA;//            }&#xA;//  		  return files;&#xA;    	}&#xA;</code></pre>&#xA;
+Comment:
+
+ANS:
+HTML:
+<p>Here's the answer to my own question.   The solution was to modify Lucene.Net.Store.FSDirectory, by commenting out this unused line:</p>&#xA;&#xA;<pre><code>// Comments out by Corey Trager, Oct 2008 to workaround permission restrictions at shared host.  This is not used.&#xA;//        public static readonly System.String LOCK_DIR = SupportClass.AppSettings.Get("Lucene.Net.lockDir", System.IO.Path.GetTempPath());&#xA;</code></pre>&#xA;&#xA;<p>There was one more security permission hurdle after that, and here's that workaround too.   I don't understand why one way of getting the names of files in a directory would be blocked, and another way not blocked.</p>&#xA;&#xA;<pre><code>	public override System.String[] List()&#xA;	{&#xA;&#xA;/* Changes by Corey Trager, Oct 2008, to workaround permission restrictions at shared host */&#xA;		    System.IO.DirectoryInfo dir = new System.IO.DirectoryInfo(directory.FullName);&#xA;	        System.IO.FileInfo[] files = dir.GetFiles();&#xA;            string[] list = new string[files.Length];&#xA;            for (int i = 0; i &lt; files.Length; i++)&#xA;            {&#xA;                list[i] = files[i].Name;&#xA;            }&#xA;            return list;&#xA;/* end of changes */&#xA;&#xA;//            System.String[] files = SupportClass.FileSupport.GetLuceneIndexFiles(directory.FullName, IndexFileNameFilter.GetFilter());&#xA;//            for (int i = 0; i &lt; files.Length; i++)&#xA;//            {&#xA;//                System.IO.FileInfo fi = new System.IO.FileInfo(files[i]);&#xA;//                files[i] = fi.Name;&#xA;//            }&#xA;//  		  return files;&#xA;    	}&#xA;</code></pre>&#xA;
+Comment:
+
+Phrase:
+using Lucene.Net in an ASP.NET application on a shared host 
+'m using Lucene.Net in an ASP.NET application on a shared host 
+Got 
+shown below 
+= 2.0.0.0 
+'s 
+modify Lucene.Net.Store.FSDirectory 
+to modify Lucene.Net.Store.FSDirectory 
+commenting out this unused line 
+was to modify Lucene.Net.Store.FSDirectory , by commenting out this unused line 
+was one more security permission hurdle after that 
+workaround too 
+'s that workaround too 
+getting the names of files in a directory 
+blocked 
+be blocked 
+would be blocked 
+understand why one way of getting the names of files in a directory would be blocked 
+do n't understand why one way of getting the names of files in a directory would be blocked 
+blocked 
+'s 
+modify Lucene.Net.Store.FSDirectory 
+to modify Lucene.Net.Store.FSDirectory 
+commenting out this unused line 
+was to modify Lucene.Net.Store.FSDirectory , by commenting out this unused line 
+was one more security permission hurdle after that 
+workaround too 
+'s that workaround too 
+getting the names of files in a directory 
+blocked 
+be blocked 
+would be blocked 
+understand why one way of getting the names of files in a directory would be blocked 
+do n't understand why one way of getting the names of files in a directory would be blocked 
+blocked 

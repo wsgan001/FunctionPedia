@@ -1,0 +1,140 @@
+QUESTION:
+HTML:
+<p>I've had an app doing prefix searches for a while. Recently the index size was increased and it turned out that some prefixes were too darned numerous for lucene to handle.  It kept throwing me a <a href="http://lucene.apache.org/java/2_3_2/api/core/org/apache/lucene/search/BooleanQuery.TooManyClauses.html">Too Many Clauses</a> error, which was very frustrating as I kept looking at my JARs and confirming that none of the included code actually used a boolean query.</p>&#xA;&#xA;<p>Why doesn't it throw something like a Too Many Hits exception? And why does increasing the boolean query's static max clauses integer actually make this error go away, when I'm definitely only using a prefix query? Is there something fundamental to how queries are run that I'm not understanding; is it that they secretly become Boolean queries?</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>I've hit this before.  It has to do with the fact that lucene, under the covers, turns many (all?) things into boolean queries when you call Query.rewrite()</p>&#xA;&#xA;<p>From: <a href="http://lucene.apache.org/java/2_2_0/api/org/apache/lucene/search/Query.html#rewrite(org.apache.lucene.index.IndexReader)" rel="nofollow">http://lucene.apache.org/java/2_2_0/api/org/apache/lucene/search/Query.html#rewrite(org.apache.lucene.index.IndexReader)</a></p>&#xA;&#xA;<pre><code>public Query rewrite(IndexReader reader)&#xA;              throws IOException&#xA;&#xA;    Expert: called to re-write queries into primitive queries.&#xA;            For example, a PrefixQuery will be rewritten into a&#xA;            BooleanQuery that consists of TermQuerys.&#xA;&#xA;    Throws:&#xA;        IOException&#xA;</code></pre>&#xA;
+Comment:
+And this `Query.rewrite()` transformation *always* happens before the query is actually executed? (That'd seem reasonable, that the query needs to be broken down to primitive queries before being executed.)
+
+ANS:
+HTML:
+<p>I've hit this before.  It has to do with the fact that lucene, under the covers, turns many (all?) things into boolean queries when you call Query.rewrite()</p>&#xA;&#xA;<p>From: <a href="http://lucene.apache.org/java/2_2_0/api/org/apache/lucene/search/Query.html#rewrite(org.apache.lucene.index.IndexReader)" rel="nofollow">http://lucene.apache.org/java/2_2_0/api/org/apache/lucene/search/Query.html#rewrite(org.apache.lucene.index.IndexReader)</a></p>&#xA;&#xA;<pre><code>public Query rewrite(IndexReader reader)&#xA;              throws IOException&#xA;&#xA;    Expert: called to re-write queries into primitive queries.&#xA;            For example, a PrefixQuery will be rewritten into a&#xA;            BooleanQuery that consists of TermQuerys.&#xA;&#xA;    Throws:&#xA;        IOException&#xA;</code></pre>&#xA;
+Comment:
+And this `Query.rewrite()` transformation *always* happens before the query is actually executed? (That'd seem reasonable, that the query needs to be broken down to primitive queries before being executed.)
+HTML:
+<p>When running a prefix query, Lucene searches for all terms in its "dictionary" that match the query. If more than 1024 (by default) match, the TooManyClauses-Exception is thrown.</p>&#xA;&#xA;<p>You can call BooleanQuery.setMaxClauseCount to increase the maximum number of clauses permitted per BooleanQuery.</p>&#xA;
+Comment:
+That makes sense, but the issue for me was that I had no way of knowing a PrefixQuery actually became a BooleanQuery.
+HTML:
+<p>The API reference page of TooManyClauses shows that PrefixQuery, FuzzyQuery, WildcardQuery, and RangeQuery are expanded this way (into BooleanQuery). Since it is in the API reference, it should be a behavior that users can rely on. Lucene does not place arbitrary limits on the number of hits (other than a document ID being an int) so a "too many hits" exception might not make sense. Perhaps PrefixQuery.rewrite(IndexReader) should catch the TooManyClauses and throw a "too many prefixes" exception, but right now it does not behave that way.</p>&#xA;&#xA;<p>By the way, another way to search by prefix is to use PrefixFilter. Either filter your query with it or wrap the filter with a ConstantScoreQuery.</p>&#xA;
+Comment:
+Is `PrefixFilter` also expanded into boolean clauses? (Or is it implemented differently somehow?)
+
+Phrase:
+doing prefix searches for a while 
+had an app doing prefix searches for a while 
+'ve had an app doing prefix searches for a while 
+increased 
+was increased 
+handle 
+to handle 
+were too darned numerous for lucene to handle 
+turned out that some prefixes were too darned numerous for lucene to handle 
+throwing me 
+looking at my JARs 
+used a boolean query 
+confirming that none of the included code actually used a boolean query 
+looking at my JARs and confirming that none of the included code actually used a boolean query 
+kept looking at my JARs and confirming that none of the included code actually used a boolean query 
+was very frustrating as I kept looking at my JARs and confirming that none of the included code actually used a boolean query 
+kept throwing me a Too Many Clauses error , which was very frustrating as I kept looking at my JARs and confirming that none of the included code actually used a boolean query 
+throw something like a Too Many Hits exception 
+go away 
+only using a prefix query 
+'m definitely only using a prefix query 
+make this error go away , when I 'm definitely only using a prefix query 
+increasing the boolean query 's static max clauses integer actually make this error go away , when I 'm definitely only using a prefix query 
+does increasing the boolean query 's static max clauses integer actually make this error go away , when I 'm definitely only using a prefix query 
+understanding 
+'m not understanding 
+run that I 'm not understanding 
+are run that I 'm not understanding 
+become Boolean queries 
+is it that they secretly become Boolean queries 
+hit this before 
+'ve hit this before 
+turns many ( all ? ) things into boolean queries 
+call Query.rewrite ( 
+do with the fact that lucene , under the covers , turns many ( all ? ) things into boolean queries when you call Query.rewrite ( ) 
+to do with the fact that lucene , under the covers , turns many ( all ? ) things into boolean queries when you call Query.rewrite ( ) 
+has to do with the fact that lucene , under the covers , turns many ( all ? ) things into boolean queries when you call Query.rewrite ( ) 
+executed 
+is actually executed 
+happens before the query is actually executed 
+executed 
+being executed 
+broken down to primitive queries before being executed 
+be broken down to primitive queries before being executed 
+to be broken down to primitive queries before being executed 
+needs to be broken down to primitive queries before being executed 
+seem reasonable , that the query needs to be broken down to primitive queries before being executed 
+'d seem reasonable , that the query needs to be broken down to primitive queries before being executed 
+hit this before 
+'ve hit this before 
+turns many ( all ? ) things into boolean queries 
+call Query.rewrite ( 
+do with the fact that lucene , under the covers , turns many ( all ? ) things into boolean queries when you call Query.rewrite ( ) 
+to do with the fact that lucene , under the covers , turns many ( all ? ) things into boolean queries when you call Query.rewrite ( ) 
+has to do with the fact that lucene , under the covers , turns many ( all ? ) things into boolean queries when you call Query.rewrite ( ) 
+executed 
+is actually executed 
+happens before the query is actually executed 
+executed 
+being executed 
+broken down to primitive queries before being executed 
+be broken down to primitive queries before being executed 
+to be broken down to primitive queries before being executed 
+needs to be broken down to primitive queries before being executed 
+seem reasonable , that the query needs to be broken down to primitive queries before being executed 
+'d seem reasonable , that the query needs to be broken down to primitive queries before being executed 
+running a prefix query 
+match the query 
+searches for all terms in its `` dictionary '' that match the query 
+match 
+thrown 
+is thrown 
+permitted per BooleanQuery 
+increase the maximum number of clauses permitted per BooleanQuery 
+to increase the maximum number of clauses permitted per BooleanQuery 
+call BooleanQuery.setMaxClauseCount to increase the maximum number of clauses permitted per BooleanQuery 
+can call BooleanQuery.setMaxClauseCount to increase the maximum number of clauses permitted per BooleanQuery 
+makes sense 
+became a BooleanQuery 
+knowing a PrefixQuery actually became a BooleanQuery 
+had no way of knowing a PrefixQuery actually became a BooleanQuery 
+was that I had no way of knowing a PrefixQuery actually became a BooleanQuery 
+expanded this way ( into BooleanQuery ) 
+are expanded this way ( into BooleanQuery ) 
+shows that PrefixQuery , FuzzyQuery , WildcardQuery , and RangeQuery are expanded this way ( into BooleanQuery ) 
+is in the API reference 
+rely on 
+can rely on 
+be a behavior that users can rely on 
+should be a behavior that users can rely on 
+being an int 
+ID being an int 
+make sense 
+might not make sense 
+place arbitrary limits on the number of hits ( other than a document ID being an int ) so a `` too many hits '' exception might not make sense 
+does not place arbitrary limits on the number of hits ( other than a document ID being an int ) so a `` too many hits '' exception might not make sense 
+catch the TooManyClauses 
+throw a `` too many prefixes '' exception 
+catch the TooManyClauses and throw a `` too many prefixes '' exception 
+should catch the TooManyClauses and throw a `` too many prefixes '' exception 
+behave that way 
+does not behave that way 
+search by prefix 
+to search by prefix 
+use PrefixFilter 
+to use PrefixFilter 
+is to use PrefixFilter 
+filter your query with it 
+wrap the filter with a ConstantScoreQuery 
+filter your query with it or wrap the filter with a ConstantScoreQuery 
+` also expanded into boolean 
+Is ` PrefixFilter ` also expanded into boolean 
+implemented differently somehow 
+is it implemented differently somehow 

@@ -1,0 +1,81 @@
+QUESTION:
+HTML:
+<p>I need lucene to search for synonyms as well as the actual keyword. that is if I search for "CI", I want it to search for CI OR "continues integration". at the moment I search for keywords I have the synonyms for and replace them with the "OR-ed" version, but I suspect there should be a better way to do this. my method will not work for complex queries where you have something like "x AND y OR NOT z".</p>&#xA;
+Comment:
+Did you ever find a solution to this issue?
+
+ACCEPTED ANS:
+
+ANS:
+HTML:
+<p>That's pretty much how I was planning on implementing this functionality. I was planning on building my own version of this but then I ran across this site <a href="http://opensource.ebswift.com/WordNet.Net/" rel="nofollow">WordNet.Net</a> which seems to try to address the issue of building the synonyms. There is a wordnet extension to Lucene.Net which rewrites the query, so I'm guessing that is really the standard way of handling this. </p>&#xA;
+Comment:
+I looked around but couldn't find any wordnet Lucene.NET modules. (I did find some broken links).
+I just looked and it appears there is some WordNet code in the main Lucene.Net Contrib folder. https://github.com/apache/lucene.net/tree/trunk/src/contrib/WordNet
+HTML:
+<p>At least in the Java version of Lucene, you could write yourself a recursive function that digs through the BooleanQuery Query objects that the QueryParser will build; every time it finds a TermQuery, it could replace it with a BooleanQuery that OR's the original term with the new term you want added into the query.</p>&#xA;
+Comment:
+
+Phrase:
+search for synonyms as well as the actual keyword 
+to search for synonyms as well as the actual keyword 
+need lucene to search for synonyms as well as the actual keyword 
+search for `` CI '' 
+is if I search for `` CI '' 
+search for CI OR 
+to search for CI OR 
+want it to search for CI OR 
+continues integration 
+have the synonyms for 
+search for keywords I have the synonyms for 
+replace them with the `` OR-ed '' version 
+search for keywords I have the synonyms for and replace them with the `` OR-ed '' version 
+do this 
+to do this 
+be a better way to do this 
+should be a better way to do this 
+suspect there should be a better way to do this 
+have something like `` x AND y OR NOT z '' 
+work for complex queries where you have something like `` x AND y OR NOT z '' 
+will not work for complex queries where you have something like `` x AND y OR NOT z '' 
+ever find a solution to this issue 
+implementing this functionality 
+planning on implementing this functionality 
+was planning on implementing this functionality 
+'s pretty much how I was planning on implementing this functionality 
+building the synonyms 
+address the issue of building the synonyms 
+to address the issue of building the synonyms 
+try to address the issue of building the synonyms 
+to try to address the issue of building the synonyms 
+seems to try to address the issue of building the synonyms 
+ran across this site WordNet.Net which seems to try to address the issue of building the synonyms 
+building my own version of this but then I ran across this site WordNet.Net which seems to try to address the issue of building the synonyms 
+planning on building my own version of this but then I ran across this site WordNet.Net which seems to try to address the issue of building the synonyms 
+was planning on building my own version of this but then I ran across this site WordNet.Net which seems to try to address the issue of building the synonyms 
+handling this 
+is really the standard way of handling this 
+guessing that is really the standard way of handling this 
+'m guessing that is really the standard way of handling this 
+rewrites the query , so I 'm guessing that is really the standard way of handling this 
+is a wordnet extension to Lucene.Net which rewrites the query , so I 'm guessing that is really the standard way of handling this 
+looked around 
+find any wordnet Lucene.NET modules 
+could n't find any wordnet Lucene.NET modules 
+looked around but could n't find any wordnet Lucene.NET modules 
+find some broken links 
+did find some broken links 
+looked 
+is some WordNet code in the main Lucene.Net Contrib folder 
+appears there is some WordNet code in the main Lucene.Net Contrib folder 
+build 
+will build 
+digs through the BooleanQuery Query objects that the QueryParser will build 
+write yourself a recursive function that digs through the BooleanQuery Query objects that the QueryParser will build 
+could write yourself a recursive function that digs through the BooleanQuery Query objects that the QueryParser will build 
+finds a TermQuery 
+added into the query 
+want added into the query 
+'s the original term with the new term you want added into the query 
+replace it with a BooleanQuery that OR 's the original term with the new term you want added into the query 
+could replace it with a BooleanQuery that OR 's the original term with the new term you want added into the query 

@@ -1,0 +1,4 @@
+2016-05-05 16:56:25,567 - [ERROR] - from com.jolbox.bonecp.ConnectionHandle in main
+                
+Database access problem. Killing off all remaining connections in the connection pool. SQL State = 08S01
+

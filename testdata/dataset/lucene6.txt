@@ -1,0 +1,87 @@
+QUESTION:
+HTML:
+<p>I'm trying to add the lucene sandbox contribution called <a href="http://lucene.apache.org/java/docs/lucene-sandbox/index.html#Term%20Highlighter" rel="nofollow">term-highlighter</a> to my pom.xml.&#xA;I'm not really that familiar with Maven, but the code has a <a href="http://svn.apache.org/repos/asf/lucene/java/trunk/contrib/highlighter/pom.xml.template" rel="nofollow">pom.xml.template</a> which &#xA;seems to imply if I add a dependency that looks like:</p>&#xA;&#xA;<pre><code>&lt;dependency&gt;&#xA;  &lt;groupId&gt;org.apache.lucene&lt;/groupId&gt;&#xA;  &lt;artifactId&gt;lucene-highlighter&lt;/artifactId&gt;&#xA;&lt;/dependency&gt;&#xA;</code></pre>&#xA;&#xA;<p>It might work. Can someone help me out in adding a lucene-community project to my pom.xml file?</p>&#xA;&#xA;<p>Thanks for the comments, it turns out that adding the version was all I needed, and I just guessed it should match the lucene-core version I was using.:</p>&#xA;&#xA;<pre><code>&lt;dependency&gt;&#xA;	&lt;groupId&gt;org.apache.lucene&lt;/groupId&gt;&#xA;	&lt;artifactId&gt;lucene-highlighter&lt;/artifactId&gt;&#xA;	&lt;version&gt;2.3.1&lt;/version&gt;&#xA;&lt;/dependency&gt;&#xA;</code></pre>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>You have to add the version number, but you only have to do it once in a project structure. That is, if the version number is defined in a parent pom, you don't have to give the version number again. (But you don't even have to provide the dependency in this case since the dependency will be inherited anyways.)</p>&#xA;
+Comment:
+
+ANS:
+HTML:
+<p>You have it right, but you probably want to add the version as well:</p>&#xA;&#xA;<p><a href="http://maven.apache.org/guides/getting-started/maven-in-five-minutes.html" rel="nofollow">From The Maven 5 minute tutorial</a></p>&#xA;&#xA;<pre><code>&lt;project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&#xA;  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"&gt;&#xA;  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;&#xA;  &lt;groupId&gt;com.mycompany.app&lt;/groupId&gt;&#xA;  &lt;artifactId&gt;my-app&lt;/artifactId&gt;&#xA;  &lt;packaging&gt;jar&lt;/packaging&gt;&#xA;  &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;&#xA;  &lt;name&gt;Maven Quick Start Archetype&lt;/name&gt;&#xA;  &lt;url&gt;http://maven.apache.org&lt;/url&gt;&#xA;&#xA;  &lt;dependencies&gt;&#xA;    &lt;dependency&gt;&#xA;      &lt;groupId&gt;junit&lt;/groupId&gt;&#xA;      &lt;artifactId&gt;junit&lt;/artifactId&gt;&#xA;      &lt;version&gt;3.8.1&lt;/version&gt;&#xA;      &lt;scope&gt;test&lt;/scope&gt;&#xA;    &lt;/dependency&gt;&#xA;  &lt;/dependencies&gt;&#xA;&#xA;&lt;/project&gt;&#xA;</code></pre>&#xA;
+Comment:
+HTML:
+<p>You have to add the version number, but you only have to do it once in a project structure. That is, if the version number is defined in a parent pom, you don't have to give the version number again. (But you don't even have to provide the dependency in this case since the dependency will be inherited anyways.)</p>&#xA;
+Comment:
+
+Phrase:
+called term-highlighter to my pom.xml 
+add the lucene sandbox contribution called term-highlighter to my pom.xml 
+to add the lucene sandbox contribution called term-highlighter to my pom.xml 
+trying to add the lucene sandbox contribution called term-highlighter to my pom.xml 
+'m trying to add the lucene sandbox contribution called term-highlighter to my pom.xml 
+looks like 
+add a dependency that looks like 
+imply if I add a dependency that looks like 
+to imply if I add a dependency that looks like 
+seems to imply if I add a dependency that looks like 
+has a pom.xml.template which seems to imply if I add a dependency that looks like 
+'m not really that familiar with Maven , but the code has a pom.xml.template which seems to imply if I add a dependency that looks like 
+work 
+might work 
+adding a lucene-community project to my pom.xml file 
+help me out in adding a lucene-community project to my pom.xml file 
+adding the version 
+needed 
+was all I needed 
+turns out that adding the version was all I needed 
+was using. 
+match the lucene-core version I was using. 
+should match the lucene-core version I was using. 
+guessed it should match the lucene-core version I was using. 
+add the version number 
+to add the version number 
+have to add the version number 
+do it once in a project structure 
+to do it once in a project structure 
+have to do it once in a project structure 
+defined in a parent pom 
+is defined in a parent pom 
+give the version number again 
+to give the version number again 
+have to give the version number again 
+do n't have to give the version number again 
+is , if the version number is defined in a parent pom , you do n't have to give the version number again 
+provide the dependency 
+to provide the dependency 
+have to provide the dependency 
+do n't even have to provide the dependency 
+inherited anyways 
+be inherited anyways 
+will be inherited anyways 
+add the version as well 
+to add the version as well 
+want to add the version as well 
+have it right , but you probably want to add the version as well 
+add the version number 
+to add the version number 
+have to add the version number 
+do it once in a project structure 
+to do it once in a project structure 
+have to do it once in a project structure 
+defined in a parent pom 
+is defined in a parent pom 
+give the version number again 
+to give the version number again 
+have to give the version number again 
+do n't have to give the version number again 
+is , if the version number is defined in a parent pom , you do n't have to give the version number again 
+provide the dependency 
+to provide the dependency 
+have to provide the dependency 
+do n't even have to provide the dependency 
+inherited anyways 
+be inherited anyways 
+will be inherited anyways 

@@ -1,0 +1,230 @@
+QUESTION:
+HTML:
+<p>I've got nutch and lucene setup to crawl and index some sites and I'd like to use a .net website instead of the JSP site that comes with nutch.</p>&#xA;&#xA;<p>Can anyone recommend some solutions?</p>&#xA;&#xA;<p>I've seen solutions where there was an app running on the index server which the .Net site used remoting to connect to.</p>&#xA;&#xA;<p>Speed is a consideration obviously so can this still perform well?</p>&#xA;&#xA;<p><strong>Edit:</strong> could NHibernate.Search work for this?</p>&#xA;&#xA;<p><strong>Edit:</strong> We ended up going with Solr index servers being used by our ASP.net site with the <a href="http://code.google.com/p/solrnet/" rel="nofollow">solrnet</a> library.</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>Instead of using Lucene, you could use <a href="http://lucene.apache.org/solr/" rel="nofollow">Solr</a> to index with nutch (see <a href="http://blog.foofactory.fi/2007/02/online-indexing-integrating-nutch-with.html" rel="nofollow">here</a>), then you can connect very easily to Solr using one of the two libraries available: <a href="http://www.codeplex.com/solrsharp" rel="nofollow">SolrSharp</a> and <a href="http://code.google.com/p/solrnet/" rel="nofollow">SolrNet</a>.</p>&#xA;
+Comment:
+looks really good, will it be able to take my lucene indexes?
+Haven't tried, but it should... trying it is the only way to be sure :)
+I'm looking at hadoop compatibility too
+Hadoop is java-only AFAIK, and I don't know its interoperability with other platforms...
+I'm running everything on debian anyways even asp.net
+
+ANS:
+HTML:
+<p>Instead of using Lucene, you could use <a href="http://lucene.apache.org/solr/" rel="nofollow">Solr</a> to index with nutch (see <a href="http://blog.foofactory.fi/2007/02/online-indexing-integrating-nutch-with.html" rel="nofollow">here</a>), then you can connect very easily to Solr using one of the two libraries available: <a href="http://www.codeplex.com/solrsharp" rel="nofollow">SolrSharp</a> and <a href="http://code.google.com/p/solrnet/" rel="nofollow">SolrNet</a>.</p>&#xA;
+Comment:
+looks really good, will it be able to take my lucene indexes?
+Haven't tried, but it should... trying it is the only way to be sure :)
+I'm looking at hadoop compatibility too
+Hadoop is java-only AFAIK, and I don't know its interoperability with other platforms...
+I'm running everything on debian anyways even asp.net
+HTML:
+<p>Instead of using Solr, I wrote a java based indexer that runs in a cron job, and a java based web service for querying. I actually didn't index pages so much as different types of data that the .net site uses to build the pages. So there's actually 4 different indexes each with a different document structure that can all be queried in about the same way (say: users, posts, messages, photos).</p>&#xA;&#xA;<p>By defining an XSD for the web service responses I was able to both generate classes in .net and java to store a representation of the documents.  The web service basically runs the query on the right index and fills out the response xml from the hits. The .net client parses that back into objects. There's also a json interface for any client side JavaScript.</p>&#xA;
+Comment:
+HTML:
+<p>In case it wasn't totally clear from the other answers, Lucene.NET and Lucene (Java) use the same index format, so you should be able continue to use your existing (Java-based) mechanisms for <strong>indexing</strong>, and then use Lucene.NET inside your .NET web application to <strong>query</strong> the index.</p>&#xA;&#xA;<p>From <a href="http://incubator.apache.org/lucene.net/">the Lucene.NET incubator site</a>:</p>&#xA;&#xA;<blockquote>&#xA;  <p>In addition to the APIs and classes&#xA;  port to C#, the algorithm of Java&#xA;  Lucene is ported to C# Lucene. This&#xA;  means an index created with Java&#xA;  Lucene is <strong>back-and-forth compatible</strong>&#xA;  with the C# Lucene; both at reading,&#xA;  writing and updating. In fact <strong>a Lucene&#xA;  index can be concurrently searched and&#xA;  updated using Java Lucene and C#&#xA;  Lucene processes</strong></p>&#xA;</blockquote>&#xA;
+Comment:
+how about using it with hadoop?
+How do you want to combine Lucene with Hadoop?  Index data that's already in Hadoop?  Store a distributed lucene index in Hadoop?  The latter would probably require a special version of lucene in order to distribute/query, but maybe someone's tried to do it, but probably in java.
+HTML:
+<p>I'm also working on this.  </p>&#xA;&#xA;<p><a href="http://today.java.net/pub/a/today/2006/02/16/introduction-to-nutch-2.html" rel="nofollow">http://today.java.net/pub/a/today/2006/02/16/introduction-to-nutch-2.html</a></p>&#xA;&#xA;<p>It seems you can submit your query to nutch and get the rss results back.</p>&#xA;&#xA;<p>edit:</p>&#xA;&#xA;<p>Got this working today in a windows form as a proof of concept.  Two textboxes(searchurl and query), one for the server url and one for the query.  One datagrid view.  </p>&#xA;&#xA;<pre><code>private void Form1_Load(object sender, EventArgs e)&#xA;        {&#xA;            searchurl.Text = "http://localhost:8080/opensearch?query=";&#xA;&#xA;&#xA;    }&#xA;&#xA;    private void search_Click(object sender, EventArgs e)&#xA;    {&#xA;        string uri;&#xA;&#xA;        uri = searchurl.Text.ToString() + query.Text.ToString();&#xA;        Console.WriteLine(uri);&#xA;&#xA;        XmlDocument myXMLDocument = new XmlDocument();&#xA;&#xA;        myXMLDocument.Load(uri);&#xA;&#xA;        DataSet ds = new DataSet();&#xA;&#xA;        ds.ReadXml(new XmlNodeReader(myXMLDocument));&#xA;&#xA;        SearchResultsGridView1.DataSource = ds;&#xA;        SearchResultsGridView1.DataMember = "item";&#xA;&#xA;    }&#xA;</code></pre>&#xA;
+Comment:
+well done, We're starting to use Solr for this
+And it seems our division is probably going with windows search server express.
+HTML:
+<p>Why not switch from java lucene to the dot net version. Sure it's an investment but it's mostly a class substitution exercise. The last thing you need is more layers that add no value other than just being glue. Less glue and more stuff is what you should aim for...</p>&#xA;
+Comment:
+lucene.net has no Hadoop provider which is why we're on solr now
+HTML:
+<p>Got here by searching for a comparison between SolrNet and SolrSharp, just thought I'd leave here my impressions.</p>&#xA;&#xA;<p>It seems like SolarSharp is a dead project (wasn't updated for a long time) so the only option is SolarNet.</p>&#xA;&#xA;<p>I hope this will help someone, I would have left a comment to the accepted answer but I don't have enough reputation yet :)</p>&#xA;
+Comment:
+
+Phrase:
+got nutch and lucene setup to crawl and index some sites 
+'ve got nutch and lucene setup to crawl and index some sites 
+comes with nutch 
+use a . net website instead of the JSP site that comes with nutch 
+to use a . net website instead of the JSP site that comes with nutch 
+like to use a . net website instead of the JSP site that comes with nutch 
+'d like to use a . net website instead of the JSP site that comes with nutch 
+recommend some solutions 
+connect to 
+to connect to 
+remoting to connect to 
+used remoting to connect to 
+running on the index server which the . Net site used remoting to connect to 
+was an app running on the index server which the . Net site used remoting to connect to 
+seen solutions where there was an app running on the index server which the . Net site used remoting to connect to 
+'ve seen solutions where there was an app running on the index server which the . Net site used remoting to connect to 
+still perform 
+work for this 
+used by our ASP.net site with the solrnet library 
+being used by our ASP.net site with the solrnet library 
+going with Solr index servers being used by our ASP.net site with the solrnet library 
+ended up going with Solr index servers being used by our ASP.net site with the solrnet library 
+using Lucene 
+see here 
+use Solr to index with nutch ( see here ) 
+could use Solr to index with nutch ( see here ) 
+using one of the two libraries available : SolrSharp and SolrNet 
+connect very easily to Solr using one of the two libraries available : SolrSharp and SolrNet 
+can connect very easily to Solr using one of the two libraries available : SolrSharp and SolrNet 
+looks really good 
+take my lucene indexes 
+to take my lucene indexes 
+be able to take my lucene indexes 
+tried 
+Have n't tried 
+should 
+trying 
+be sure 
+is the only way to be sure : 
+trying it is the only way to be sure : ) 
+looking at hadoop compatibility too 
+'m looking at hadoop compatibility too 
+is java-only AFAIK 
+know its interoperability with other platforms 
+do n't know its interoperability with other platforms 
+running everything on debian anyways even asp.net 
+'m running everything on debian anyways even asp.net 
+using Lucene 
+see here 
+use Solr to index with nutch ( see here ) 
+could use Solr to index with nutch ( see here ) 
+using one of the two libraries available : SolrSharp and SolrNet 
+connect very easily to Solr using one of the two libraries available : SolrSharp and SolrNet 
+can connect very easily to Solr using one of the two libraries available : SolrSharp and SolrNet 
+looks really good 
+take my lucene indexes 
+to take my lucene indexes 
+be able to take my lucene indexes 
+tried 
+Have n't tried 
+should 
+trying 
+be sure 
+is the only way to be sure : 
+trying it is the only way to be sure : ) 
+looking at hadoop compatibility too 
+'m looking at hadoop compatibility too 
+is java-only AFAIK 
+know its interoperability with other platforms 
+do n't know its interoperability with other platforms 
+running everything on debian anyways even asp.net 
+'m running everything on debian anyways even asp.net 
+using Solr 
+runs in a cron job 
+querying 
+based web service for querying 
+wrote a java based indexer that runs in a cron job , and a java based web service for querying 
+build the pages 
+to build the pages 
+uses to build the pages 
+index pages so much as different types of data that the . net site uses to build the pages 
+did n't index pages so much as different types of data that the . net site uses to build the pages 
+queried in about the same way ( say : users , posts , messages , photos ) 
+be queried in about the same way ( say : users , posts , messages , photos ) 
+can all be queried in about the same way ( say : users , posts , messages , photos ) 
+'s actually 4 different indexes each with a different document structure that can all be queried in about the same way ( say : users , posts , messages , photos ) 
+defining an XSD for the web service 
+both generate classes in 
+to both generate classes in 
+was able to both generate classes in 
+responses I was able to both generate classes in . 
+store a representation of the documents 
+to store a representation of the documents 
+basically runs the query on the right index 
+fills out the response xml from the hits 
+basically runs the query on the right index and fills out the response xml from the hits 
+'s also a json interface for any client side JavaScript 
+was n't totally clear from the other answers 
+use the same index format 
+use your existing ( Java-based ) mechanisms for indexing 
+use Lucene.NET inside your 
+use your existing ( Java-based ) mechanisms for indexing , and then use Lucene.NET inside your . NET web application 
+to use your existing ( Java-based ) mechanisms for indexing , and then use Lucene.NET inside your . NET web application 
+query the index 
+to query the index 
+continue to use your existing ( Java-based ) mechanisms for indexing , and then use Lucene.NET inside your . NET web application to query the index 
+be able continue to use your existing ( Java-based ) mechanisms for indexing , and then use Lucene.NET inside your . NET web application to query the index 
+should be able continue to use your existing ( Java-based ) mechanisms for indexing , and then use Lucene.NET inside your . NET web application to query the index 
+ported to C # Lucene 
+is ported to C # Lucene 
+created with Java Lucene 
+is back-and-forth compatible with the C # Lucene 
+means an index created with Java Lucene is back-and-forth compatible with the C # Lucene 
+reading 
+writing 
+updating 
+reading , writing and updating 
+using Java Lucene and C # Lucene processes 
+concurrently searched and updated using Java Lucene and C # Lucene processes 
+be concurrently searched and updated using Java Lucene and C # Lucene processes 
+can be concurrently searched and updated using Java Lucene and C # Lucene processes 
+about using it with hadoop 
+combine Lucene with Hadoop 
+to combine Lucene with Hadoop 
+want to combine Lucene with Hadoop 
+'s already in Hadoop 
+Store a distributed lucene index in Hadoop 
+distribute/query 
+to distribute/query 
+require a special version of lucene in order to distribute/query 
+would probably require a special version of lucene in order to distribute/query 
+do it , but probably in java 
+to do it , but probably in java 
+tried to do it , but probably in java 
+'s tried to do it , but probably in java 
+working on this 
+'m also working on this 
+nutch and get the rss results back 
+to nutch and get the rss results back 
+submit your query to nutch and get the rss results back 
+can submit your query to nutch and get the rss results back 
+seems you can submit your query to nutch and get the rss results back 
+Got 
+datagrid view 
+use Solr for this 
+to use Solr for this 
+starting to use Solr for this 
+'re starting to use Solr for this 
+express 
+going with windows search server express 
+is probably going with windows search server express 
+seems our division is probably going with windows search server express 
+switch from java lucene to the dot net version 
+'s an investment 
+'s mostly a class substitution exercise 
+Sure it 's an investment but it 's mostly a class substitution exercise 
+need 
+being glue 
+add no value other than just being glue 
+is more layers that add no value other than just being glue 
+aim for 
+should aim for 
+is what you should aim for 
+'re on solr now 
+is why we 're on solr now 
+has no Hadoop provider which is why we 're on solr now 
+searching for a comparison between SolrNet and SolrSharp 
+Got here by searching for a comparison between SolrNet and SolrSharp 
+leave here my impressions 
+'d leave here my impressions 
+thought I 'd leave here my impressions 
+updated for a long time 
+was n't updated for a long time 
+is SolarNet 
+is a dead project ( was n't updated for a long time ) so the only option is SolarNet 
+seems like SolarSharp is a dead project ( was n't updated for a long time ) so the only option is SolarNet 
+have enough reputation yet 
+do n't have enough reputation yet 
+left a comment to the accepted answer but I do n't have enough reputation yet : 
+have left a comment to the accepted answer but I do n't have enough reputation yet : 
+would have left a comment to the accepted answer but I do n't have enough reputation yet : 
+help someone , I would have left a comment to the accepted answer but I do n't have enough reputation yet : 
+will help someone , I would have left a comment to the accepted answer but I do n't have enough reputation yet : 
+hope this will help someone , I would have left a comment to the accepted answer but I do n't have enough reputation yet : 

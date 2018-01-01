@@ -1,0 +1,44 @@
+QUESTION:
+HTML:
+<p>Both <a href="http://github.com/twitter/flockdb">FlockDB</a> and <a href="http://neo4j.org/">neo4j</a> are open source frameworks for keeping large graph dataset. Anyone familiar enough with both products to write a comparison?</p>&#xA;
+Comment:
+Very interesting, haven't seen FlockDB before. Looks like FlockDB has only very recently (last few days) been open-sourced by Twitter. Brings up the question of stability, since Neo4j has been around for a good while?
+
+ACCEPTED ANS:
+
+ANS:
+HTML:
+<p>For starters, here is what the FlockDB readme says:</p>&#xA;&#xA;<blockquote>&#xA;  <p>FlockDB is much simpler than other graph databases such as neo4j because it tries to solve fewer problems. It scales horizontally and is designed for on-line, low-latency, high throughput environments such as web-sites.</p>&#xA;</blockquote>&#xA;&#xA;<p>As one example, FlockDB isn't capable of doing deep graph traversal because it's designed to handle Twitter's single-depth followers/following model.  </p>&#xA;&#xA;<p>The video here has a pretty good summary from the CEO of Neo Technology where he briefly mentions FlockDB:  <a href="http://www.nosqldatabases.com/main/2010/7/5/need-a-graph-database-look-no-farther-than-neo4j.html" rel="nofollow">http://www.nosqldatabases.com/main/2010/7/5/need-a-graph-database-look-no-farther-than-neo4j.html</a></p>&#xA;
+Comment:
+
+Phrase:
+keeping large graph dataset 
+are open source frameworks for keeping large graph dataset 
+write a comparison 
+to write a comparison 
+seen 
+have n't seen 
+open-sourced by Twitter 
+been open-sourced by Twitter 
+has only very recently ( last few days ) been open-sourced by Twitter 
+been around for a good while 
+has been around for a good while 
+Brings up the question of stability , since Neo4j has been around for a good while 
+says 
+is what the FlockDB readme says 
+solve fewer problems 
+to solve fewer problems 
+tries to solve fewer problems 
+is much simpler than other graph databases such as neo4j because it tries to solve fewer problems 
+scales horizontally 
+designed for on-line , low-latency , high throughput environments such as web-sites 
+is designed for on-line , low-latency , high throughput environments such as web-sites 
+scales horizontally and is designed for on-line , low-latency , high throughput environments such as web-sites 
+doing deep graph traversal 
+handle Twitter 's single-depth followers/following model 
+to handle Twitter 's single-depth followers/following model 
+designed to handle Twitter 's single-depth followers/following model 
+'s designed to handle Twitter 's single-depth followers/following model 
+is n't capable of doing deep graph traversal because it 's designed to handle Twitter 's single-depth followers/following model 
+mentions FlockDB : http://www.nosqldatabases.com/main/2010/7/5/need-a-graph-database-look-no-farther-than-neo4j.html 
+here has a pretty good summary from the CEO of Neo Technology where he briefly mentions FlockDB : http://www.nosqldatabases.com/main/2010/7/5/need-a-graph-database-look-no-farther-than-neo4j.html 

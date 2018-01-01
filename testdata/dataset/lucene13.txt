@@ -1,0 +1,232 @@
+QUESTION:
+HTML:
+<p>We run full re-indexes every 7 days (i.e. creating the index from scratch) on our Lucene index and incremental indexes every 2 hours or so. Our index has around 700,000 documents and a full index takes around 17 hours (which isn't a problem).</p>&#xA;&#xA;<p>When we do incremental indexes, we only index content that has changed in the past two hours, so it takes much less time - around half an hour. However, we've noticed that a lot of this time (maybe 10 minutes) is spent running the IndexWriter.optimize() method.</p>&#xA;&#xA;<p>The <a href="http://wiki.apache.org/lucene-java/LuceneFAQ#head-fd848c31f4dc7b91727be6f40a7f5fbe2c66cfb8">LuceneFAQ</a> mentions that:</p>&#xA;&#xA;<blockquote>&#xA;  <p>The IndexWriter class supports an optimize() method that compacts the index database and speeds up queries. You may want to use this method after performing a complete indexing of your document set or after incremental updates of the index. If your incremental update adds documents frequently, you want to perform the optimization only once in a while to avoid the extra overhead of the optimization.</p>&#xA;</blockquote>&#xA;&#xA;<p>...but this doesn't seem to give any definition for what "frequently" means. Optimizing is CPU intensive and VERY IO-intensive, so we'd rather not be doing it if we can get away with it. How much is the hit of running queries on an un-optimized index (I'm thinking especially in terms of query performance after a full re-index compared to after 20 incremental indexes where, say, 50,000 documents have changed)? Should we be optimising after every incremental index or is the performance hit not worth it?</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>Mat, since you seem to have a good idea how long your current process takes, I suggest that you remove the <code>optimize()</code> and measure the impact.</p>&#xA;&#xA;<p>Do many of the documents change in those 2 hour windows? If only a small fraction (50,000/700,000 is about 7%) are incrementally re-indexed, then I don't think you are getting much value out of an <code>optimize()</code>.</p>&#xA;&#xA;<p>Some ideas:</p>&#xA;&#xA;<ul>&#xA;<li>Don't do an incremental <code>optimize()</code> at all. My experience says you are not seeing a huge query improvement anyway.</li>&#xA;<li>Do the <code>optimize()</code> daily instead of 2-hourly.</li>&#xA;<li>Do the <code>optimize()</code> during low-volume times (which is what the <a href="http://lucene.apache.org/java/2_2_0/api/org/apache/lucene/index/IndexWriter.html">javadoc</a> says).</li>&#xA;</ul>&#xA;&#xA;<p>And make sure you take measurements. These kinds of changes can be a shot in the dark without them.</p>&#xA;
+Comment:
+These kinds of changes *are* shots in the dark without them.
+Cheers, guess I was wondering whether people had experience of this before I dived in and started messing with a production system :)
+Mat: yes, I realize you were looking for specific advice, and I was being a little general.&#xA;&#xA;In my experience (I've been using Lucene for years) you will be fine without the optimize(). I've out-right removed the optimize() from on of our systems because of its overhead.
+@MattQuail, so you never optimise the index even after full re-runs?
+
+ANS:
+HTML:
+<p>Mat, since you seem to have a good idea how long your current process takes, I suggest that you remove the <code>optimize()</code> and measure the impact.</p>&#xA;&#xA;<p>Do many of the documents change in those 2 hour windows? If only a small fraction (50,000/700,000 is about 7%) are incrementally re-indexed, then I don't think you are getting much value out of an <code>optimize()</code>.</p>&#xA;&#xA;<p>Some ideas:</p>&#xA;&#xA;<ul>&#xA;<li>Don't do an incremental <code>optimize()</code> at all. My experience says you are not seeing a huge query improvement anyway.</li>&#xA;<li>Do the <code>optimize()</code> daily instead of 2-hourly.</li>&#xA;<li>Do the <code>optimize()</code> during low-volume times (which is what the <a href="http://lucene.apache.org/java/2_2_0/api/org/apache/lucene/index/IndexWriter.html">javadoc</a> says).</li>&#xA;</ul>&#xA;&#xA;<p>And make sure you take measurements. These kinds of changes can be a shot in the dark without them.</p>&#xA;
+Comment:
+These kinds of changes *are* shots in the dark without them.
+Cheers, guess I was wondering whether people had experience of this before I dived in and started messing with a production system :)
+Mat: yes, I realize you were looking for specific advice, and I was being a little general.&#xA;&#xA;In my experience (I've been using Lucene for years) you will be fine without the optimize(). I've out-right removed the optimize() from on of our systems because of its overhead.
+@MattQuail, so you never optimise the index even after full re-runs?
+HTML:
+<p>An <code>optimize</code> operation reads and writes the entire index, which is why it's so IO intensive!</p>&#xA;&#xA;<p>The idea behind optimize operations is to re-combine all the various segments in the Lucene index into one single segment, which can greatly reduce query times as you don't have to open and search several files per query. If you're using the normal Lucene index file structure (rather than the combined structure), you get a new segment per commit operation; the same as your re-indexes I assume?</p>&#xA;&#xA;<p>I think <a href="http://stackoverflow.com/users/15790/matt-quail">Matt</a> has great advice and I'd second everything he says - be driven by the data you have. I would actually go a step further and only optmize a) when you need to and b) when you have low query volume.</p>&#xA;&#xA;<p>As query performance is intimately tied to the number of segments in your index, a simple <code>ls -1 index/segments_* | count</code> could be a useful indicator for when in optimization is really needed.</p>&#xA;&#xA;<p>Alternatively, tracking the query performance and volume and kicking off an optimize when you reach unacceptable low performance with acceptably low volume would be a nicer solution.</p>&#xA;
+Comment:
+HTML:
+<p>In <a href="http://www.gossamer-threads.com/lists/lucene/java-dev/47895" rel="nofollow">this mail</a>, Otis Gospodnetic advices <em>against</em> using optimize, if your index is seeing constant updates. It's from 2007, but calling <code>optimize()</code> is in it's very nature an IO-heavy operation. You could consider using a more stepwise approach; a <a href="http://lucene.apache.org/java/3_0_2/api/all/org/apache/lucene/index/MergeScheduler.html" rel="nofollow">MergeScheduler</a></p>&#xA;
+Comment:
+
+Phrase:
+( i.e 
+run full re-indexes every 7 days ( i.e 
+the index from scratch ) on our Lucene index and incremental indexes 
+creating the index from scratch ) on our Lucene index and incremental indexes every 2 hours 
+is n't a problem 
+takes around 17 hours ( which is n't a problem ) 
+has around 700,000 documents and a full index takes around 17 hours ( which is n't a problem ) 
+takes much less time 
+changed in the past two hours , so it takes much less time 
+has changed in the past two hours , so it takes much less time 
+do incremental indexes , we only index content that has changed in the past two hours , so it takes much less time - around half an hour 
+running the IndexWriter.optimize ( ) method 
+spent running the IndexWriter.optimize ( ) method 
+is spent running the IndexWriter.optimize ( ) method 
+noticed that a lot of this time ( maybe 10 minutes ) is spent running the IndexWriter.optimize ( ) method 
+'ve noticed that a lot of this time ( maybe 10 minutes ) is spent running the IndexWriter.optimize ( ) method 
+mentions that 
+compacts the index database 
+speeds up queries 
+compacts the index database and speeds up queries 
+supports an optimize ( ) method that compacts the index database and speeds up queries 
+performing a complete indexing of your document set 
+use this method after performing a complete indexing of your document set or after incremental updates of the index 
+to use this method after performing a complete indexing of your document set or after incremental updates of the index 
+want to use this method after performing a complete indexing of your document set or after incremental updates of the index 
+may want to use this method after performing a complete indexing of your document set or after incremental updates of the index 
+adds documents frequently 
+avoid the extra overhead of the optimization 
+to avoid the extra overhead of the optimization 
+perform the optimization only once in a while to avoid the extra overhead of the optimization 
+to perform the optimization only once in a while to avoid the extra overhead of the optimization 
+want to perform the optimization only once in a while to avoid the extra overhead of the optimization 
+does 
+seem to 
+give any 
+`` frequently '' 
+definition for what `` frequently '' 
+get away with it 
+can get away with it 
+doing it if we can get away with it 
+be doing it if we can get away with it 
+'d rather not be doing it if we can get away with it 
+is CPU intensive and VERY IO-intensive , so we 'd rather not be doing it if we can get away with it 
+changed 
+have changed 
+thinking especially in terms of query performance after a full re-index compared to after 20 incremental indexes where , say , 50,000 documents have changed 
+'m thinking especially in terms of query performance after a full re-index compared to after 20 incremental indexes where , say , 50,000 documents have changed 
+running queries on an un-optimized index ( I 'm thinking especially in terms of query performance after a full re-index compared to after 20 incremental indexes where , say , 50,000 documents have changed ) 
+optimising after every incremental index 
+hit not worth 
+is the performance hit not worth 
+optimising after every incremental index or is the performance hit not worth it 
+be optimising after every incremental index or is the performance hit not worth it 
+takes 
+have a good idea how long your current process takes 
+to have a good idea how long your current process takes 
+seem to have a good idea how long your current process takes 
+remove the CODE0 
+measure the impact 
+remove the CODE0 and measure the impact 
+suggest that you remove the CODE0 and measure the impact 
+Do many of the documents change in those 2 hour windows 
+is about 7 % 
+are incrementally re-indexed 
+getting much value out of an CODE0 
+are getting much value out of an CODE0 
+think you are getting much value out of an CODE0 
+do n't think you are getting much value out of an CODE0 
+do an incremental CODE0 at all 
+Do n't do an incremental CODE0 at all 
+seeing a huge query improvement anyway 
+are not seeing a huge query improvement anyway 
+says you are not seeing a huge query improvement anyway 
+Do the CODE0 daily instead of 2-hourly 
+says 
+is what the javadoc says 
+Do the CODE0 during low-volume times ( which is what the javadoc says ) 
+take measurements 
+make sure you take measurements 
+be a shot in the dark without them 
+can be a shot in the dark without them 
+are * shots in the dark without them 
+dived in 
+had experience of this before I dived in 
+messing with a production system : 
+started messing with a production system : 
+had experience of this before I dived in and started messing with a production system : 
+wondering whether people had experience of this before I dived in and started messing with a production system : 
+was wondering whether people had experience of this before I dived in and started messing with a production system : 
+guess I was wondering whether people had experience of this before I dived in and started messing with a production system : 
+looking for specific advice 
+were looking for specific advice 
+realize you were looking for specific advice 
+being a little general . & #xA ; & #xA 
+was being a little general . & #xA ; & #xA 
+using Lucene for years 
+been using Lucene for years 
+'ve been using Lucene for years 
+be fine without the optimize ( ) 
+will be fine without the optimize ( ) 
+removed the optimize ( ) from on of our systems because of its overhead 
+'ve out-right removed the optimize ( ) from on of our systems because of its overhead 
+optimise the index even after full re-runs 
+takes 
+have a good idea how long your current process takes 
+to have a good idea how long your current process takes 
+seem to have a good idea how long your current process takes 
+remove the CODE0 
+measure the impact 
+remove the CODE0 and measure the impact 
+suggest that you remove the CODE0 and measure the impact 
+Do many of the documents change in those 2 hour windows 
+is about 7 % 
+are incrementally re-indexed 
+getting much value out of an CODE0 
+are getting much value out of an CODE0 
+think you are getting much value out of an CODE0 
+do n't think you are getting much value out of an CODE0 
+do an incremental CODE0 at all 
+Do n't do an incremental CODE0 at all 
+seeing a huge query improvement anyway 
+are not seeing a huge query improvement anyway 
+says you are not seeing a huge query improvement anyway 
+Do the CODE0 daily instead of 2-hourly 
+says 
+is what the javadoc says 
+Do the CODE0 during low-volume times ( which is what the javadoc says ) 
+take measurements 
+make sure you take measurements 
+be a shot in the dark without them 
+can be a shot in the dark without them 
+are * shots in the dark without them 
+dived in 
+had experience of this before I dived in 
+messing with a production system : 
+started messing with a production system : 
+had experience of this before I dived in and started messing with a production system : 
+wondering whether people had experience of this before I dived in and started messing with a production system : 
+was wondering whether people had experience of this before I dived in and started messing with a production system : 
+guess I was wondering whether people had experience of this before I dived in and started messing with a production system : 
+looking for specific advice 
+were looking for specific advice 
+realize you were looking for specific advice 
+being a little general . & #xA ; & #xA 
+was being a little general . & #xA ; & #xA 
+using Lucene for years 
+been using Lucene for years 
+'ve been using Lucene for years 
+be fine without the optimize ( ) 
+will be fine without the optimize ( ) 
+removed the optimize ( ) from on of our systems because of its overhead 
+'ve out-right removed the optimize ( ) from on of our systems because of its overhead 
+optimise the index even after full re-runs 
+'s so IO intensive 
+is why it 's so IO intensive 
+reads and writes the entire index , which is why it 's so IO intensive 
+open and search several files per query 
+to open and search several files per query 
+have to open and search several files per query 
+do n't have to open and search several files per query 
+reduce query times as you do n't have to open and search several files per query 
+can greatly reduce query times as you do n't have to open and search several files per query 
+re-combine all the various segments in the Lucene index into one single segment , which can greatly reduce query times as you do n't have to open and search several files per query 
+to re-combine all the various segments in the Lucene index into one single segment , which can greatly reduce query times as you do n't have to open and search several files per query 
+is to re-combine all the various segments in the Lucene index into one single segment , which can greatly reduce query times as you do n't have to open and search several files per query 
+using the normal Lucene index file structure ( rather than the combined structure ) 
+'re using the normal Lucene index file structure ( rather than the combined structure ) 
+get a new segment per commit operation 
+assume 
+has great advice 
+says 
+'d second everything he says 
+think Matt has great advice and I 'd second everything he says 
+driven by the data 
+be driven by the data 
+have 
+further and only optmize a 
+need to 
+have low query volume 
+go a step further and only optmize a ) when you need to and b ) when you have low query volume . 
+would actually go a step further and only optmize a ) when you need to and b ) when you have low query volume . 
+tied to the number of segments in your index 
+is intimately tied to the number of segments in your index 
+is really needed 
+be a useful indicator for when in optimization is really needed 
+could be a useful indicator for when in optimization is really needed 
+tracking the query performance and volume 
+reach unacceptable low performance with acceptably low volume 
+kicking off an optimize when you reach unacceptable low performance with acceptably low volume 
+tracking the query performance and volume and kicking off an optimize when you reach unacceptable low performance with acceptably low volume 
+be a nicer solution 
+would be a nicer solution 
+using optimize 
+seeing constant updates 
+is seeing constant updates 
+advices against using optimize , if your index is seeing constant updates 
+'s from 2007 
+calling CODE0 
+is in it 's very nature 
+using a more stepwise approach ; a MergeScheduler 
+consider using a more stepwise approach ; a MergeScheduler 
+could consider using a more stepwise approach ; a MergeScheduler 

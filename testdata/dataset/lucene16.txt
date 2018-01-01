@@ -1,0 +1,151 @@
+QUESTION:
+HTML:
+<p>I've been using the (Java) <a href="http://lucene.apache.org/java/2%5F4%5F1/lucene-sandbox/index.html#Term%20Highlighter" rel="nofollow">Highlighter for Lucene</a> (in the Sandbox package) for some time. However, this isn't really very accurate when it comes to matching the correct terms in search results - it works well for simple queries, for example searching for two separate words will highlight both code fragments in the results.</p>&#xA;&#xA;<p>However, it doesn't act well with more complicated queries. In the simplest case, phrase queries such as "Stack Overflow" will match all occurrences of Stack or Overflow in the highlighting, which gives the impression to the user that it isn't working very well.</p>&#xA;&#xA;<p>I tried applying the fix <a href="http://www.gossamer-threads.com/lists/lucene/java-user/15528" rel="nofollow">here</a> but that came with a lot of performance caveats, and at the end of the day was just plain unusable. The performance is especially an issue on wildcard queries. This is due to the way that the highlighting works; instead of just working on the querystring and the text it parses it as Lucene would and then looks for all the matches that Lucene has made; unfortunately this means that for certain wildcard queries it can be looking for matches to 2000+ clauses on large documents, and it's simply not fast enough.</p>&#xA;&#xA;<p>Is there any faster implementation of an accurate highlighter?</p>&#xA;
+Comment:
+The 'Highlighter for Lucene' link is currently broken.
+Thanks for pointing that out, I've fixed the link.
+Now that Lucene 3.0.0 is out, you should find that upgrading everything to that will make things just work. HOWEVER - beware that the highlighter now has a dependency on lucene-memory from contrib as well (this will only show up when highlighting for exact matches)
+
+ACCEPTED ANS:
+HTML:
+<p>There is a new faster highlighter (needs to be patched in but will be part of release 2.9)</p>&#xA;&#xA;<p><a href="https://issues.apache.org/jira/browse/LUCENE-1522" rel="nofollow">https://issues.apache.org/jira/browse/LUCENE-1522</a></p>&#xA;&#xA;<p>and a <a href="https://issues.apache.org/jira/browse/LUCENE-1522?focusedCommentId=12688408&amp;page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#action%5F12688408" rel="nofollow">back-reference</a> to this question</p>&#xA;
+Comment:
+Thanks for pointing that out Peter, I'll give that a go and see if it's usable for us.
+
+ANS:
+HTML:
+<p>You could look into using Solr. <a href="http://lucene.apache.org/solr" rel="nofollow">http://lucene.apache.org/solr</a></p>&#xA;&#xA;<p>Solr is a sort of generic search application that uses Lucene and supports highlighting. It's possible that the highlighting in Solr is usable as an API outside of Solr.  You could also look at how Solr does it for inspiration.</p>&#xA;
+Comment:
+Thanks, taking a look at Solr - I think I've always confused it with Nutch in the past and assumed they were the same thing, silly me. I notice in the Solr docs it seems to separate out a PhraseHighlighter and a standard Highlighter, so I'm not imbued with much confidence I'm afraid :(
+Unfortunately, the solr highlighter just delegates to the highlighter in the Lucene Sandbox - it doesn't do anything clever :(
+HTML:
+<p>I've been reading on the subject and came across <a href="http://lucene.apache.org/java/2_3_1/api/org/apache/lucene/search/spans/SpanQuery.html" rel="nofollow">spanQuery</a> which would return to you the span of the matched term or terms in the field that matched.</p>&#xA;
+Comment:
+HTML:
+<p>There is a new faster highlighter (needs to be patched in but will be part of release 2.9)</p>&#xA;&#xA;<p><a href="https://issues.apache.org/jira/browse/LUCENE-1522" rel="nofollow">https://issues.apache.org/jira/browse/LUCENE-1522</a></p>&#xA;&#xA;<p>and a <a href="https://issues.apache.org/jira/browse/LUCENE-1522?focusedCommentId=12688408&amp;page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#action%5F12688408" rel="nofollow">back-reference</a> to this question</p>&#xA;
+Comment:
+Thanks for pointing that out Peter, I'll give that a go and see if it's usable for us.
+
+Phrase:
+using the ( Java ) Highlighter for Lucene ( in the Sandbox package ) for some time 
+been using the ( Java ) Highlighter for Lucene ( in the Sandbox package ) for some time 
+'ve been using the ( Java ) Highlighter for Lucene ( in the Sandbox package ) for some time 
+matching the correct terms in search results 
+comes to matching the correct terms in search results 
+is n't really very accurate when it comes to matching the correct terms in search results 
+searching for two separate words 
+highlight both code fragments in the results 
+will highlight both code fragments in the results 
+works well for simple queries , for example searching for two separate words will highlight both code fragments in the results 
+act well with more complicated queries 
+does n't act well with more complicated queries 
+working very well 
+is n't working very well 
+gives the impression to the user that it is n't working very well 
+match all occurrences of Stack or Overflow in the highlighting , which gives the impression to the user that it is n't working very well 
+will match all occurrences of Stack or Overflow in the highlighting , which gives the impression to the user that it is n't working very well 
+came with a lot of performance caveats , and at the end of the day 
+applying the fix here but that came with a lot of performance caveats , and at the end of the day 
+was just plain unusable 
+tried applying the fix here but that came with a lot of performance caveats , and at the end of the day was just plain unusable 
+is especially an issue on wildcard queries 
+works 
+is due to the way that the highlighting works 
+just working on the querystring and the text 
+would 
+made 
+has made 
+matches that Lucene has made 
+then looks for all the matches that Lucene has made 
+would and then looks for all the matches that Lucene has made 
+parses it as Lucene would and then looks for all the matches that Lucene has made 
+looking for matches to 2000 + clauses on large documents 
+be looking for matches to 2000 + clauses on large documents 
+can be looking for matches to 2000 + clauses on large documents 
+means that for certain wildcard queries it can be looking for matches to 2000 + clauses on large documents 
+'s simply not fast enough 
+broken 
+is currently broken 
+pointing that out 
+fixed the link 
+'ve fixed the link 
+is out 
+make things just 
+will make things just 
+upgrading everything to that will make things just 
+work 
+find that upgrading everything to that will make things just work 
+should find that upgrading everything to that will make things just work 
+has a dependency on lucene-memory from contrib as well 
+highlighting for exact 
+matches 
+show up when highlighting for exact matches 
+will only show up when highlighting for exact matches 
+beware that the highlighter now has a dependency on lucene-memory from contrib as well ( this will only show up when highlighting for exact matches ) 
+patched in 
+be patched in 
+to be patched in 
+needs to be patched in 
+be part of release 2.9 
+will be part of release 2.9 
+needs to be patched in but will be part of release 2.9 
+is a new faster highlighter ( needs to be patched in but will be part of release 2.9 ) 
+pointing that out Peter 
+give that a go 
+'s usable for us 
+see if it 's usable for us 
+give that a go and see if it 's usable for us 
+'ll give that a go and see if it 's usable for us 
+using Solr 
+look into using Solr 
+could look into using Solr 
+uses Lucene 
+highlighting 
+supports highlighting 
+uses Lucene and supports highlighting 
+is a sort of generic search application that uses Lucene and supports highlighting 
+is usable as an API outside of Solr 
+'s possible that the highlighting in Solr is usable as an API outside of Solr 
+does it for inspiration 
+look at how Solr does it for inspiration 
+could also look at how Solr does it for inspiration 
+confused it with Nutch in the past 
+'ve always confused it with Nutch in the past 
+were the same thing 
+assumed they were the same thing 
+'ve always confused it with Nutch in the past and assumed they were the same thing 
+think I 've always confused it with Nutch in the past and assumed they were the same thing 
+taking a look at Solr - I think I 've always confused it with Nutch in the past and assumed they were the same thing 
+silly me 
+separate out a PhraseHighlighter and a standard Highlighter 
+to separate out a PhraseHighlighter and a standard Highlighter 
+seems to separate out a PhraseHighlighter and a standard Highlighter 
+'m afraid : ( 
+imbued with much confidence I 'm afraid : ( 
+'m not imbued with much confidence I 'm afraid : ( 
+notice in the Solr docs it seems to separate out a PhraseHighlighter and a standard Highlighter , so I 'm not imbued with much confidence I 'm afraid : ( 
+highlighter just delegates to the highlighter in the Lucene Sandbox 
+do anything clever : ( 
+does n't do anything clever : ( 
+reading on the subject 
+been reading on the subject 
+'ve been reading on the subject 
+matched 
+return to you the span of the matched term or terms in the field that matched 
+would return to you the span of the matched term or terms in the field that matched 
+came across spanQuery which would return to you the span of the matched term or terms in the field that matched 
+'ve been reading on the subject and came across spanQuery which would return to you the span of the matched term or terms in the field that matched 
+patched in 
+be patched in 
+to be patched in 
+needs to be patched in 
+be part of release 2.9 
+will be part of release 2.9 
+needs to be patched in but will be part of release 2.9 
+is a new faster highlighter ( needs to be patched in but will be part of release 2.9 ) 
+pointing that out Peter 
+give that a go 
+'s usable for us 
+see if it 's usable for us 
+give that a go and see if it 's usable for us 
+'ll give that a go and see if it 's usable for us 

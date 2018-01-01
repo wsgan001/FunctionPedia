@@ -1,0 +1,72 @@
+QUESTION:
+HTML:
+<p>I've been looking into setting up and trying out Neo4j on Amazon EC2 however I seem to have hit a road block with finding documentation that I can use.</p>&#xA;&#xA;<p>For example, this page mentions "Clustering, High Availability and Online Backup are add-on components that manage distribution and consistency over several live or offline node spaces."  However, I haven't been able to find any more information on these add-ons.&#xA;<a href="http://wiki.neo4j.org/content/Neo4j_in_the_Cloud" rel="nofollow">http://wiki.neo4j.org/content/Neo4j_in_the_Cloud</a></p>&#xA;&#xA;<p>This seemingly key wiki page describing how to set up Neo4j seems to be missing some very information.&#xA;<a href="http://wiki.neo4j.org/content/Neo4j_Setup_HowTo" rel="nofollow">http://wiki.neo4j.org/content/Neo4j_Setup_HowTo</a></p>&#xA;&#xA;<p>Is anyone else using this and referencing better documentation?  Or am I retarded and completely missing something?  Or both?</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>You can find some related info <a href="http://nowiki.neo4j.org/content/Neo4j_in_the_Cloud" rel="nofollow">at this link</a>, although the setup might depend a bit your requirements. The HA support is currently in beta, we will be able to let you test it as soon as Neo4j 1.0 is out of the door, which is before end of Jan 2010.</p>&#xA;
+Comment:
+
+ANS:
+HTML:
+<p>You can find some related info <a href="http://nowiki.neo4j.org/content/Neo4j_in_the_Cloud" rel="nofollow">at this link</a>, although the setup might depend a bit your requirements. The HA support is currently in beta, we will be able to let you test it as soon as Neo4j 1.0 is out of the door, which is before end of Jan 2010.</p>&#xA;
+Comment:
+
+Phrase:
+setting up 
+use 
+can use 
+finding documentation that I can use 
+hit a road block with finding documentation that I can use 
+have hit a road block with finding documentation that I can use 
+to have hit a road block with finding documentation that I can use 
+seem to have hit a road block with finding documentation that I can use 
+trying out Neo4j on Amazon EC2 however I seem to have hit a road block with finding documentation that I can use 
+setting up and trying out Neo4j on Amazon EC2 however I seem to have hit a road block with finding documentation that I can use 
+looking into setting up and trying out Neo4j on Amazon EC2 however I seem to have hit a road block with finding documentation that I can use 
+been looking into setting up and trying out Neo4j on Amazon EC2 however I seem to have hit a road block with finding documentation that I can use 
+'ve been looking into setting up and trying out Neo4j on Amazon EC2 however I seem to have hit a road block with finding documentation that I can use 
+manage distribution and consistency over several live or offline node spaces 
+are add-on components that manage distribution and consistency over several live or offline node spaces 
+find any more information on these add-ons 
+to find any more information on these add-ons 
+been able to find any more information on these add-ons 
+have n't been able to find any more information on these add-ons 
+mentions `` Clustering , High Availability and Online Backup are add-on components that manage distribution and consistency over several live or offline node spaces . '' However , I have n't been able to find any more information on these add-ons 
+set up Neo4j 
+to set up Neo4j 
+describing how to set up Neo4j 
+missing some very information 
+be missing some very information 
+to be missing some very information 
+seems to be missing some very information 
+Is 
+using this 
+referencing better documentation 
+using this and referencing better documentation 
+am I retarded and completely missing something 
+depend a bit your requirements 
+might depend a bit your requirements 
+find some related info at this link , although the setup might depend a bit your requirements 
+can find some related info at this link , although the setup might depend a bit your requirements 
+is currently in beta 
+is before end of Jan 2010 
+is out of the door , which is before end of Jan 2010 
+test it as soon as Neo4j 1.0 is out of the door , which is before end of Jan 2010 
+let you test it as soon as Neo4j 1.0 is out of the door , which is before end of Jan 2010 
+to let you test it as soon as Neo4j 1.0 is out of the door , which is before end of Jan 2010 
+be able to let you test it as soon as Neo4j 1.0 is out of the door , which is before end of Jan 2010 
+will be able to let you test it as soon as Neo4j 1.0 is out of the door , which is before end of Jan 2010 
+depend a bit your requirements 
+might depend a bit your requirements 
+find some related info at this link , although the setup might depend a bit your requirements 
+can find some related info at this link , although the setup might depend a bit your requirements 
+is currently in beta 
+is before end of Jan 2010 
+is out of the door , which is before end of Jan 2010 
+test it as soon as Neo4j 1.0 is out of the door , which is before end of Jan 2010 
+let you test it as soon as Neo4j 1.0 is out of the door , which is before end of Jan 2010 
+to let you test it as soon as Neo4j 1.0 is out of the door , which is before end of Jan 2010 
+be able to let you test it as soon as Neo4j 1.0 is out of the door , which is before end of Jan 2010 
+will be able to let you test it as soon as Neo4j 1.0 is out of the door , which is before end of Jan 2010 

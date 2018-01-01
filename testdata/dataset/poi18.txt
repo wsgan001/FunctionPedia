@@ -1,0 +1,41 @@
+QUESTION:
+HTML:
+<p>I want create a excel with Apache POI in java and I must insert in a cell a formula: A3=B3+C3.</p>&#xA;&#xA;<p>Is possible to insert another formula in A3 that color the cell if his value is> 0?</p>&#xA;&#xA;<p>I use Apache POI 2.5.1</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>You will need a <a href="http://poi.apache.org/apidocs/org/apache/poi/hssf/usermodel/HSSFConditionalFormatting.html">conditional formatting</a>.</p>&#xA;&#xA;<p>From this document:</p>&#xA;&#xA;<pre><code> // Define a Conditional Formatting rule, which triggers formatting&#xA; // when cell's value is greater or equal than 100.0 and&#xA; // applies patternFormatting defined below.&#xA; HSSFConditionalFormattingRule rule = sheet.createConditionalFormattingRule(&#xA;     ComparisonOperator.GE, &#xA;     "100.0", // 1st formula &#xA;     null     // 2nd formula is not used for comparison operator GE&#xA; );&#xA;&#xA; // Create pattern with red background&#xA; HSSFPatternFormatting patternFmt = rule.cretePatternFormatting();&#xA; patternFormatting.setFillBackgroundColor(HSSFColor.RED.index);&#xA;&#xA; // Define a region containing first column&#xA; Region [] regions =&#xA; {&#xA;     new Region(1,(short)1,-1,(short)1)&#xA; };&#xA;&#xA; // Apply Conditional Formatting rule defined above to the regions  &#xA; sheet.addConditionalFormatting(regions, rule);&#xA;</code></pre>&#xA;&#xA;<p>which creates a cell with a red background for values >= 100. Which is almost what you want :-)</p>&#xA;
+Comment:
+
+ANS:
+HTML:
+<p>You will need a <a href="http://poi.apache.org/apidocs/org/apache/poi/hssf/usermodel/HSSFConditionalFormatting.html">conditional formatting</a>.</p>&#xA;&#xA;<p>From this document:</p>&#xA;&#xA;<pre><code> // Define a Conditional Formatting rule, which triggers formatting&#xA; // when cell's value is greater or equal than 100.0 and&#xA; // applies patternFormatting defined below.&#xA; HSSFConditionalFormattingRule rule = sheet.createConditionalFormattingRule(&#xA;     ComparisonOperator.GE, &#xA;     "100.0", // 1st formula &#xA;     null     // 2nd formula is not used for comparison operator GE&#xA; );&#xA;&#xA; // Create pattern with red background&#xA; HSSFPatternFormatting patternFmt = rule.cretePatternFormatting();&#xA; patternFormatting.setFillBackgroundColor(HSSFColor.RED.index);&#xA;&#xA; // Define a region containing first column&#xA; Region [] regions =&#xA; {&#xA;     new Region(1,(short)1,-1,(short)1)&#xA; };&#xA;&#xA; // Apply Conditional Formatting rule defined above to the regions  &#xA; sheet.addConditionalFormatting(regions, rule);&#xA;</code></pre>&#xA;&#xA;<p>which creates a cell with a red background for values >= 100. Which is almost what you want :-)</p>&#xA;
+Comment:
+
+Phrase:
+create a excel with Apache POI in java 
+want create a excel with Apache POI in java 
+insert in a cell a formula : A3 = B3 + C3 
+must insert in a cell a formula : A3 = B3 + C3 
+A3 that color 
+insert another formula in A3 that color 
+to insert another formula in A3 that color 
+Is possible to insert another formula in A3 that color 
+> 0 
+is > 0 
+use Apache POI 2.5.1 
+need a conditional formatting 
+will need a conditional formatting 
+= 100 
+> = 100 
+creates a cell with a red background for values > = 100 
+want : - 
+is almost what you want : - 
+need a conditional formatting 
+will need a conditional formatting 
+= 100 
+> = 100 
+creates a cell with a red background for values > = 100 
+want : - 
+is almost what you want : - 

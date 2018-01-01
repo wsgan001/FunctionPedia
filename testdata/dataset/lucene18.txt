@@ -1,0 +1,107 @@
+QUESTION:
+HTML:
+<p>Is there a known math formula that I can use to estimate the size of a new Lucene index? I know how many fields I want to have indexed, and the size of each field. And, I know how many items will be indexed. So, once these are processed by Lucene, how does it translate into bytes? </p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>Here is the <a href="http://lucene.apache.org/java/3_4_0/fileformats.html" rel="nofollow">lucene index format documentation</a>.&#xA;The major file is the compound index (.cfs file).&#xA;If you have term statistics, you can probably get an estimate for the .cfs file size,&#xA;Note that this varies greatly based on the Analyzer you use, and on the field types you define.</p>&#xA;
+Comment:
+link is broken..
+http://lucene.apache.org/java/3_4_0/fileformats.html (visited 11/2/2011)
+Thanks Scottie. Fixed it - till the next version...
+http://lucene.apache.org/core/3_6_1/fileformats.html as of right now.
+
+ANS:
+HTML:
+<p>I think it has to also do with the frequency of each term (i.e. an index of 10,000 copies of the sames terms should be much smaller than an index of 10,000 wholly unique terms).</p>&#xA;&#xA;<p>Also, there's probably a small dependency on whether you're using Term Vectors or not, and certainly whether you're storing fields or not. Can you provide more details? Can you analyze the term frequency of your source data?</p>&#xA;
+Comment:
+HTML:
+<p>Here is the <a href="http://lucene.apache.org/java/3_4_0/fileformats.html" rel="nofollow">lucene index format documentation</a>.&#xA;The major file is the compound index (.cfs file).&#xA;If you have term statistics, you can probably get an estimate for the .cfs file size,&#xA;Note that this varies greatly based on the Analyzer you use, and on the field types you define.</p>&#xA;
+Comment:
+link is broken..
+http://lucene.apache.org/java/3_4_0/fileformats.html (visited 11/2/2011)
+Thanks Scottie. Fixed it - till the next version...
+http://lucene.apache.org/core/3_6_1/fileformats.html as of right now.
+HTML:
+<p>The index stores each "token" or text field etc., only once...so the size is dependent on the nature of the material being indexed.  Add to that whatever is being stored as well.  One good approach might be to take a sample and index it, and use that to extrapolate out for the complete source collection.  However, the ratio of index size to source size decreases over time as well, as the words are already there in the index, so you might want to make the sample a decent percentage of the original.</p>&#xA;
+Comment:
+
+Phrase:
+Is there 
+estimate the size of a new Lucene index 
+to estimate the size of a new Lucene index 
+use to estimate the size of a new Lucene index 
+can use to estimate the size of a new Lucene index 
+indexed 
+have indexed 
+to have indexed 
+want to have indexed 
+fields I want to have indexed 
+know how many fields I want to have indexed , and the size of each field 
+indexed 
+be indexed 
+will be indexed 
+know how many items will be indexed 
+processed by Lucene 
+are processed by Lucene 
+translate into bytes 
+how does it translate into bytes 
+is 
+is the compound index ( . cfs file ) 
+have term statistics 
+Note 
+varies greatly based on the Analyzer you use 
+get an estimate for the . cfs file size , Note that this varies greatly based on the Analyzer you use 
+can probably get an estimate for the . cfs file size , Note that this varies greatly based on the Analyzer you use 
+define 
+broken 
+is broken 
+Fixed it - till the next version 
+also do with the frequency of each term ( i.e 
+to also do with the frequency of each term ( i.e 
+has to also do with the frequency of each term ( i.e 
+think it has to also do with the frequency of each term ( i.e 
+be much smaller than an index of 10,000 wholly unique terms 
+should be much smaller than an index of 10,000 wholly unique terms 
+using Term Vectors 
+'re using Term Vectors 
+storing fields or not 
+'re storing fields or not 
+'s probably a small dependency on whether you 're using Term Vectors or not , and certainly whether you 're storing fields or not 
+provide more details 
+Can you provide more details 
+analyze the term frequency of your source data 
+is 
+is the compound index ( . cfs file ) 
+have term statistics 
+Note 
+varies greatly based on the Analyzer you use 
+get an estimate for the . cfs file size , Note that this varies greatly based on the Analyzer you use 
+can probably get an estimate for the . cfs file size , Note that this varies greatly based on the Analyzer you use 
+define 
+broken 
+is broken 
+Fixed it - till the next version 
+stores each `` token '' or text field etc. , only once 
+indexed 
+being indexed 
+is dependent on the nature of the material being indexed 
+stored as well 
+being stored as well 
+is being stored as well 
+Add to that whatever is being stored as well 
+take a sample and index it 
+extrapolate out for the complete source collection 
+to extrapolate out for the complete source collection 
+use that to extrapolate out for the complete source collection 
+take a sample and index it , and use that to extrapolate out for the complete source collection 
+to take a sample and index it , and use that to extrapolate out for the complete source collection 
+be to take a sample and index it , and use that to extrapolate out for the complete source collection 
+might be to take a sample and index it , and use that to extrapolate out for the complete source collection 
+make the sample a decent percentage of the original 
+to make the sample a decent percentage of the original 
+want to make the sample a decent percentage of the original 
+might want to make the sample a decent percentage of the original 
+are already there in the index , so you might want to make the sample a decent percentage of the original 
+decreases over time as well , as the words are already there in the index , so you might want to make the sample a decent percentage of the original 

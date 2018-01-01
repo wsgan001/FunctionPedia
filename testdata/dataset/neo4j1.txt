@@ -1,0 +1,81 @@
+QUESTION:
+HTML:
+<p>I'd like to know if it is possible to have this application (<a href="http://blog.neo4j.org/2010/04/neo4j-rest-server-part1-get-it-going.html" rel="nofollow">neo4j</a>) running on windows server 2008 alongside an asp.net mvc application. Reason for this, I need to access the graph database (neo4j) which provides a RESTful service from my mvc application. How would I go about setting up this architecture?</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>According to the website you linked to the application is self-contained (no Tomcat etc required). So just installing the Windows package and following the instructions here (<a href="http://wiki.neo4j.org/content/Getting_Started_REST#For_Windows" rel="nofollow">for starting the service</a>) should suffice.</p>&#xA;
+Comment:
+He may need to change the default port number of `neo4j` to avoid colliding with (I guess) IIS.  But that should not be difficult.
+Instructions for how to change the port are found at http://wiki.neo4j.org/content/Getting_Started_REST#Configure_port
+
+ANS:
+HTML:
+<p>According to the website you linked to the application is self-contained (no Tomcat etc required). So just installing the Windows package and following the instructions here (<a href="http://wiki.neo4j.org/content/Getting_Started_REST#For_Windows" rel="nofollow">for starting the service</a>) should suffice.</p>&#xA;
+Comment:
+He may need to change the default port number of `neo4j` to avoid colliding with (I guess) IIS.  But that should not be difficult.
+Instructions for how to change the port are found at http://wiki.neo4j.org/content/Getting_Started_REST#Configure_port
+
+Phrase:
+running on windows server 2008 alongside an asp.net mvc application 
+have this application ( neo4j ) running on windows server 2008 alongside an asp.net mvc application 
+to have this application ( neo4j ) running on windows server 2008 alongside an asp.net mvc application 
+is possible to have this application ( neo4j ) running on windows server 2008 alongside an asp.net mvc application 
+know if it is possible to have this application ( neo4j ) running on windows server 2008 alongside an asp.net mvc application 
+to know if it is possible to have this application ( neo4j ) running on windows server 2008 alongside an asp.net mvc application 
+like to know if it is possible to have this application ( neo4j ) running on windows server 2008 alongside an asp.net mvc application 
+'d like to know if it is possible to have this application ( neo4j ) running on windows server 2008 alongside an asp.net mvc application 
+Reason for this 
+provides a RESTful service from my mvc application 
+access the graph database ( neo4j ) which provides a RESTful service from my mvc application 
+to access the graph database ( neo4j ) which provides a RESTful service from my mvc application 
+need to access the graph database ( neo4j ) which provides a RESTful service from my mvc application 
+setting up this architecture 
+go about setting up this architecture 
+is self-contained 
+required 
+linked to the application is self-contained ( no Tomcat etc required ) 
+just installing the Windows package 
+starting the service 
+following the instructions here ( for starting the service ) 
+just installing the Windows package and following the instructions here ( for starting the service ) 
+suffice 
+should suffice 
+guess 
+colliding with ( I guess ) IIS 
+avoid colliding with ( I guess ) IIS 
+to avoid colliding with ( I guess ) IIS 
+change the default port number of ` neo4j ` to avoid colliding with ( I guess ) IIS 
+to change the default port number of ` neo4j ` to avoid colliding with ( I guess ) IIS 
+need to change the default port number of ` neo4j ` to avoid colliding with ( I guess ) IIS 
+may need to change the default port number of ` neo4j ` to avoid colliding with ( I guess ) IIS 
+be difficult 
+should not be difficult 
+change the port 
+to change the port 
+found at http://wiki.neo4j.org/content/Getting_Started_REST#Configure_port 
+are found at http://wiki.neo4j.org/content/Getting_Started_REST#Configure_port 
+is self-contained 
+required 
+linked to the application is self-contained ( no Tomcat etc required ) 
+just installing the Windows package 
+starting the service 
+following the instructions here ( for starting the service ) 
+just installing the Windows package and following the instructions here ( for starting the service ) 
+suffice 
+should suffice 
+guess 
+colliding with ( I guess ) IIS 
+avoid colliding with ( I guess ) IIS 
+to avoid colliding with ( I guess ) IIS 
+change the default port number of ` neo4j ` to avoid colliding with ( I guess ) IIS 
+to change the default port number of ` neo4j ` to avoid colliding with ( I guess ) IIS 
+need to change the default port number of ` neo4j ` to avoid colliding with ( I guess ) IIS 
+may need to change the default port number of ` neo4j ` to avoid colliding with ( I guess ) IIS 
+be difficult 
+should not be difficult 
+change the port 
+to change the port 
+found at http://wiki.neo4j.org/content/Getting_Started_REST#Configure_port 
+are found at http://wiki.neo4j.org/content/Getting_Started_REST#Configure_port 

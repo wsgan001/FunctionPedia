@@ -1,0 +1,119 @@
+QUESTION:
+HTML:
+<p>I've just learned POI and find the HSSF is very simple to read and create excel file (.xls).&#xA;However, I found some problem when want to read excel protected with password. &#xA;It took me an hour to find this solution on internet.</p>&#xA;&#xA;<p>Please could you help me to solve this problem. &#xA;I'm very glad if you could give me a code snippet.</p>&#xA;&#xA;<p>Thank you.</p>&#xA;
+Comment:
+Did you find or did you not find a solution for this problem? If you did, it would be nice to put it here.
+
+ACCEPTED ANS:
+HTML:
+<p>POI will not be able to read encrypted <em>workbooks</em> - that means that if you have protected the <strong>entire</strong> workbook (and not just a sheet), then it won't be able to read it. Otherwise, it should work.</p>&#xA;
+Comment:
+Thank Ravi Wallau :)
+
+ANS:
+HTML:
+<p>POI will not be able to read encrypted <em>workbooks</em> - that means that if you have protected the <strong>entire</strong> workbook (and not just a sheet), then it won't be able to read it. Otherwise, it should work.</p>&#xA;
+Comment:
+Thank Ravi Wallau :)
+HTML:
+<p>Ravi is right. It seems you can read password protected, but not encrypted files with POI. See <a href="http://osdir.com/ml/user-poi.apache.org/2010-05/msg00118.html" rel="nofollow">http://osdir.com/ml/user-poi.apache.org/2010-05/msg00118.html</a>. The following code prints out a trace of the file</p>&#xA;&#xA;<pre><code>POIFSLister lister = new POIFSLister();&#xA;lister.viewFile(spreadsheetPath, true);&#xA;</code></pre>&#xA;&#xA;<p>If you get an output mentioning encryption then you cannot open the file with POI.</p>&#xA;
+Comment:
+Thank Tarski :)
+HTML:
+<p>See <a href="http://poi.apache.org/encryption.html">http://poi.apache.org/encryption.html</a> - if you're using a recent enough copy of Apache POI (eg 3.8) then encrypted .xls files (HSSF) and .xlsx files (XSSF) can be decrypted (proving you have the password!)</p>&#xA;&#xA;<p>At the moment you can't write out encrypted excel files though, only un-encrypted ones</p>&#xA;
+Comment:
+HTML:
+<p>Here is a complete example code that reads in a protected excel file, decrypts using a password and writes out unprotected excel file </p>&#xA;&#xA;<pre><code>    public static void readProtectedBinFile() {&#xA;    try {&#xA;&#xA;        InputStream inp = new FileInputStream("c:\\tmp\\protectedFile.xls");&#xA;        org.apache.poi.hssf.record.crypto.Biff8EncryptionKey.setCurrentUserPassword("abracadabra"); &#xA;&#xA;        Workbook wb;&#xA;        wb = WorkbookFactory.create(inp);&#xA;&#xA;        // Write the output to a file&#xA;        FileOutputStream fileOut;&#xA;        fileOut = new FileOutputStream("c:\\tmp\\unprotectedworkbook.xlsx");&#xA;        wb.write(fileOut);&#xA;        fileOut.close();&#xA;    } catch (InvalidFormatException e) {&#xA;        e.printStackTrace();&#xA;    } catch (FileNotFoundException e) {&#xA;        e.printStackTrace();&#xA;    } catch (IOException e) {&#xA;        e.printStackTrace();&#xA;    }&#xA;&#xA;}&#xA;</code></pre>&#xA;
+Comment:
+
+Phrase:
+learned POI 
+'ve just learned POI 
+read and create excel file ( . xls ) 
+to read and create excel file ( . xls ) 
+is very simple to read and create excel file ( . xls ) 
+find the HSSF is very simple to read and create excel file ( . xls ) 
+'ve just learned POI and find the HSSF is very simple to read and create excel file ( . xls ) 
+protected with password 
+read excel protected with password 
+to read excel protected with password 
+want to read excel protected with password 
+found some problem when want to read excel protected with password 
+find this solution on internet 
+to find this solution on internet 
+took me an hour to find this solution on internet 
+solve this problem 
+to solve this problem 
+help me to solve this problem 
+Please could you help me to solve this problem 
+give me a code snippet 
+could give me a code snippet 
+'m very glad if you could give me a code snippet 
+Thank you 
+find 
+find 
+did you not find 
+find or did you not find 
+Did you find or did you not find 
+did 
+put it here 
+to put it here 
+be nice to put it here 
+would be nice to put it here 
+read encrypted workbooks 
+to read encrypted workbooks 
+be able to read encrypted workbooks 
+will not be able to read encrypted workbooks 
+protected the entire workbook ( and not just a sheet ) 
+have protected the entire workbook ( and not just a sheet ) 
+means that if you have protected the entire workbook ( and not just a sheet ) 
+read it 
+to read it 
+be able to read it 
+wo n't be able to read it 
+work 
+should work 
+Ravi Wallau : 
+read encrypted workbooks 
+to read encrypted workbooks 
+be able to read encrypted workbooks 
+will not be able to read encrypted workbooks 
+protected the entire workbook ( and not just a sheet ) 
+have protected the entire workbook ( and not just a sheet ) 
+means that if you have protected the entire workbook ( and not just a sheet ) 
+read it 
+to read it 
+be able to read it 
+wo n't be able to read it 
+work 
+should work 
+Ravi Wallau : 
+is right 
+protected 
+encrypted files with POI 
+protected , but not encrypted files with POI 
+read password protected , but not encrypted files with POI 
+can read password protected , but not encrypted files with POI 
+seems you can read password protected , but not encrypted files with POI 
+See http://osdir.com/ml/user-poi.apache.org/2010-05/msg00118.html 
+prints out a trace of the file 
+mentioning encryption then 
+get an output mentioning encryption then 
+open the file with POI 
+can not open the file with POI 
+using a recent enough copy of Apache POI ( eg 3.8 ) then encrypted . 
+'re using a recent enough copy of Apache POI ( eg 3.8 ) then encrypted . 
+See http://poi.apache.org/encryption.html - if you 're using a recent enough copy of Apache POI ( eg 3.8 ) then encrypted . 
+have the password 
+decrypted ( proving you have the password ! ) 
+be decrypted ( proving you have the password ! ) 
+can be decrypted ( proving you have the password ! ) 
+files ( HSSF ) and . xlsx files ( XSSF ) can be decrypted ( proving you have the password ! ) 
+write out encrypted excel files though , only un-encrypted ones 
+ca n't write out encrypted excel files though , only un-encrypted ones 
+is a complete example code 
+reads in a protected excel file 
+using a password 
+decrypts using a password 
+writes out unprotected excel file 
+reads in a protected excel file , decrypts using a password and writes out unprotected excel file 

@@ -1,0 +1,111 @@
+QUESTION:
+HTML:
+<p>I wrote this code:</p>&#xA;&#xA;<pre><code>public class FileViewer extends JPanel implements ActionListener {&#xA;&#xA;/**&#xA; * &#xA; */&#xA;private static final long serialVersionUID = 1L;&#xA;&#xA;JFileChooser chooser;&#xA;&#xA;FileNameExtensionFilter filter = null;&#xA;&#xA;JEditorPane pane = null;&#xA;&#xA;JTextField text = null;&#xA;&#xA;JButton button;&#xA;&#xA;JTextArea o = null;&#xA;&#xA;URL url;&#xA;&#xA;public FileViewer(JTextArea o) {&#xA;	this.o = o;&#xA;	setLayout(new FlowLayout(FlowLayout.RIGHT));&#xA;	JTextField text = new JTextField("file...", 31);&#xA;	text.setColumns(45);&#xA;	text.revalidate();&#xA;	text.setEditable(true);&#xA;&#xA;	button = new JButton("Browse");&#xA;	add(text);&#xA;	add(button);&#xA;	filter = new FileNameExtensionFilter("html", "html");&#xA;	chooser = new JFileChooser();&#xA;	chooser.addChoosableFileFilter(filter);&#xA;&#xA;	button.addActionListener(this);&#xA;&#xA;}&#xA;&#xA;public void paintComponent(Graphics g) {&#xA;	super.paintComponents(g);&#xA;	Graphics2D graphic = (Graphics2D) g;&#xA;	graphic.drawString("HTML File:", 10, 20);&#xA;&#xA;}&#xA;&#xA;public void actionPerformed(ActionEvent event) {&#xA;	int returnVal = 0;&#xA;	if (event.getSource() == button) {&#xA;		returnVal = chooser.showOpenDialog(FileViewer.this);&#xA;		if (returnVal == JFileChooser.APPROVE_OPTION) {&#xA;			text.setToolTipText(chooser.getSelectedFile().getName());&#xA;&#xA;		} else&#xA;			o.append("Open command cancled by user.");&#xA;	  }&#xA;     }&#xA;}&#xA;</code></pre>&#xA;&#xA;<p>But in the line: <code>text.setToolTipText(chooser.getSelectedFile().getName());</code> a NullPointerException is thrown!</p>&#xA;&#xA;<p><strong>EDIT</strong>&#xA;I have fixed the problem which I have mentioned above but it doesn't work correctly (it doesn't write the name of the file in the text!) :-(</p>&#xA;
+Comment:
+Well, your 'text' member variable is initialized to null in the code shown
+I have fixed the problem which I have mentioned above but it doesn't work correctly(it doesn't write the name of the file in the text!!!) :-(
+Spellchecking police, btw: it's "canceled" or "cancelled" depending on whether you're using US or British English, not "cancled".
+
+ACCEPTED ANS:
+HTML:
+<p>Answering your other point:</p>&#xA;&#xA;<pre><code>text.setToolTipText(chooser.getSelectedFile().getName());&#xA;</code></pre>&#xA;&#xA;<p>Was this the intended behaviour? The filename will only appear as a tooltip when you mouse over the text field. To put text directly into a JTextField you should call <code>setText()</code> instead.</p>&#xA;
+Comment:
+
+ANS:
+HTML:
+<p>You've declared <code>text</code> globally and assigned <code>NULL</code> to it. In your constructor for <code>FileViewer</code> you declare it again with <code>new</code>, but this declaration is local. The variable referenced in <code>actionPerformed()</code> is the global one, which is still <code>NULL</code>, so you get the exception. If you change</p>&#xA;&#xA;<pre><code>JTextField text = new JTextField("file...", 31);&#xA;</code></pre>&#xA;&#xA;<p>to</p>&#xA;&#xA;<pre><code>text = new JTextField("file...", 31);&#xA;</code></pre>&#xA;&#xA;<p>that should fix it.</p>&#xA;
+Comment:
+yes ,it has been fixed! Thanks
+HTML:
+<p>replace this:</p>&#xA;&#xA;<pre><code>JTextField text = new JTextField("file...", 31);&#xA;</code></pre>&#xA;&#xA;<p>with this:</p>&#xA;&#xA;<pre><code>text = new JTextField("file...", 31);&#xA;</code></pre>&#xA;
+Comment:
+HTML:
+<p>The field text is null as in your FileViewer constructor you have created a local variable called text that has been added to the form. </p>&#xA;&#xA;<p>Replace</p>&#xA;&#xA;<pre><code>JTextField text = new JTextField("file...", 31);&#xA;</code></pre>&#xA;&#xA;<p>with</p>&#xA;&#xA;<pre><code>text = new JTextField("file...", 31);&#xA;</code></pre>&#xA;
+Comment:
+HTML:
+<p>Answering your other point:</p>&#xA;&#xA;<pre><code>text.setToolTipText(chooser.getSelectedFile().getName());&#xA;</code></pre>&#xA;&#xA;<p>Was this the intended behaviour? The filename will only appear as a tooltip when you mouse over the text field. To put text directly into a JTextField you should call <code>setText()</code> instead.</p>&#xA;
+Comment:
+HTML:
+<p><code>setToolTipText</code> method does not set the text. It sets the tooltip text, which is shown when mouse hovers the text. Use <code>setText</code> method.</p>&#xA;
+Comment:
+
+Phrase:
+wrote this code 
+thrown 
+is thrown 
+fixed 
+have fixed 
+EDIT I have fixed 
+write the name of the file in the text 
+does n't write the name of the file in the text 
+work correctly ( it does n't write the name of the file in the text ! ) 
+does n't work correctly ( it does n't write the name of the file in the text ! ) 
+mentioned above but it does n't work correctly ( it does n't write the name of the file in the text ! ) 
+have mentioned above but it does n't work correctly ( it does n't write the name of the file in the text ! ) 
+shown 
+null in the code shown 
+to null in the code shown 
+initialized to null in the code shown 
+is initialized to null in the code shown 
+write the name of the file in the text !!! 
+does n't write the name of the file in the text !!! 
+work correctly ( it does n't write the name of the file in the text !!! ) 
+does n't work correctly ( it does n't write the name of the file in the text !!! ) 
+mentioned above but it does n't work correctly ( it does n't write the name of the file in the text !!! ) 
+have mentioned above but it does n't work correctly ( it does n't write the name of the file in the text !!! ) 
+fixed the problem which I have mentioned above but it does n't work correctly ( it does n't write the name of the file in the text !!! ) : - ( 
+have fixed the problem which I have mentioned above but it does n't work correctly ( it does n't write the name of the file in the text !!! ) : - ( 
+canceled 
+using US or British English , not `` cancled '' 
+'re using US or British English , not `` cancled '' 
+`` cancelled '' depending on whether you 're using US or British English , not `` cancled '' 
+`` canceled '' or `` cancelled '' depending on whether you 're using US or British English , not `` cancled '' 
+'s `` canceled '' or `` cancelled '' depending on whether you 're using US or British English , not `` cancled '' 
+Answering your other point 
+Was this 
+mouse over the text field 
+appear as a tooltip when you mouse over the text field 
+will only appear as a tooltip when you mouse over the text field 
+put text directly into a JTextField 
+To put text directly into a JTextField 
+call CODE0 instead 
+should call CODE0 instead 
+declared CODE0 globally 
+assigned CODE1 to it 
+declared CODE0 globally and assigned CODE1 to it 
+'ve declared CODE0 globally and assigned CODE1 to it 
+declare it again with CODE3 
+is local 
+get the exception 
+is still CODE5 , so you get the exception 
+is the global one , which is still CODE5 , so you get the exception 
+change 
+fix it 
+should fix it 
+fixed 
+been fixed 
+has been fixed 
+replace this 
+added to the form 
+been added to the form 
+has been added to the form 
+called text that has been added to the form 
+created a local variable called text that has been added to the form 
+have created a local variable called text that has been added to the form 
+is null as in your FileViewer constructor you have created a local variable called text that has been added to the form 
+Answering your other point 
+Was this 
+mouse over the text field 
+appear as a tooltip when you mouse over the text field 
+will only appear as a tooltip when you mouse over the text field 
+put text directly into a JTextField 
+To put text directly into a JTextField 
+call CODE0 instead 
+should call CODE0 instead 
+set the text 
+does not set the text 
+hovers the text 
+shown when mouse hovers the text 
+is shown when mouse hovers the text 
+sets the tooltip text , which is shown when mouse hovers the text 
+Use CODE1 method 

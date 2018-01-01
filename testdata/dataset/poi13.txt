@@ -1,0 +1,95 @@
+QUESTION:
+HTML:
+<p>I need to import some Excel spreadsheets into Java objects. I will use POI to do the task (an old version of it unfortunately). However I wonder if there is some high-level framework to do the same task but declaratively. I'm thinking in Castor and XML. The mapping Excel-Class will be stored in a resource (e.g. an XML file). Yes, I'm a lazy bones. But I don't like having lots of hard-coded POI statements when the user decides to change the input format.</p>&#xA;&#xA;<p>Thanks</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>I like <a href="http://jexcelapi.sourceforge.net/" rel="nofollow">JExcelApi</a> very much, it is simple and powerful</p>&#xA;
+Comment:
+It seems equivalent to Apache POI http://poi.apache.org/&#xA;Actually POI is an architectural constraint, that's why I need something over it.
+Hello @LluisMartinez can you tell me what kind of architectural constaraint POI has ? can you list  here ?
+I meant that our architecture department forced us to use POI (the old version). It's not a POI constraint :-)
+
+ANS:
+HTML:
+<p>There are open source libraries that allow you to treat a spreadsheet like a database and access it via JDBC. Googling for "excel jdbc driver" should help you get started.</p>&#xA;
+Comment:
+HTML:
+<p>I like <a href="http://jexcelapi.sourceforge.net/" rel="nofollow">JExcelApi</a> very much, it is simple and powerful</p>&#xA;
+Comment:
+It seems equivalent to Apache POI http://poi.apache.org/&#xA;Actually POI is an architectural constraint, that's why I need something over it.
+Hello @LluisMartinez can you tell me what kind of architectural constaraint POI has ? can you list  here ?
+I meant that our architecture department forced us to use POI (the old version). It's not a POI constraint :-)
+HTML:
+<p>There's always the JDBC-ODBC bridge shipped with the JVM </p>&#xA;&#xA;<pre><code>import java.lang.*; &#xA;&#xA;&#xA;public class jdbcodbc { &#xA;&#xA;   public static void main(String[] args) { &#xA;    // Attempt to load database driver&#xA;    try&#xA;    {&#xA;    	// Load Sun's jdbc-odbc driver&#xA;    	Class.forName("sun.jdbc.odbc.JdbcOdbcDriver").newInstance();&#xA;    }&#xA;    catch (ClassNotFoundException cnfe) // driver not found&#xA;    {&#xA;    	System.err.println ("Unable to load database driver");&#xA;    	System.err.println ("Details : " + cnfe);&#xA;    	System.exit(0);&#xA;    } &#xA;    catch (InstantiationException ex)  &#xA;    {&#xA;    	System.err.println ("Unable to load database driver");&#xA;    	System.err.println ("Details : " + ex);&#xA;    	System.exit(0);&#xA;    }&#xA;   }&#xA;</code></pre>&#xA;&#xA;<p>}</p>&#xA;&#xA;<p><a href="http://java.sun.com/j2se/1.3/docs/guide/jdbc/getstart/bridge.doc.html" rel="nofollow">Documentation from Sun website, JDBC-ODBC bridge</a></p>&#xA;&#xA;<p>Example jdbc url potentially usable from Hibernate, for example: </p>&#xA;&#xA;<p>jdbc:odbc:mydb;UID=me;PWD=secret</p>&#xA;
+Comment:
+
+Phrase:
+import some Excel spreadsheets into Java objects 
+to import some Excel spreadsheets into Java objects 
+need to import some Excel spreadsheets into Java objects 
+do the task ( an old version of it unfortunately ) 
+to do the task ( an old version of it unfortunately ) 
+use POI to do the task ( an old version of it unfortunately ) 
+will use POI to do the task ( an old version of it unfortunately ) 
+do the same task but declaratively 
+to do the same task but declaratively 
+is some high-level framework to do the same task but declaratively 
+wonder if there is some high-level framework to do the same task but declaratively 
+thinking in Castor and XML 
+'m thinking in Castor and XML 
+in a resource ( e.g 
+stored in a resource ( e.g 
+be stored in a resource ( e.g 
+will be stored in a resource ( e.g 
+file 
+'m a lazy bones 
+having lots of hard-coded POI statements 
+change the input format 
+to change the input format 
+decides to change the input format 
+like having lots of hard-coded POI statements when the user decides to change the input format 
+do n't like having lots of hard-coded POI statements when the user decides to change the input format 
+is simple and powerful 
+need something over it 
+'s why I need something over it 
+is an architectural constraint , that 's why I need something over it 
+seems equivalent to Apache POI http://poi.apache.org/&#xA;Actually POI is an architectural constraint , that 's why I need something over it 
+has 
+tell me what kind of architectural constaraint POI has 
+list here 
+use POI ( the old version ) 
+to use POI ( the old version ) 
+forced us to use POI ( the old version ) 
+meant that our architecture department forced us to use POI ( the old version ) 
+'s not a POI constraint : - 
+treat a spreadsheet like a database 
+access it via JDBC 
+treat a spreadsheet like a database and access it via JDBC 
+to treat a spreadsheet like a database and access it via JDBC 
+allow you to treat a spreadsheet like a database and access it via JDBC 
+are open source libraries that allow you to treat a spreadsheet like a database and access it via JDBC 
+Googling for `` excel jdbc driver '' 
+started 
+get started 
+help you get started 
+should help you get started 
+is simple and powerful 
+need something over it 
+'s why I need something over it 
+is an architectural constraint , that 's why I need something over it 
+seems equivalent to Apache POI http://poi.apache.org/&#xA;Actually POI is an architectural constraint , that 's why I need something over it 
+has 
+tell me what kind of architectural constaraint POI has 
+list here 
+use POI ( the old version ) 
+to use POI ( the old version ) 
+forced us to use POI ( the old version ) 
+meant that our architecture department forced us to use POI ( the old version ) 
+'s not a POI constraint : - 
+shipped with the JVM 
+'s always the JDBC-ODBC bridge shipped with the JVM 
+Documentation from Sun website , JDBC-ODBC bridge 
+= me 
+= secret 

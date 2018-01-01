@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- Stackoverflow dump data's folder path -->
+	<input-path>D:/StackOverflowDataDump(20160301)</input-path>
+	
+	<output-path>D:/Dragon Project/stackoverflowdata</output-path>
+	
+	<!-- cared tags which are split by semicolon -->
+	<!-- 
+		<cared-tags>weka;jena;nutch;lucene;neo4j;
+					apache-poi;itext;dom4j;gson;jsoup;struts2;guava;
+					httpclient;apache-commons-httpclient;apache-httpclient-4.x;apache-commons
+		</cared-tags>
+	-->
+	<cared-tags>
+		neo4j
+	</cared-tags>
+	
+	<!-- Database configuration -->
+	<database-config>
+		<dbUser>root</dbUser>
+		<dbPass>woxnsk</dbPass>
+		<host>localhost</host>
+		<port>3306</port>
+		<databaseName>stackoverflow</databaseName>
+	</database-config>
+	<!-- Notification receiver mail address -->
+	<notification-mail>zhuzx11@126.com</notification-mail>
+</configuration>

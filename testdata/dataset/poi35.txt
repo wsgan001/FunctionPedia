@@ -1,0 +1,114 @@
+QUESTION:
+HTML:
+<p>Does anyone know of a way to store values as NVARCHAR in a manually created query in ColdFusion using the querynew() function?  I have multiple parts of a largish program relying on using a query as an input point to construct an excel worksheet (using Ben's POI) so it's somewhat important I can continue to use it as a query to avoid a relatively large rewrite.</p>&#xA;&#xA;<p>The problem came up when a user tried storing something that is outside of the VARCHAR range, some Japanese characters and such.</p>&#xA;&#xA;<p>Edit: If this is not possible, and you are 100% sure, I'd like to know that too :)</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>When creating a ColdFusion query with queryNew(), you can pass a list of datatypes as a second argument.  For example:</p>&#xA;&#xA;<pre><code>&lt;cfset x = queryNew("foo,bar","integer,varchar") /&gt;&#xA;</code></pre>&#xA;&#xA;<p>Alternatively, you can use cf_sql_varchar (which you would use in queryparam tags).  According to the livedocs, nvarchar is accepted for the CF varchar data type.</p>&#xA;&#xA;<p><a href="http://livedocs.adobe.com/coldfusion/7/htmldocs/wwhelp/wwhimpl/common/html/wwhelp.htm?context=ColdFusion_Documentation&amp;file=part_cfm.htm" rel="nofollow">QueryParam livedoc (referenced for nvarchar data type)</a></p>&#xA;&#xA;<p><a href="http://livedocs.adobe.com/coldfusion/7/htmldocs/wwhelp/wwhimpl/common/html/wwhelp.htm?context=ColdFusion_Documentation&amp;file=00000600.htm" rel="nofollow">QueryNew livedoc (referenced for data type definition)</a></p>&#xA;&#xA;<p><a href="http://livedocs.adobe.com/coldfusion/7/htmldocs/wwhelp/wwhimpl/common/html/wwhelp.htm?context=ColdFusion_Documentation&amp;file=00001270.htm#1182700" rel="nofollow">Managing Data Types livedoc (referenced for using cf_sql_datatype)</a></p>&#xA;
+Comment:
+
+ANS:
+HTML:
+<p>The only thing I've been able to come up with so far is this:</p>&#xA;&#xA;<pre><code>&lt;cfset x = QueryNew("foobar")/&gt;&#xA;&lt;cfset queryAddRow(x) /&gt;&#xA;&lt;cfset querySetCell(x, "foobar", chr(163)) /&gt;&#xA;&lt;cfdump var="#x#"&gt;&#xA;</code></pre>&#xA;&#xA;<p>When dumped, this query does contain the British Pound symbol.</p>&#xA;&#xA;<p>I haven't tried this with Ben's POI utility, but hopefully it helps you some.</p>&#xA;
+Comment:
+HTML:
+<p>You might try using JavaCast() to set the values, as shown here:&#xA;<a href="http://www.bennadel.com/blog/291-QueryNew-JavaCast-And-Notes-About-Data-Type-Translation.htm" rel="nofollow">Kinky Solutions (Ben Nadel) on JavaCast()</a></p>&#xA;
+Comment:
+HTML:
+<p>Make sure you're <a href="http://mysecretbase.com/ColdFusion_and_Unicode.cfm" rel="nofollow">using Unicode end-to-end</a>. </p>&#xA;
+Comment:
+HTML:
+<p>When creating a ColdFusion query with queryNew(), you can pass a list of datatypes as a second argument.  For example:</p>&#xA;&#xA;<pre><code>&lt;cfset x = queryNew("foo,bar","integer,varchar") /&gt;&#xA;</code></pre>&#xA;&#xA;<p>Alternatively, you can use cf_sql_varchar (which you would use in queryparam tags).  According to the livedocs, nvarchar is accepted for the CF varchar data type.</p>&#xA;&#xA;<p><a href="http://livedocs.adobe.com/coldfusion/7/htmldocs/wwhelp/wwhimpl/common/html/wwhelp.htm?context=ColdFusion_Documentation&amp;file=part_cfm.htm" rel="nofollow">QueryParam livedoc (referenced for nvarchar data type)</a></p>&#xA;&#xA;<p><a href="http://livedocs.adobe.com/coldfusion/7/htmldocs/wwhelp/wwhimpl/common/html/wwhelp.htm?context=ColdFusion_Documentation&amp;file=00000600.htm" rel="nofollow">QueryNew livedoc (referenced for data type definition)</a></p>&#xA;&#xA;<p><a href="http://livedocs.adobe.com/coldfusion/7/htmldocs/wwhelp/wwhimpl/common/html/wwhelp.htm?context=ColdFusion_Documentation&amp;file=00001270.htm#1182700" rel="nofollow">Managing Data Types livedoc (referenced for using cf_sql_datatype)</a></p>&#xA;
+Comment:
+HTML:
+<p>This is pretty much all you need: </p>&#xA;&#xA;<pre><code>&lt;cfprocessingdirective pageEncoding="utf-8"&gt;&#xA;</code></pre>&#xA;&#xA;<p>ColdFusion (&amp; java) stores string in UTF-8 by default.  All you need is to tell CF that the encoding of the page is UTF8.  The alternative way is to save the Byte-order mark (BOM), but Eclipse/CFEclipse doesn't do it.</p>&#xA;
+Comment:
+
+Phrase:
+store values 
+to store values 
+using the querynew ( ) 
+know of a way to store values as NVARCHAR in a manually created query in ColdFusion using the querynew ( ) 
+Does anyone know of a way to store values as NVARCHAR in a manually created query in ColdFusion using the querynew ( ) 
+using a query as an input point 
+relying on using a query as an input point 
+construct an excel worksheet 
+to construct an excel worksheet 
+using Ben 's POI 
+avoid a relatively large rewrite 
+to avoid a relatively large rewrite 
+use it as a query to avoid a relatively large rewrite 
+to use it as a query to avoid a relatively large rewrite 
+continue to use it as a query to avoid a relatively large rewrite 
+can continue to use it as a query to avoid a relatively large rewrite 
+'s somewhat important I can continue to use it as a query to avoid a relatively large rewrite 
+have multiple parts of a largish program relying on using a query as an input point to construct an excel worksheet ( using Ben 's POI ) so it 's somewhat important I can continue to use it as a query to avoid a relatively large rewrite 
+is outside of the VARCHAR range , some Japanese characters and such 
+storing something that is outside of the VARCHAR range , some Japanese characters and such 
+tried storing something that is outside of the VARCHAR range , some Japanese characters and such 
+came up when a user tried storing something that is outside of the VARCHAR range , some Japanese characters and such 
+is not possible 
+are 100 % sure 
+know 
+to know 
+like to know that too : ) 
+'d like to know that too : ) 
+creating a ColdFusion query with queryNew ( ) 
+pass a list of datatypes as a second argument 
+can pass a list of datatypes as a second argument 
+use in queryparam tags 
+would use in queryparam tags 
+use cf_sql_varchar ( which you would use in queryparam tags ) 
+can use cf_sql_varchar ( which you would use in queryparam tags ) 
+accepted for the CF varchar data type 
+is accepted for the CF varchar data type 
+using cf_sql_datatype 
+referenced for using cf_sql_datatype 
+Managing Data Types livedoc ( referenced for using cf_sql_datatype ) 
+come up with so far 
+to come up with so far 
+been able to come up with so far 
+'ve been able to come up with so far 
+is this 
+dumped 
+contain the British Pound symbol 
+does contain the British Pound symbol 
+tried this with Ben 's POI utility 
+have n't tried this with Ben 's POI utility 
+helps you some 
+shown here 
+set the values , as shown here : Kinky Solutions ( Ben Nadel ) on JavaCast ( 
+to set the values , as shown here : Kinky Solutions ( Ben Nadel ) on JavaCast ( 
+) to set the values , as shown here : Kinky Solutions ( Ben Nadel ) on JavaCast ( 
+using JavaCast ( ) to set the values , as shown here : Kinky Solutions ( Ben Nadel ) on JavaCast ( ) 
+try using JavaCast ( ) to set the values , as shown here : Kinky Solutions ( Ben Nadel ) on JavaCast ( ) 
+might try using JavaCast ( ) to set the values , as shown here : Kinky Solutions ( Ben Nadel ) on JavaCast ( ) 
+using Unicode end-to-end 
+'re using Unicode end-to-end 
+Make sure you 're using Unicode end-to-end 
+creating a ColdFusion query with queryNew ( ) 
+pass a list of datatypes as a second argument 
+can pass a list of datatypes as a second argument 
+use in queryparam tags 
+would use in queryparam tags 
+use cf_sql_varchar ( which you would use in queryparam tags ) 
+can use cf_sql_varchar ( which you would use in queryparam tags ) 
+accepted for the CF varchar data type 
+is accepted for the CF varchar data type 
+using cf_sql_datatype 
+referenced for using cf_sql_datatype 
+Managing Data Types livedoc ( referenced for using cf_sql_datatype ) 
+need 
+is pretty much all you need 
+stores string in UTF-8 by default 
+need 
+is UTF8 
+tell CF that the encoding of the page is UTF8 
+to tell CF that the encoding of the page is UTF8 
+is to tell CF that the encoding of the page is UTF8 
+save the Byte-order mark ( BOM ) 
+to save the Byte-order mark ( BOM ) 
+is to save the Byte-order mark ( BOM ) 
+do it 
+does n't do it 

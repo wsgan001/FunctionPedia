@@ -1,0 +1,226 @@
+QUESTION:
+HTML:
+<p>I'm trying to open MS Word 2003 document in java, search for a specified String and replace it with a new String. I use APACHE POI to do that. My code is like the following one: </p>&#xA;&#xA;<pre><code>public void searchAndReplace(String inputFilename, String outputFilename,&#xA;            HashMap&lt;String, String&gt; replacements) {&#xA;    File outputFile = null;&#xA;    File inputFile = null;&#xA;    FileInputStream fileIStream = null;&#xA;    FileOutputStream fileOStream = null;&#xA;    BufferedInputStream bufIStream = null;&#xA;    BufferedOutputStream bufOStream = null;&#xA;    POIFSFileSystem fileSystem = null;&#xA;    HWPFDocument document = null;&#xA;    Range docRange = null;&#xA;    Paragraph paragraph = null;&#xA;    CharacterRun charRun = null;&#xA;    Set&lt;String&gt; keySet = null;&#xA;    Iterator&lt;String&gt; keySetIterator = null;&#xA;    int numParagraphs = 0;&#xA;    int numCharRuns = 0;&#xA;    String text = null;&#xA;    String key = null;&#xA;    String value = null;&#xA;        try {&#xA;            // Create an instance of the POIFSFileSystem class and&#xA;            // attach it to the Word document using an InputStream.&#xA;            inputFile = new File(inputFilename);&#xA;            fileIStream = new FileInputStream(inputFile);&#xA;            bufIStream = new BufferedInputStream(fileIStream);&#xA;            fileSystem = new POIFSFileSystem(bufIStream);&#xA;            document = new HWPFDocument(fileSystem);&#xA;            docRange = document.getRange();&#xA;            numParagraphs = docRange.numParagraphs();&#xA;            keySet = replacements.keySet();&#xA;            for (int i = 0; i &lt; numParagraphs; i++) {&#xA;                paragraph = docRange.getParagraph(i);&#xA;                text = paragraph.text();&#xA;                numCharRuns = paragraph.numCharacterRuns();&#xA;                for (int j = 0; j &lt; numCharRuns; j++) {&#xA;                    charRun = paragraph.getCharacterRun(j);&#xA;                    text = charRun.text();&#xA;                    System.out.println("Character Run text: " + text);&#xA;                    keySetIterator = keySet.iterator();&#xA;                    while (keySetIterator.hasNext()) {&#xA;                        key = keySetIterator.next();&#xA;                        if (text.contains(key)) {&#xA;                            value = replacements.get(key);&#xA;                            charRun.replaceText(key, value);&#xA;                            docRange = document.getRange();&#xA;                            paragraph = docRange.getParagraph(i);&#xA;                            charRun = paragraph.getCharacterRun(j);&#xA;                            text = charRun.text();&#xA;                        }&#xA;                    }&#xA;                }&#xA;            }&#xA;            bufIStream.close();&#xA;            bufIStream = null;&#xA;            outputFile = new File(outputFilename);&#xA;            fileOStream = new FileOutputStream(outputFile);&#xA;            bufOStream = new BufferedOutputStream(fileOStream);&#xA;            document.write(bufOStream);&#xA;        } catch (Exception ex) {&#xA;            System.out.println("Caught an: " + ex.getClass().getName());&#xA;            System.out.println("Message: " + ex.getMessage());&#xA;            System.out.println("Stacktrace follows.............");&#xA;            ex.printStackTrace(System.out);&#xA;        }&#xA;}&#xA;</code></pre>&#xA;&#xA;<p>I call this function with following arguments: </p>&#xA;&#xA;<pre><code>HashMap&lt;String, String&gt; replacements = new HashMap&lt;String, String&gt;();&#xA;replacements.put("AAA", "BBB");&#xA;searchAndReplace("C:/Test.doc", "C:/Test1.doc", replacements);&#xA;</code></pre>&#xA;&#xA;<p>When the Test.doc file contains a simple line like this : "<strong>AAA EEE</strong>", it works successfully, but when i use a complicated file it will read the content successfully and generate the Test1.doc file but when I try to open it, it will give me the following error: </p>&#xA;&#xA;<p><strong>Word unable to read this document. It may be corrupt.&#xA;Try one or more of the following:&#xA;* Open and repair the file.&#xA;* Open the file with Text Recovery converter.&#xA; (C:\Test1.doc)</strong></p>&#xA;&#xA;<p>Please tell me what to do, because I'm a beginner in POI and I have not found a good tutorial for it. </p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>You could try <a href="http://weblogs.java.net/blog/tchangu/archive/2005/12/open%5Foffice%5Fjav%5F1.html" rel="nofollow">OpenOffice API</a>, but there arent many resources out there to tell you how to use it.</p>&#xA;
+Comment:
+Thanks very much. I use These APIs just for open the .docx files and get the core document as an XML file and parse it using XML parser, then search for what i need using XPath, and every thing is OK. Another Solution, without OpenXML API, you can open the .docx file in MSWord 2007, save it as XML file -NOT 2003 XML-, parse the XML file it in java and replace what you need. In this solution you can replace images also. Image stored in the XML file as a Base64 encoded string and you can replace this string with another string representing the encoding of another images using Base64 encoding
+
+ANS:
+HTML:
+<p>First of all you should be closing your document.</p>&#xA;&#xA;<p>Besides that, what I suggest doing is resaving your original Word document as a Word XML document, then changing the extension manually from .XML to .doc . Then look at the XML of the actual document you're working with and trace the content to make sure you're not accidentally editing hexadecimal values (AAA and EEE could be hex values in other fields).</p>&#xA;&#xA;<p>Without seeing the actual Word document it's hard to say what's going on.</p>&#xA;&#xA;<p>There is not much documentation about POI at all, especially for Word document unfortunately.</p>&#xA;
+Comment:
+First of all, Thank you very much for your answer...&#xA;I add 'Finally' section just to close the document, thanks for your interest.&#xA;The values AAA and EEE is not a valid values, i use them just for an example, so my actual values not like that, it something like : <<SubSource>>, <<Date>> and so on....&#xA;For your suggestion about save the doc file as a XML file from MS Word : can i ask you a question : if i save the file as a xml file can i open the file from SAXParser and replace the text what i need to replace or it should be encrypted ???
+Yes you can open it from SAXParser once saved to an XML.
+HTML:
+<p>Looks like <a href="http://support.microsoft.com/kb/889409" rel="nofollow">this</a> could be the issue.</p>&#xA;
+Comment:
+This does not provide an answer to the question. To critique or request clarification from an author, leave a comment below their post.
+There. Happy now?
+HTML:
+<p>You could try <a href="http://weblogs.java.net/blog/tchangu/archive/2005/12/open%5Foffice%5Fjav%5F1.html" rel="nofollow">OpenOffice API</a>, but there arent many resources out there to tell you how to use it.</p>&#xA;
+Comment:
+Thanks very much. I use These APIs just for open the .docx files and get the core document as an XML file and parse it using XML parser, then search for what i need using XPath, and every thing is OK. Another Solution, without OpenXML API, you can open the .docx file in MSWord 2007, save it as XML file -NOT 2003 XML-, parse the XML file it in java and replace what you need. In this solution you can replace images also. Image stored in the XML file as a Base64 encoded string and you can replace this string with another string representing the encoding of another images using Base64 encoding
+HTML:
+<p>I don't know : is its OK to answer myself, but Just to share the knowledge, I'll answer myself.</p>&#xA;&#xA;<p>After navigating the web, the final solution i found is : &#xA;The Library called <strong><a href="http://dev.plutext.org/projects.html" rel="nofollow">docx4j</a></strong> is very good for dealing with MS docx file, although its documentation is not enough till now and its forum is still in a beginning steps, but overall it help me to do what i need..</p>&#xA;&#xA;<p>Thanks 4 all who help me..</p>&#xA;
+Comment:
+The documentation has improved somewhat over the last 6 months or so.  See http://dev.plutext.org/svn/docx4j/trunk/docx4j/docs/Docx4j_GettingStarted.html
+HTML:
+<p>You can also try this one: <a href="http://www.dancrintea.ro/doc-to-pdf/" rel="nofollow">http://www.dancrintea.ro/doc-to-pdf/</a></p>&#xA;
+Comment:
+
+Phrase:
+open MS Word 2003 document in java 
+search for a specified String 
+replace it with a new String 
+open MS Word 2003 document in java , search for a specified String and replace it with a new String 
+to open MS Word 2003 document in java , search for a specified String and replace it with a new String 
+trying to open MS Word 2003 document in java , search for a specified String and replace it with a new String 
+'m trying to open MS Word 2003 document in java , search for a specified String and replace it with a new String 
+do that 
+to do that 
+use APACHE POI to do that 
+is like the following one 
+call this function with following arguments 
+EEE 
+contains a simple line like this : `` AAA EEE '' 
+works successfully 
+read the content successfully 
+generate the Test1.doc file 
+read the content successfully and generate the Test1.doc file 
+will read the content successfully and generate the Test1.doc file 
+open it 
+to open it 
+try to open it 
+use a complicated file it will read the content successfully and generate the Test1.doc file but when I try to open it 
+give me the following error 
+will give me the following error 
+read this document 
+to read this document 
+Word unable to read this document 
+be corrupt 
+may be corrupt 
+Try one or more of the following : * Open 
+repair the file 
+Try one or more of the following : * Open and repair the file 
+do 
+to do 
+'m a beginner in POI 
+found a good tutorial for it 
+have not found a good tutorial for it 
+tell me what to do , because I 'm a beginner in POI and I have not found a good tutorial for it 
+Please tell me what to do , because I 'm a beginner in POI and I have not found a good tutorial for it 
+try OpenOffice API 
+could try OpenOffice API 
+use it 
+to use it 
+tell you how to use it 
+to tell you how to use it 
+arent many resources out there to tell you how to use it 
+use These APIs just for open the . docx files 
+using XML parser 
+using XPath 
+need using XPath 
+search for what i need using XPath 
+file and parse it using XML parser , then search for what i need using XPath 
+get the core document as an XML file and parse it using XML parser , then search for what i need using XPath 
+use These APIs just for open the . docx files and get the core document as an XML file and parse it using XML parser , then search for what i need using XPath 
+is OK 
+file in MSWord 2007 
+open the . docx file in MSWord 2007 
+save it as XML file - NOT 2003 XML - 
+file it in java 
+parse the XML file it in java 
+need 
+replace what you need 
+open the . docx file in MSWord 2007 , save it as XML file - NOT 2003 XML - , parse the XML file it in java and replace what you need 
+can open the . docx file in MSWord 2007 , save it as XML file - NOT 2003 XML - , parse the XML file it in java and replace what you need 
+replace images also 
+can replace images also 
+stored in the XML file 
+encoded string 
+using Base64 encoding 
+representing the encoding of another images using Base64 encoding 
+replace this string with another string representing the encoding of another images using Base64 encoding 
+can replace this string with another string representing the encoding of another images using Base64 encoding 
+closing your document 
+be closing your document 
+should be closing your document 
+doing 
+suggest doing 
+resaving your original Word document as a Word XML 
+is resaving your original Word document as a Word XML 
+changing the extension manually from 
+to 
+doc 
+working with 
+'re working with 
+look at the XML of the actual document you 're working with 
+editing hexadecimal values 
+'re not accidentally editing hexadecimal values 
+make sure you 're not accidentally editing hexadecimal values 
+to make sure you 're not accidentally editing hexadecimal values 
+be hex values in other fields 
+could be hex values in other fields 
+trace the content to make sure you 're not accidentally editing hexadecimal values ( AAA and EEE could be hex values in other fields ) 
+look at the XML of the actual document you 're working with and trace the content to make sure you 're not accidentally editing hexadecimal values ( AAA and EEE could be hex values in other fields ) 
+seeing the actual Word document 
+going on 
+'s going on 
+say what 's going on 
+to say what 's going on 
+'s hard to say what 's going on 
+document unfortunately 
+is not much documentation about POI at all , especially for Word document unfortunately 
+close the document 
+to close the document 
+add ` Finally ' section just to close the document , thanks for your interest 
+Thank you very much for your answer ... & #xA ; I add ` Finally ' section just to close the document , thanks for your interest . & #xA ; The values 
+is not a valid values 
+like that , it something like : << SubSource >> , << Date >> and so on ... & #xA 
+use them just for an example , so my actual values not like that , it something like : << SubSource >> , << Date >> and so on ... & #xA 
+save the file as a xml file 
+ask you a question : if i save the file as a xml file 
+open the file from SAXParser 
+replace 
+to replace 
+need to replace 
+encrypted 
+be encrypted 
+should be encrypted 
+replace the text what i need to replace or it should be encrypted 
+open the file from SAXParser and replace the text what i need to replace or it should be encrypted 
+file from MS Word : can i ask you a question : if i save the file as a xml file can i open the file from SAXParser and replace the text what i need to replace or it should be encrypted ??? 
+file as a XML file from MS Word : can i ask you a question : if i save the file as a xml file can i open the file from SAXParser and replace the text what i need to replace or it should be encrypted ??? 
+save the doc file as a XML file from MS Word : can i ask you a question : if i save the file as a xml file can i open the file from SAXParser and replace the text what i need to replace or it should be encrypted ??? 
+once saved to an XML 
+open it from SAXParser once saved to an XML 
+can open it from SAXParser once saved to an XML 
+be the issue 
+could be the issue 
+provide an answer to the question 
+does not provide an answer to the question 
+leave a comment below their post 
+try OpenOffice API 
+could try OpenOffice API 
+use it 
+to use it 
+tell you how to use it 
+to tell you how to use it 
+arent many resources out there to tell you how to use it 
+use These APIs just for open the . docx files 
+using XML parser 
+using XPath 
+need using XPath 
+search for what i need using XPath 
+file and parse it using XML parser , then search for what i need using XPath 
+get the core document as an XML file and parse it using XML parser , then search for what i need using XPath 
+use These APIs just for open the . docx files and get the core document as an XML file and parse it using XML parser , then search for what i need using XPath 
+is OK 
+file in MSWord 2007 
+open the . docx file in MSWord 2007 
+save it as XML file - NOT 2003 XML - 
+file it in java 
+parse the XML file it in java 
+need 
+replace what you need 
+open the . docx file in MSWord 2007 , save it as XML file - NOT 2003 XML - , parse the XML file it in java and replace what you need 
+can open the . docx file in MSWord 2007 , save it as XML file - NOT 2003 XML - , parse the XML file it in java and replace what you need 
+replace images also 
+can replace images also 
+stored in the XML file 
+encoded string 
+using Base64 encoding 
+representing the encoding of another images using Base64 encoding 
+replace this string with another string representing the encoding of another images using Base64 encoding 
+can replace this string with another string representing the encoding of another images using Base64 encoding 
+know 
+do n't know 
+is its 
+answer myself 
+to answer myself 
+do n't know : is its OK to answer myself 
+share the knowledge 
+to share the knowledge 
+answer myself 
+'ll answer myself 
+navigating the web 
+dealing with MS docx file 
+is still in a beginning steps 
+is not enough till now and its forum is still in a beginning steps 
+is very good for dealing with MS docx file , although its documentation is not enough till now and its forum is still in a beginning steps 
+called docx4j is very good for dealing with MS docx file , although its documentation is not enough till now and its forum is still in a beginning steps 
+need 
+do what i need 
+to do what i need 
+help me to do what i need 
+is : The Library called docx4j is very good for dealing with MS docx file , although its documentation is not enough till now and its forum is still in a beginning steps , but overall it help me to do what i need . 
+found is : The Library called docx4j is very good for dealing with MS docx file , although its documentation is not enough till now and its forum is still in a beginning steps , but overall it help me to do what i need . 
+help me 
+improved somewhat over the last 6 months or so 
+has improved somewhat over the last 6 months or so 
+try this one : http://www.dancrintea.ro/doc-to-pdf/ 
+can also try this one : http://www.dancrintea.ro/doc-to-pdf/ 

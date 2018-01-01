@@ -1,0 +1,73 @@
+QUESTION:
+HTML:
+<p>Has someone successfully overridden the scoring of documents in a query so that the "relevancy" of a term to the field contents can be determined through one's own function? If so, was it by implementing a <a href="http://lucene.apache.org/java/2_3_2/api/org/apache/lucene/search/function/CustomScoreQuery.html" rel="nofollow">CustomScoreQuery</a> and overriding the customScore(int, float, float)? I cannot seem to find a way to build either a custom sort or a custom scorer that can rank exact term matches much higher than other prefix term matches.  Any suggestions would be appreciated.</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>I don't know lucene directly, but I can tell you that Solr, an application based on lucene, has got this feature:</p>&#xA;&#xA;<p><a href="http://wiki.apache.org/solr/SolrRelevancyFAQ#head-f013f5f2811e3ed28b200f326dd686afa491be5e" rel="nofollow">Boosting query via functions</a></p>&#xA;&#xA;<p>Let me know if it helps you.</p>&#xA;
+Comment:
+I'm accepting this because it's the only answer, it is an answer about Solr though, but it's somewhat helpful.
+Did you find a solution to your problem?
+
+ANS:
+HTML:
+<p>I don't know lucene directly, but I can tell you that Solr, an application based on lucene, has got this feature:</p>&#xA;&#xA;<p><a href="http://wiki.apache.org/solr/SolrRelevancyFAQ#head-f013f5f2811e3ed28b200f326dd686afa491be5e" rel="nofollow">Boosting query via functions</a></p>&#xA;&#xA;<p>Let me know if it helps you.</p>&#xA;
+Comment:
+I'm accepting this because it's the only answer, it is an answer about Solr though, but it's somewhat helpful.
+Did you find a solution to your problem?
+
+Phrase:
+determined through one 's own function 
+be determined through one 's own function 
+can be determined through one 's own function 
+successfully overridden the scoring of documents in a query so that the `` relevancy '' of a term to the field contents can be determined through one 's own function 
+implementing a CustomScoreQuery and overriding 
+was it by implementing a CustomScoreQuery and overriding 
+rank exact term 
+can rank exact term 
+matches 
+matches much higher than other prefix term matches 
+build either a custom sort or a custom scorer that can rank exact term matches much higher than other prefix term matches 
+to build either a custom sort or a custom scorer that can rank exact term matches much higher than other prefix term matches 
+find a way to build either a custom sort or a custom scorer that can rank exact term matches much higher than other prefix term matches 
+to find a way to build either a custom sort or a custom scorer that can rank exact term matches much higher than other prefix term matches 
+seem to find a way to build either a custom sort or a custom scorer that can rank exact term matches much higher than other prefix term matches 
+can not seem to find a way to build either a custom sort or a custom scorer that can rank exact term matches much higher than other prefix term matches 
+appreciated 
+be appreciated 
+would be appreciated 
+based on lucene 
+got this feature 
+has got this feature 
+tell you that Solr , an application based on lucene , has got this feature 
+can tell you that Solr , an application based on lucene , has got this feature 
+know lucene directly , but I can tell you that Solr , an application based on lucene , has got this feature 
+do n't know lucene directly , but I can tell you that Solr , an application based on lucene , has got this feature 
+Boosting query via functions 
+helps you 
+know if it helps you 
+Let me know if it helps you 
+'s the only answer 
+accepting this because it 's the only answer 
+'m accepting this because it 's the only answer 
+is an answer about Solr though 
+'s somewhat helpful 
+find a solution to your problem 
+based on lucene 
+got this feature 
+has got this feature 
+tell you that Solr , an application based on lucene , has got this feature 
+can tell you that Solr , an application based on lucene , has got this feature 
+know lucene directly , but I can tell you that Solr , an application based on lucene , has got this feature 
+do n't know lucene directly , but I can tell you that Solr , an application based on lucene , has got this feature 
+Boosting query via functions 
+helps you 
+know if it helps you 
+Let me know if it helps you 
+'s the only answer 
+accepting this because it 's the only answer 
+'m accepting this because it 's the only answer 
+is an answer about Solr though 
+'s somewhat helpful 
+find a solution to your problem 

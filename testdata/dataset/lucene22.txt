@@ -1,0 +1,119 @@
+QUESTION:
+HTML:
+<p>What is the best full text search alternative to ms sql?  (which works with ms sql)</p>&#xA;&#xA;<p>I'm looking for something similar to <a href="http://lucene.apache.org/java/docs/index.html" rel="nofollow">Lucene</a> and <a href="http://incubator.apache.org/lucene.net/" rel="nofollow">Lucene.NET</a> but without the .NET and Java requirements. I would also like to find a solution that is usable in commercial applications.</p>&#xA;
+Comment:
+I prefer [Xapian](http://xapian.org/) - pure C++ Search Engine Library.
+One note of caution on [Lucene.NET](http://incubator.apache.org/lucene.net/): it tends to lag behind Apache's [Java Lucene](http://lucene.apache.org/) (the "official" Lucene). Lucene.NET is a port of Java Lucene, and the community around Java Lucene is larger. For obvious reasons, this can sometimes be a problem.
+
+ACCEPTED ANS:
+HTML:
+<p>Take a look at <a href="http://clucene.wiki.sourceforge.net/" rel="nofollow">CLucene</a> - It's a well maintained C++ port of java Lucene. It's currently licenced under LGPL and we use it in our commercial application.</p>&#xA;&#xA;<p>Performance is incredible, however you do have to get your head around some of the strange API conventions.</p>&#xA;
+Comment:
+
+ANS:
+HTML:
+<p><a href="http://www.sphinxsearch.com" rel="nofollow">Sphinx</a> is one of the best solutions. It's written in C++ and has amazing performance.</p>&#xA;
+Comment:
+but it's not for ms sql
+Lucene is not for MSSQL either, you can 2 choices: index documents prior passing it to DB or let indexing engine go through DB itself. Sphinx can't crawl MSSQL automatically as far as I know, but it has best indexing performance.
+HTML:
+<p>I second Sphinx, but <a href="http://lucene.apache.org/" rel="nofollow">Lucene</a> is also not so bad despite the Java. :) If you are not dealing with too much data spread out etc., then also look into MySQL's <a href="http://dev.mysql.com/doc/refman/5.0/en/fulltext-search.html" rel="nofollow">FULLTEXT</a>. We are using it to search across a 20 GB database.</p>&#xA;
+Comment:
+HTML:
+<p><a href="http://www.dtsearch.com/" rel="nofollow">DT Search</a> is hands down the best search tool I have used.  They have a number of solutions available.  Their Engine will run on Native Win32, Linux or .NET.  It will index pretty much every kind of document you might have (Excel, PDF, Word, etc.)  I did some benchmarks comparisons a while ago and it was the easiest to use and had the best performance.  </p>&#xA;
+Comment:
+HTML:
+<p>Take a look at <a href="http://clucene.wiki.sourceforge.net/" rel="nofollow">CLucene</a> - It's a well maintained C++ port of java Lucene. It's currently licenced under LGPL and we use it in our commercial application.</p>&#xA;&#xA;<p>Performance is incredible, however you do have to get your head around some of the strange API conventions.</p>&#xA;
+Comment:
+HTML:
+<p><a href="http://lucene.apache.org/solr/" rel="nofollow">Solr</a> is based on Lucene, but accessible via HTTP, so it can be used from any platform.</p>&#xA;
+Comment:
+
+Phrase:
+works with ms sql 
+looking for something similar to Lucene and Lucene.NET but without the . NET and Java requirements 
+'m looking for something similar to Lucene and Lucene.NET but without the . NET and Java requirements 
+is usable in commercial applications 
+find a solution that is usable in commercial applications 
+to find a solution that is usable in commercial applications 
+like to find a solution that is usable in commercial applications 
+would also like to find a solution that is usable in commercial applications 
+prefer -LSB- Xapian -RSB- ( http://xapian.org/ ) - pure C++ Search Engine Library 
+lag behind Apache 's -LSB- Java Lucene -RSB- ( http://lucene.apache.org/ ) ( the `` official '' Lucene ) 
+to lag behind Apache 's -LSB- Java Lucene -RSB- ( http://lucene.apache.org/ ) ( the `` official '' Lucene ) 
+tends to lag behind Apache 's -LSB- Java Lucene -RSB- ( http://lucene.apache.org/ ) ( the `` official '' Lucene ) 
+is a port of Java Lucene 
+is larger 
+be a problem 
+can sometimes be a problem 
+'s a well maintained C++ port of java Lucene 
+Take a look at CLucene - It 's a well maintained C++ port of java Lucene 
+licenced under LGPL 
+'s currently licenced under LGPL 
+use it in our commercial application 
+is incredible 
+get your head around some of the strange API conventions 
+to get your head around some of the strange API conventions 
+have to get your head around some of the strange API conventions 
+do have to get your head around some of the strange API conventions 
+is one of the best solutions 
+written in C++ 
+'s written in C++ 
+has amazing performance 
+'s written in C++ and has amazing performance 
+'s not for ms sql 
+is not for MSSQL either 
+2 choices 
+can 2 choices 
+DB or let indexing engine 
+to DB or let indexing engine 
+passing it to DB or let indexing engine 
+go through DB itself 
+know 
+crawl MSSQL automatically as far as I know 
+ca n't crawl MSSQL automatically as far as I know 
+indexing performance 
+has best indexing performance 
+is also not so bad despite the Java 
+spread out etc. 
+dealing with too much data spread out etc. 
+are not dealing with too much data spread out etc. 
+also look into MySQL 's FULLTEXT 
+:) If you are not dealing with too much data spread out etc. , then also look into MySQL 's FULLTEXT 
+search across a 20 GB database 
+to search across a 20 GB database 
+using it to search across a 20 GB database 
+are using it to search across a 20 GB database 
+used 
+have used 
+is hands down the best search tool I have used 
+have a number of solutions available 
+run on Native Win32 
+run on Native Win32 , Linux or . 
+will run on Native Win32 , Linux or . 
+have 
+might have 
+did some benchmarks comparisons a while ago 
+use 
+to use 
+was the easiest to use 
+will index pretty much every kind of document you might have ( Excel , PDF , Word , etc. ) I did some benchmarks comparisons a while ago and it was the easiest to use 
+had the best performance 
+will index pretty much every kind of document you might have ( Excel , PDF , Word , etc. ) I did some benchmarks comparisons a while ago and it was the easiest to use and had the best performance 
+'s a well maintained C++ port of java Lucene 
+Take a look at CLucene - It 's a well maintained C++ port of java Lucene 
+licenced under LGPL 
+'s currently licenced under LGPL 
+use it in our commercial application 
+is incredible 
+get your head around some of the strange API conventions 
+to get your head around some of the strange API conventions 
+have to get your head around some of the strange API conventions 
+do have to get your head around some of the strange API conventions 
+based on Lucene 
+is based on Lucene 
+used from any platform 
+be used from any platform 
+can be used from any platform 
+accessible via HTTP , so it can be used from any platform 
+is based on Lucene , but accessible via HTTP , so it can be used from any platform 

@@ -1,0 +1,225 @@
+QUESTION:
+HTML:
+<p>I've had this long term issue in not quite understanding how to implement a decent Lucene sort or ranking.  Say I have a list of cities and their populations. If someone searches "new" or "london" I want the list of prefix matches ordered by population, and I have that working with a prefix search and an sort by field reversed, where there is a population field, IE New Mexico, New York; or London, Londonderry.</p>&#xA;&#xA;<p>However I also always want the exact matching name to be at the top.  So in the case of "London" the list should show "London, London, Londonderry" where the first London is in the UK and the second London is in Connecticut, even if Londonderry has a higher population than London CT.</p>&#xA;&#xA;<p>Does anyone have a single query solution?</p>&#xA;
+Comment:
+
+ACCEPTED ANS:
+HTML:
+<p>dlamblin,let me see if I get this correctly: You want to make a prefix-based query, and then sort the results by population, and maybe combine the sort order with preference for exact matches.&#xA;I suggest you separate the search from the sort and use a CustomSorter for the sorting:&#xA;Here's <a href="http://blog.tremend.ro/2007/05/17/a-z-0-9-custom-sorting-in-lucene/" rel="nofollow">a blog entry describing a custom sorter</a>.&#xA;<a href="http://rads.stackoverflow.com/amzn/click/1932394281" rel="nofollow">The classic Lucene book</a> describes this well.</p>&#xA;
+Comment:
+Thank you for your blog post explaining how to implement a sort comparator that conveniently does not require defining 2 classes. However because the sort comparator can only work on two documents without knowing the search term it cannot rank the results as I've described them in my question. How would the sort comparator know that the name field "london" exactly matches the search term "london" if it cannot access the search term?
+I think you can do the following: The class implementing the ScoreDocComparator interface (AZ09Comparator in the blog example), will have a "search term" member, to be set when running the query.&#xA;The comparing method (compare() in the blog example) can access this field during the time it is called, and rank a document with an exact match higher than another not having an exact match.
+Dang, that's what I get for not thinking it through (though it's been a while since I was in front of that code). Now this makes a lot more sense and is helpful.
+
+ANS:
+HTML:
+<p>My current solution is to create an exact searcher and a prefix searcher, both sorted by reverse population, and then copy out all my hits starting from the exact hits, moving to the prefix hits.  It makes paging my results slightly more annoying than I think it should be.</p>&#xA;&#xA;<p>Also I used a hash to eliminate duplicates but later changed the prefix searcher into a boolean query of a prefix search (MUST) with an exact search (MUST NOT), to have Lucene remove the duplicates. Though this seemed even more wasteful.</p>&#xA;&#xA;<p><em>Edit</em>: Moved to a comment (since the feature now exists): <a href="http://stackoverflow.com/users/1702/yuval-f">Yuval F</a> Thank you for your blog post ... How would the sort comparator know that the name field "london" exactly matches the search term "london" if it cannot access the search term?</p>&#xA;
+Comment:
+HTML:
+<p>dlamblin,let me see if I get this correctly: You want to make a prefix-based query, and then sort the results by population, and maybe combine the sort order with preference for exact matches.&#xA;I suggest you separate the search from the sort and use a CustomSorter for the sorting:&#xA;Here's <a href="http://blog.tremend.ro/2007/05/17/a-z-0-9-custom-sorting-in-lucene/" rel="nofollow">a blog entry describing a custom sorter</a>.&#xA;<a href="http://rads.stackoverflow.com/amzn/click/1932394281" rel="nofollow">The classic Lucene book</a> describes this well.</p>&#xA;
+Comment:
+Thank you for your blog post explaining how to implement a sort comparator that conveniently does not require defining 2 classes. However because the sort comparator can only work on two documents without knowing the search term it cannot rank the results as I've described them in my question. How would the sort comparator know that the name field "london" exactly matches the search term "london" if it cannot access the search term?
+I think you can do the following: The class implementing the ScoreDocComparator interface (AZ09Comparator in the blog example), will have a "search term" member, to be set when running the query.&#xA;The comparing method (compare() in the blog example) can access this field during the time it is called, and rank a document with an exact match higher than another not having an exact match.
+Dang, that's what I get for not thinking it through (though it's been a while since I was in front of that code). Now this makes a lot more sense and is helpful.
+HTML:
+<p>API for </p>&#xA;&#xA;<blockquote>&#xA;  <p><strong><a href="http://lucene.apache.org/java/2%5F4%5F0/api/org/apache/lucene/search/SortComparator.html" rel="nofollow">Sortcomparator</a></strong></p>&#xA;</blockquote>&#xA;&#xA;<p>says</p>&#xA;&#xA;<blockquote>&#xA;  <p>There is a distinct Comparable for each unique term in the field - if&#xA;  some documents have the same term in&#xA;  the field, the cache array will have&#xA;  entries which reference the same&#xA;  Comparable</p>&#xA;</blockquote>&#xA;&#xA;<p>You can apply a </p>&#xA;&#xA;<blockquote>&#xA;  <p><strong><a href="http://lucene.apache.org/java/2%5F4%5F0/api/org/apache/lucene/search/FieldSortedHitQueue.html" rel="nofollow">FieldSortedHitQueue</a></strong></p>&#xA;</blockquote>&#xA;&#xA;<p>to the sortcomparator which has a Comparator field for which  the  api says ...  </p>&#xA;&#xA;<blockquote>&#xA;  <p>Stores a comparator corresponding to&#xA;  each field being sorted by.</p>&#xA;</blockquote>&#xA;&#xA;<p>Thus the term can be sorted accordingly</p>&#xA;
+Comment:
+
+Phrase:
+implement a decent Lucene sort 
+to implement a decent Lucene sort 
+not quite understanding how to implement a decent Lucene sort 
+ranking 
+not quite understanding how to implement a decent Lucene sort or ranking 
+had this long term issue in not quite understanding how to implement a decent Lucene sort or ranking 
+'ve had this long term issue in not quite understanding how to implement a decent Lucene sort or ranking 
+have a list of cities and their populations 
+Say I have a list of cities and their populations 
+ordered by population 
+matches ordered by population 
+want the list of prefix matches ordered by population 
+reversed 
+working with a prefix search and an sort by field reversed 
+is a population field , IE New Mexico , New York ; or London , Londonderry 
+have that working with a prefix search and an sort by field reversed , where there is a population field , IE New Mexico , New York ; or London , Londonderry 
+be at the top 
+to be at the top 
+always want the exact matching name to be at the top 
+is in the UK 
+has a higher population than London CT. 
+is in Connecticut , even if Londonderry has a higher population than London CT. 
+show `` London , London , Londonderry '' where the first London is in the UK and the second London is in Connecticut , even if Londonderry has a higher population than London CT. 
+should show `` London , London , Londonderry '' where the first London is in the UK and the second London is in Connecticut , even if Londonderry has a higher population than London CT. 
+have a single query solution 
+dlamblin 
+get this correctly 
+make a prefix-based query 
+to make a prefix-based query 
+want to make a prefix-based query 
+see if I get this correctly : You want to make a prefix-based query 
+let me see if I get this correctly : You want to make a prefix-based query 
+sort the results by population 
+combine the sort order with preference for exact matches 
+then sort the results by population , and maybe combine the sort order with preference for exact matches 
+dlamblin , let me see if I get this correctly : You want to make a prefix-based query , and then sort the results by population , and maybe combine the sort order with preference for exact matches 
+separate the search from the sort 
+use a CustomSorter for the sorting 
+separate the search from the sort and use a CustomSorter for the sorting 
+suggest you separate the search from the sort and use a CustomSorter for the sorting 
+describing a custom sorter 
+'s a blog entry describing a custom sorter 
+describes this well 
+implement a sort comparator 
+to implement a sort comparator 
+explaining how to implement a sort comparator 
+defining 2 classes 
+require defining 2 classes 
+does not require defining 2 classes 
+Thank you for your blog post explaining how to implement a sort comparator that conveniently does not require defining 2 classes 
+described them in my question 
+'ve described them in my question 
+rank the results as I 've described them in my question 
+can not rank the results as I 've described them in my question 
+knowing the search term it can not rank the results as I 've described them in my question 
+work on two documents without knowing the search term it can not rank the results as I 've described them in my question 
+can only work on two documents without knowing the search term it can not rank the results as I 've described them in my question 
+access the search term 
+can not access the search term 
+matches the search term `` london '' if it can not access the search term 
+know that the name field `` london '' exactly matches the search term `` london '' if it can not access the search term 
+implementing the ScoreDocComparator interface 
+do the following : The class implementing the ScoreDocComparator interface ( AZ09Comparator in the blog example ) 
+can do the following : The class implementing the ScoreDocComparator interface ( AZ09Comparator in the blog example ) 
+have a `` search term '' member 
+will have a `` search term '' member 
+running the query . & #xA 
+set when running the query . & #xA 
+be set when running the query . & #xA 
+to be set when running the query . & #xA 
+can do the following : The class implementing the ScoreDocComparator interface ( AZ09Comparator in the blog example ) , will have a `` search term '' member , to be set when running the query . & #xA 
+think you can do the following : The class implementing the ScoreDocComparator interface ( AZ09Comparator in the blog example ) , will have a `` search term '' member , to be set when running the query . & #xA 
+called 
+is called 
+access this field during the time it is called 
+not having an exact match 
+rank a document with an exact match higher than another not having an exact match 
+access this field during the time it is called , and rank a document with an exact match higher than another not having an exact match 
+can access this field during the time it is called , and rank a document with an exact match higher than another not having an exact match 
+thinking it through 
+was in front of that code 
+been a while since I was in front of that code 
+'s been a while since I was in front of that code 
+thinking it through ( though it 's been a while since I was in front of that code ) 
+get for not thinking it through ( though it 's been a while since I was in front of that code ) 
+'s what I get for not thinking it through ( though it 's been a while since I was in front of that code ) 
+makes a lot more sense 
+is helpful 
+makes a lot more sense and is helpful 
+create an exact searcher and a prefix searcher 
+to create an exact searcher and a prefix searcher 
+is to create an exact searcher and a prefix searcher 
+sorted by reverse population 
+moving to the prefix hits 
+copy out all my hits starting from the exact hits , moving to the prefix hits 
+be 
+should be 
+think it should be 
+paging my results slightly more annoying than I think it should be 
+makes paging my results slightly more annoying than I think it should be 
+eliminate duplicates 
+to eliminate duplicates 
+used a hash to eliminate duplicates 
+remove the duplicates 
+have Lucene remove the duplicates 
+to have Lucene remove the duplicates 
+later changed the prefix searcher into a boolean query of a prefix search ( MUST ) with an exact search ( MUST NOT ) , to have Lucene remove the duplicates 
+used a hash to eliminate duplicates but later changed the prefix searcher into a boolean query of a prefix search ( MUST ) with an exact search ( MUST NOT ) , to have Lucene remove the duplicates 
+seemed even more wasteful 
+Edit 
+exists 
+Thank you for your blog post 
+access the search term 
+can not access the search term 
+matches the search term `` london '' if it can not access the search term 
+know that the name field `` london '' exactly matches the search term `` london '' if it can not access the search term 
+dlamblin 
+get this correctly 
+make a prefix-based query 
+to make a prefix-based query 
+want to make a prefix-based query 
+see if I get this correctly : You want to make a prefix-based query 
+let me see if I get this correctly : You want to make a prefix-based query 
+sort the results by population 
+combine the sort order with preference for exact matches 
+then sort the results by population , and maybe combine the sort order with preference for exact matches 
+dlamblin , let me see if I get this correctly : You want to make a prefix-based query , and then sort the results by population , and maybe combine the sort order with preference for exact matches 
+separate the search from the sort 
+use a CustomSorter for the sorting 
+separate the search from the sort and use a CustomSorter for the sorting 
+suggest you separate the search from the sort and use a CustomSorter for the sorting 
+describing a custom sorter 
+'s a blog entry describing a custom sorter 
+describes this well 
+implement a sort comparator 
+to implement a sort comparator 
+explaining how to implement a sort comparator 
+defining 2 classes 
+require defining 2 classes 
+does not require defining 2 classes 
+Thank you for your blog post explaining how to implement a sort comparator that conveniently does not require defining 2 classes 
+described them in my question 
+'ve described them in my question 
+rank the results as I 've described them in my question 
+can not rank the results as I 've described them in my question 
+knowing the search term it can not rank the results as I 've described them in my question 
+work on two documents without knowing the search term it can not rank the results as I 've described them in my question 
+can only work on two documents without knowing the search term it can not rank the results as I 've described them in my question 
+access the search term 
+can not access the search term 
+matches the search term `` london '' if it can not access the search term 
+know that the name field `` london '' exactly matches the search term `` london '' if it can not access the search term 
+implementing the ScoreDocComparator interface 
+do the following : The class implementing the ScoreDocComparator interface ( AZ09Comparator in the blog example ) 
+can do the following : The class implementing the ScoreDocComparator interface ( AZ09Comparator in the blog example ) 
+have a `` search term '' member 
+will have a `` search term '' member 
+running the query . & #xA 
+set when running the query . & #xA 
+be set when running the query . & #xA 
+to be set when running the query . & #xA 
+can do the following : The class implementing the ScoreDocComparator interface ( AZ09Comparator in the blog example ) , will have a `` search term '' member , to be set when running the query . & #xA 
+think you can do the following : The class implementing the ScoreDocComparator interface ( AZ09Comparator in the blog example ) , will have a `` search term '' member , to be set when running the query . & #xA 
+called 
+is called 
+access this field during the time it is called 
+not having an exact match 
+rank a document with an exact match higher than another not having an exact match 
+access this field during the time it is called , and rank a document with an exact match higher than another not having an exact match 
+can access this field during the time it is called , and rank a document with an exact match higher than another not having an exact match 
+thinking it through 
+was in front of that code 
+been a while since I was in front of that code 
+'s been a while since I was in front of that code 
+thinking it through ( though it 's been a while since I was in front of that code ) 
+get for not thinking it through ( though it 's been a while since I was in front of that code ) 
+'s what I get for not thinking it through ( though it 's been a while since I was in front of that code ) 
+makes a lot more sense 
+is helpful 
+makes a lot more sense and is helpful 
+API for 
+says 
+is a distinct Comparable for each unique term in the field 
+have the same term in the field 
+reference the same Comparable 
+have entries which reference the same Comparable 
+will have entries which reference the same Comparable 
+apply a 
+can apply a 
+says 
+has a Comparator field for which the api says 
+sorted by 
+being sorted by 
+corresponding to each field being sorted by 
+sorted accordingly 
+be sorted accordingly 
+can be sorted accordingly 

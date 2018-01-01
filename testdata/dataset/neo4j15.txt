@@ -1,0 +1,202 @@
+QUESTION:
+HTML:
+<p>I am building a Reddit clone in Erlang. I am considering using some erlang web frameworks but this is not the problem.</p>&#xA;&#xA;<p>I am having a problem selecting a database. </p>&#xA;&#xA;<p>How it works;</p>&#xA;&#xA;<p>I have multiple dedicated reddits. Examples, science, funny, corporate, sport. You could consider them sub reddits. Each sub reddit has categories. </p>&#xA;&#xA;<p>A user can post the following info:</p>&#xA;&#xA;<p>Title,&#xA;Category&#xA;Tags,&#xA;Description,&#xA;Category, &#xA;<strong>Future Date</strong>, </p>&#xA;&#xA;<p>and Add picture, link. video</p>&#xA;&#xA;<p>As with Reddit, users will be able to vote on &#xA;the stories and comment. Comments will also have vote system.</p>&#xA;&#xA;<p>How the problem;</p>&#xA;&#xA;<p>I dont know what NoSQL database to use, the site will have scalability problems with Mysql (trust me it will so dont suggest sql) There will be around 10,000-20,000 concurrent connections if not more.</p>&#xA;&#xA;<p>Now what I need;</p>&#xA;&#xA;<p>1) A user will go to the sporting subreddit, </p>&#xA;&#xA;<p>They will want to see all stories with a <strong>Future Date</strong>, for example NFL category, or Soccer world cup category they might want to see all stories with <strong>future dates</strong>  which indicate upcoming games or events.</p>&#xA;&#xA;<p>But since people might post crap, i need to say sort by Future date, but then filter the results by posts with more then 5 votes, Then i need to show the closest upcoming event.</p>&#xA;&#xA;<p>So if there is a game on the weekend and the next game is 3 weeks again the closest game needs to come up first.</p>&#xA;&#xA;<p>2) so the problem above, is using one database</p>&#xA;&#xA;<p>1) Find all posts in subreddit: <strong>Sport</strong>. 2) Find al posts in <strong>NFL</strong> category. 3) Find all posts with <strong>future date</strong>. Sort these posts by <strong>most votes</strong> and display stories with <strong>closest date</strong> to today. </p>&#xA;&#xA;<p>I think couchdb looks like a good candidate, but i am not sure</p>&#xA;&#xA;<p>but what about Cassandra, Hbase, Riak, neo4j?</p>&#xA;&#xA;<p>I am going crazy trying to figure this out. </p>&#xA;&#xA;<p>I need something that will scale and handle a large amount of users.</p>&#xA;&#xA;<p>Please help, thanks</p>&#xA;
+Comment:
+Will it have scalability problems with MySQL and Memcached in front of MySQL?  Assuming that you don't have to serve totally unique data to every visitor, this might be a good approach and avoids the need to step into the NoSQL wilderness.
+I am a little unclear about the views system in Couchdb.&#xA;&#xA;I know i can build multiple views to sort the same data. &#xA;&#xA;But how complicated can the view be?&#xA;&#xA;can the view &#xA;&#xA;1) Find all posts in subreddit: Sport. 2) Find all posts in NFL category. 3) Find all posts with future date. Sort these posts by most votes and display stories with closest date to today.&#xA;&#xA;&#xA;WOuld i have to define a view for "every subreddit"? becuase i will have around  25,000 subreddits. Users will be able to make their own reddit and categories in the reddit.
+You don't have to define a separate view for each. Subreddit should be the first element of your emitted keys, so you can select only one using from-to fields in your request. However you will have to have a separate view for each different sorting (not counting ascending / descending).
+
+ACCEPTED ANS:
+
+ANS:
+HTML:
+<p>Cassandra should work well for you; the "users vote on stuff which gets shown in different ways" sounds pretty similar to what Digg is doing (and they are moving completely to Cassandra).</p>&#xA;&#xA;<p>The name of the game in Cassandra is denormalization.  So for each category or subreddit you will have a row containing the posts.  If you are querying relatively small numbers of stories at a time you can probably get away w/o denormalizing the post information (including vote count) itself and just multiget that.  For larger batches you should duplicate that into each post column so you don't have to do those extra gets.</p>&#xA;&#xA;<p>If you use something like TimeUUID to order your columns temporally, then "give me everything in category X that after today's date" is trivial, and then you sort by vote count client side.  (Why not sort server side?  Because that doesn't scale.)</p>&#xA;
+Comment:
+@jbellis - btw, sorting client side implies doing it in JS or somesuch?
+
+Phrase:
+building a Reddit clone in Erlang 
+am building a Reddit clone in Erlang 
+using some erlang web frameworks 
+considering using some erlang web frameworks 
+am considering using some erlang web frameworks 
+is not the problem 
+selecting a database 
+having a problem selecting a database 
+am having a problem selecting a database 
+it works 
+have multiple dedicated reddits 
+sub reddits 
+consider them sub reddits 
+could consider them sub reddits 
+has categories 
+post the following info 
+can post the following info 
+Add picture 
+link 
+and Add picture , link 
+vote on the stories 
+comment 
+vote on the stories and comment 
+to vote on the stories and comment 
+be able to vote on the stories and comment 
+will be able to vote on the stories and comment 
+have vote system 
+will also have vote system 
+How the problem 
+use 
+to use 
+have scalability problems with Mysql 
+will have scalability problems with Mysql 
+suggest sql 
+dont suggest sql 
+will so dont suggest sql 
+trust me it will so dont suggest sql 
+know what NoSQL database to use , the site will have scalability problems with Mysql ( trust me it will so dont suggest sql ) 
+dont know what NoSQL database to use , the site will have scalability problems with Mysql ( trust me it will so dont suggest sql ) 
+be around 10,000-20 ,000 concurrent connections if not more 
+will be around 10,000-20 ,000 concurrent connections if not more 
+need 
+subreddit 
+upcoming games or events 
+indicate upcoming games or events 
+see all stories with future dates which indicate upcoming games or events 
+to see all stories with future dates which indicate upcoming games or events 
+want to see all stories with future dates which indicate upcoming games or events 
+might want to see all stories with future dates which indicate upcoming games or events 
+see all stories with a Future Date , for example NFL category , or Soccer world cup category they might want to see all stories with future dates which indicate upcoming games or events 
+to see all stories with a Future Date , for example NFL category , or Soccer world cup category they might want to see all stories with future dates which indicate upcoming games or events 
+want to see all stories with a Future Date , for example NFL category , or Soccer world cup category they might want to see all stories with future dates which indicate upcoming games or events 
+will want to see all stories with a Future Date , for example NFL category , or Soccer world cup category they might want to see all stories with future dates which indicate upcoming games or events 
+post crap 
+might post crap 
+say sort by Future date 
+filter the results by posts with more then 5 votes 
+say sort by Future date , but then filter the results by posts with more then 5 votes 
+to say sort by Future date , but then filter the results by posts with more then 5 votes 
+need to say sort by Future date , but then filter the results by posts with more then 5 votes 
+show the closest upcoming event 
+to show the closest upcoming event 
+need to show the closest upcoming event 
+is a game on the weekend and the next game 
+come up first 
+to come up first 
+needs to come up first 
+is 3 weeks again the closest game needs to come up first 
+using 
+is using 
+posts in subreddit 
+1 ) Find all posts in subreddit 
+Sport 
+1 ) Find all posts in subreddit : Sport 
+posts with future date 
+3 ) Find all posts with future date 
+Sort these posts by most votes 
+display stories with closest date to today 
+Sort these posts by most votes and display stories with closest date to today 
+looks like a good candidate 
+am not sure 
+think couchdb looks like a good candidate , but i am not sure 
+figure this out 
+to figure this out 
+trying to figure this out 
+going crazy trying to figure this out 
+am going crazy trying to figure this out 
+scale and handle a large amount of users 
+will scale and handle a large amount of users 
+need something that will scale and handle a large amount of users 
+have scalability problems with MySQL and Memcached 
+serve totally unique data to every visitor 
+to serve totally unique data to every visitor 
+have to serve totally unique data to every visitor 
+do n't have to serve totally unique data to every visitor 
+Assuming that you do n't have to serve totally unique data to every visitor 
+be a good approach 
+might be a good approach 
+step into the NoSQL wilderness 
+to step into the NoSQL wilderness 
+avoids the need to step into the NoSQL wilderness 
+might be a good approach and avoids the need to step into the NoSQL wilderness 
+am a little unclear about the views system in Couchdb . & #xA ; & #xA 
+sort the same data 
+to sort the same data 
+build multiple views to sort the same data 
+can build multiple views to sort the same data 
+know i can build multiple views to sort the same data 
+be 
+#xA ; & #xA ; But how complicated can the view be ? 
+the view & #xA ; & #xA ; 1 
+can the view & #xA ; & #xA ; 1 
+#xA ; & #xA ; But how complicated can the view be ? & #xA ; & #xA ; can the view & #xA ; & #xA ; 1 ) 
+Find all posts in subreddit : Sport 
+posts in NFL category 
+2 ) Find all posts in NFL category 
+posts with future date 
+3 ) Find all posts with future date 
+Sort these posts by most votes 
+display stories with closest date to today . 
+define a view for `` every subreddit '' 
+to define a view for `` every subreddit '' 
+have to define a view for `` every subreddit '' 
+Sort these posts by most votes and display stories with closest date to today . & #xA ; & #xA ; & #xA ; WOuld i have to define a view for `` every subreddit '' 
+have around 25,000 subreddits 
+will have around 25,000 subreddits 
+becuase i will have around 25,000 subreddits 
+make their own reddit and categories in the reddit 
+to make their own reddit and categories in the reddit 
+be able to make their own reddit and categories in the reddit 
+will be able to make their own reddit and categories in the reddit 
+define a separate view for each 
+to define a separate view for each 
+have to define a separate view for each 
+do n't have to define a separate view for each 
+using from-to fields in your request 
+select only one using from-to fields in your request 
+can select only one using from-to fields in your request 
+be the first element of your emitted keys , so you can select only one using from-to fields in your request 
+should be the first element of your emitted keys , so you can select only one using from-to fields in your request 
+ascending / descending 
+not counting ascending / descending 
+have a separate view for each different sorting ( not counting ascending / descending ) 
+to have a separate view for each different sorting ( not counting ascending / descending ) 
+have to have a separate view for each different sorting ( not counting ascending / descending ) 
+will have to have a separate view for each different sorting ( not counting ascending / descending ) 
+work well for you 
+should work well for you 
+shown in different ways 
+gets shown in different ways 
+vote on stuff which gets shown in different ways 
+doing 
+is doing 
+moving completely to Cassandra 
+are moving completely to Cassandra 
+sounds pretty similar to what Digg is doing ( and they are moving completely to Cassandra ) 
+is denormalization 
+containing the posts 
+have a row containing the posts 
+will have a row containing the posts 
+denormalizing the post information 
+get away w/o denormalizing the post information 
+get away w/o denormalizing the post information ( including vote count ) itself 
+just multiget that 
+get away w/o denormalizing the post information ( including vote count ) itself and just multiget that 
+can probably get away w/o denormalizing the post information ( including vote count ) itself and just multiget that 
+querying relatively small numbers of stories at a time you can probably get away w/o denormalizing the post information ( including vote count ) itself and just multiget that 
+are querying relatively small numbers of stories at a time you can probably get away w/o denormalizing the post information ( including vote count ) itself and just multiget that 
+do those extra gets 
+to do those extra gets 
+have to do those extra gets 
+do n't have to do those extra gets 
+duplicate that into each post column so you do n't have to do those extra gets 
+should duplicate that into each post column so you do n't have to do those extra gets 
+order your columns temporally 
+to order your columns temporally 
+use something like TimeUUID to order your columns temporally 
+is trivial 
+'s date '' is trivial 
+give me everything in category X that after today 's date '' is trivial 
+sort by vote count client side 
+scale 
+does n't scale 
+doing it in JS or somesuch 
+implies doing it in JS or somesuch 

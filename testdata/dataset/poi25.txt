@@ -1,0 +1,84 @@
+QUESTION:
+HTML:
+<p>I downloaded the <a href="http://poi.apache.org/hwpf/index.html" rel="nofollow">Apache HWPF</a>. I want to use it to read a doc file and write its text into a plain text file. I don't know the HWPF so well.</p>&#xA;&#xA;<p>My very simple program is here:</p>&#xA;&#xA;<p>I have 3 problems now:</p>&#xA;&#xA;<ol>&#xA;<li><p>Some of packages have errors (they can't find apache hdf). How I can fix them?</p></li>&#xA;<li><p>How I can use the methods of HWDF to find and extract the images out?</p></li>&#xA;<li><p>Some piece of my program is incomplete and incorrect. So please help me to complete it.</p></li>&#xA;</ol>&#xA;&#xA;<p>I have to complete this program in 2 days.</p>&#xA;&#xA;<p>once again I repeat Please Please help me to complete this.</p>&#xA;&#xA;<p>Thanks you Guys a lot for your help!!!</p>&#xA;&#xA;<p>This is my elementary code :</p>&#xA;&#xA;<pre><code>public class test {&#xA;  public void m1 (){&#xA;    String filesname = "Hello.doc";&#xA;    POIFSFileSystem fs = null;&#xA;    fs = new POIFSFileSystem(new FileInputStream(filesname ); &#xA;    HWPFDocument doc = new HWPFDocument(fs);&#xA;    WordExtractor we = new WordExtractor(doc);&#xA;    String str = we.getText() ;&#xA;    String[] paragraphs = we.getParagraphText();&#xA;    Picture pic = new Picture(. . .) ;&#xA;    pic.writeImageContent( . . . ) ;&#xA;    PicturesTable picTable = new PicturesTable( . . . ) ;&#xA;    if ( picTable.hasPicture( . . . ) ){&#xA;      picTable.extractPicture(..., ...);&#xA;      picTable.getAllPictures() ;&#xA;    }&#xA;}&#xA;</code></pre>&#xA;
+Comment:
+Related: http://stackoverflow.com/questions/1870328/how-to-programmaticaly-extract-and-manipulate-images-from-an-office-file
+
+ACCEPTED ANS:
+
+ANS:
+HTML:
+<p>If you just want to do this, and you don't care about the coding, you can just use <a href="http://www.winfield.demon.nl/" rel="nofollow">Antiword</a>.</p>&#xA;&#xA;<p>$ antiword file.doc > out.txt</p>&#xA;
+Comment:
+HTML:
+<p>I know this long after the fact but I've found TextMining on google code, more accurate and very easy to use. It is however, pretty much abandoned code.</p>&#xA;
+Comment:
+HTML:
+<p><a href="http://tika.apache.org/" rel="nofollow">Apache Tika</a> will do this for you. It handles talking to POI to do the HWPF stuff, and presents you with either XHTML or Plain Text for the contents of the file. If you register a recursing parser, then you'll also get all the embedded images too.</p>&#xA;
+Comment:
+
+Phrase:
+downloaded the Apache HWPF 
+file and write its text into a plain text file 
+read a doc file and write its text into a plain text file 
+to read a doc file and write its text into a plain text file 
+use it to read a doc file and write its text into a plain text file 
+to use it to read a doc file and write its text into a plain text file 
+want to use it to read a doc file and write its text into a plain text file 
+know the HWPF so well 
+do n't know the HWPF so well 
+is here 
+have 3 problems now 
+find apache hdf 
+ca n't find apache hdf 
+have errors ( they ca n't find apache hdf ) 
+fix them 
+can fix them 
+find 
+extract the images out 
+find and extract the images out 
+to find and extract the images out 
+use the methods of HWDF to find and extract the images out 
+can use the methods of HWDF to find and extract the images out 
+is incomplete and incorrect 
+complete it 
+to complete it 
+help me to complete it 
+please help me to complete it 
+complete this program in 2 days 
+to complete this program in 2 days 
+have to complete this program in 2 days 
+complete this 
+to complete this 
+help me to complete this 
+repeat Please Please help me to complete this 
+Guys a lot for your help !!! 
+Thanks you Guys a lot for your help !!! 
+is my elementary code 
+do this 
+to do this 
+want to do this 
+care about the coding 
+do n't care about the coding 
+use Antiword 
+can just use Antiword 
+use 
+to use 
+found TextMining on google code , more accurate and very easy to use 
+'ve found TextMining on google code , more accurate and very easy to use 
+know this long after the fact but I 've found TextMining on google code , more accurate and very easy to use 
+abandoned code 
+is however , pretty much abandoned code 
+do this for you 
+will do this for you 
+do the HWPF stuff 
+to do the HWPF stuff 
+POI to do the HWPF stuff 
+to POI to do the HWPF stuff 
+talking to POI to do the HWPF stuff 
+handles talking to POI to do the HWPF stuff 
+presents you with either XHTML or Plain Text for the contents of the file 
+handles talking to POI to do the HWPF stuff , and presents you with either XHTML or Plain Text for the contents of the file 
+register a recursing parser 
+get all the embedded images too 
+'ll also get all the embedded images too 
